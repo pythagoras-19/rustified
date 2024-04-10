@@ -1,11 +1,14 @@
 mod Array;
 
+
 fn main() {
-    println!("Hello, world!");
     let sentence = String::from("Hello my name is");
     let index = first_word(&sentence);
     println!("{}", index);
     let t = slices(&sentence);
+    let mut arr = Array::Array::new(10);
+    let size = arr.get_size();
+    println!("{}", size);
 }
 
 fn first_word(s: &String) -> usize {

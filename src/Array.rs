@@ -1,4 +1,4 @@
-struct Array {
+pub(crate) struct Array {
     size: usize,
     elements: Vec<i64>
 }
@@ -20,6 +20,14 @@ impl Array {
             Some(self.elements[index])
         } else {
             None
+        }
+    }
+
+    pub fn get_elements(&self) {
+        let mut index = 0;
+        while index < self.get_size() {
+            println!("{:?}", self.get_element(index));
+            index += 1;
         }
     }
  }
