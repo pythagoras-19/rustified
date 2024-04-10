@@ -1,5 +1,4 @@
 use std::collections::*;
-use std::ffi::c_void;
 
 pub(crate) struct Array {
     size: usize,
@@ -110,6 +109,14 @@ impl Array {
         let raw = &x as *const &Option<i64>;
         let points_at = unsafe { *raw };
         println!("{:?}", points_at);
+    }
+
+    pub fn get_sum(&self) -> i64 {
+        let mut sum = 0;
+        for &value in &self.elements {
+            sum += value;
+        }
+        sum
     }
  }
 

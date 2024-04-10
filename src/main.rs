@@ -33,6 +33,8 @@ fn main() {
     print_option2(median);
     arr.get_location();
     arr.pointer_stuff();
+    let sum = arr.get_sum();
+    println!("{}", &sum);
 }
 
 fn print_option(opt: Option<i64>) {
