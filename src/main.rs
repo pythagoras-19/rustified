@@ -12,7 +12,14 @@ fn main() {
 
     let e = 999;
     arr.set_element(0, e);
+    let mut it = 0;
+    while it < arr.get_size() {
+        arr.set_element(it,  300);
+        it += 1;
+    }
     arr.get_elements();
+    println!();
+    arr.get_element(3);
 }
 
 fn first_word(s: &String) -> usize {
