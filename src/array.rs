@@ -9,8 +9,17 @@ impl Array {
     pub fn new(size: usize) -> Self {
         Self { size, elements: vec![0; size] }
     }
+
     pub fn get_size(&self) -> usize {
         self.size
+    }
+
+    pub fn is_empty(&self) -> bool {
+        if self.get_size() > 0 {
+            false
+        } else {
+            true
+        }
     }
 
     pub fn set_element(&mut self, index: usize, value: i64) {
@@ -89,5 +98,7 @@ impl Array {
             }
         }
     }
+
+
  }
 

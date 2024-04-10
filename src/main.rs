@@ -6,6 +6,7 @@ fn main() {
     let index = first_word(&sentence);
     println!("{}", index);
     let t = slices(&sentence);
+    println!("{}", t);
     let mut arr = array::Array::new(10);
     let size = arr.get_size();
     println!("{}", size);
@@ -26,9 +27,9 @@ fn main() {
     arr.get_element(3);
     let m = arr.get_max();
     print_option(m);
-    let mut most_occur = arr.get_most_occurring();
+    let most_occur = arr.get_most_occurring();
     print_option(most_occur);
-    let mut median = arr.get_median();
+    let median = arr.get_median();
     print_option2(median);
 }
 
