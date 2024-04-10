@@ -1,4 +1,4 @@
-mod Array;
+mod array;
 
 
 fn main() {
@@ -6,7 +6,7 @@ fn main() {
     let index = first_word(&sentence);
     println!("{}", index);
     let t = slices(&sentence);
-    let mut arr = Array::Array::new(10);
+    let mut arr = array::Array::new(10);
     let size = arr.get_size();
     println!("{}", size);
 
@@ -14,12 +14,25 @@ fn main() {
     arr.set_element(0, e);
     let mut it = 0;
     while it < arr.get_size() {
-        arr.set_element(it,  300);
+        if it == 3 {
+            arr.set_element(it, 1000);
+        } else {
+            arr.set_element(it,  300);
+        }
         it += 1;
     }
     arr.get_elements();
     println!();
     arr.get_element(3);
+    let m = arr.get_max();
+    print_option(m);
+}
+
+fn print_option(opt: Option<i64>) {
+    match opt {
+        Some(value) => println!("{}", value),
+        None => println!("None Value!"),
+    };
 }
 
 fn first_word(s: &String) -> usize {

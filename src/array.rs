@@ -32,5 +32,18 @@ impl Array {
             index += 1;
         }
     }
+
+    pub fn get_max(&self) -> Option<i64> {
+        let mut max = self.get_element(0);
+        let mut index = 0;
+
+        while index < self.get_size() {
+            if self.get_element(index) > max {
+                max = self.get_element(index);
+            }
+            index += 1;
+        }
+        max
+    }
  }
 
