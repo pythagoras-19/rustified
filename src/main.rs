@@ -9,6 +9,10 @@ fn main() {
     let mut arr = Array::Array::new(10);
     let size = arr.get_size();
     println!("{}", size);
+
+    let e = 999;
+    arr.set_element(0, e);
+    arr.get_elements();
 }
 
 fn first_word(s: &String) -> usize {

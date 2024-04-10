@@ -11,8 +11,10 @@ impl Array {
         self.size
     }
 
-    pub fn set_element(&mut self, element: Vec<i64>) {
-        self.elements = element;
+    pub fn set_element(&mut self, index: usize, value: i64) {
+        if index < self.size {
+            self.elements[index] = value;
+        }
     }
 
     pub fn get_element(&self, index: usize) -> Option<i64> {
