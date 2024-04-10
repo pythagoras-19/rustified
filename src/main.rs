@@ -32,6 +32,7 @@ fn main() {
     let median = arr.get_median();
     print_option2(median);
     arr.get_location();
+    arr.pointer_stuff();
 }
 
 fn print_option(opt: Option<i64>) {

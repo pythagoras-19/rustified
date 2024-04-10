@@ -104,5 +104,12 @@ impl Array {
         let loc = &self as *const _;
         println!("Memory location of arr is: {:?}", loc);
     }
+
+    pub fn pointer_stuff(&self) {
+        let x = &self.get_element(3);
+        let raw = &x as *const &Option<i64>;
+        let points_at = unsafe { *raw };
+        println!("{:?}", points_at);
+    }
  }
 
