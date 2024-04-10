@@ -35,6 +35,8 @@ fn main() {
     arr.pointer_stuff();
     let sum = arr.get_sum();
     println!("{}", &sum);
+    let min = arr.get_min();
+    println!("{:?}", min);
 }
 
 fn print_option(opt: Option<i64>) {

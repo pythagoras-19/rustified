@@ -57,6 +57,23 @@ impl Array {
         max
     }
 
+    pub fn get_min(&self) -> Option<i64> {
+        if self.elements.is_empty() {
+            None
+        } else {
+            let mut min = self.get_element(0);
+            let mut index = 0;
+
+            while index < self.get_size() {
+                if self.get_element(index) < min {
+                    min = self.get_element(index);
+                }
+                index += 1;
+            }
+            min
+        }
+    }
+
     pub fn get_most_occurring(&self) -> Option<i64> {
         let mut num_times = HashMap::new();
         let mut index = 0;
