@@ -70,7 +70,24 @@ impl Array {
         // it also converts the iterator of key-val pairs into an iterator of keys
         // _ is a wildcard pattern that ignores any value that comes its way
         // _ can also be used to ignore variable values
+        println!("Number of elements: {}", num_times.clone().into_iter().len());
         num_times.into_iter().max_by_key(|&(_, count)| count).map(|(val, _)| val)
+    }
+
+    pub fn get_median(&self) -> Option<f64> {
+        if self.get_size() == 0 {
+            None
+        } else {
+            let mut elements = self.elements.clone();
+            elements.sort();
+            let middle = self.get_size() / 2;
+
+            if self.get_size() % 2 == 0 {
+                Some((self.elements[middle - 1] as f64 + self.elements[middle] as f64) / 2.0 )
+            } else {
+                Some(self.elements[middle] as f64)
+            }
+        }
     }
  }
 

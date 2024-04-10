@@ -28,12 +28,21 @@ fn main() {
     print_option(m);
     let mut most_occur = arr.get_most_occurring();
     print_option(most_occur);
+    let mut median = arr.get_median();
+    print_option2(median);
 }
 
 fn print_option(opt: Option<i64>) {
     match opt {
         Some(value) => println!("{}", value),
         None => println!("None Value!"),
+    };
+}
+
+fn print_option2(opt: Option<f64>) {
+    match opt {
+        Some(value) => println!("{}", value),
+        None => println!("None value!"),
     };
 }
 
