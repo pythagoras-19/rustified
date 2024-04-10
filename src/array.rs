@@ -1,4 +1,5 @@
 use std::collections::*;
+use std::ffi::c_void;
 
 pub(crate) struct Array {
     size: usize,
@@ -99,6 +100,9 @@ impl Array {
         }
     }
 
-
+    pub fn get_location(&self) {
+        let loc = &self as *const _;
+        println!("Memory location of arr is: {:?}", loc);
+    }
  }
 

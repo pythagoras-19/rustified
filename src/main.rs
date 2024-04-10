@@ -31,6 +31,7 @@ fn main() {
     print_option(most_occur);
     let median = arr.get_median();
     print_option2(median);
+    arr.get_location();
 }
 
 fn print_option(opt: Option<i64>) {
