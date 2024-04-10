@@ -135,5 +135,9 @@ impl Array {
         }
         sum
     }
+
+    pub fn reverse(&mut self) {
+        self.elements.reverse();
+    }
  }
 
