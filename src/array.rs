@@ -1,3 +1,5 @@
+use std::collections::*;
+
 pub(crate) struct Array {
     size: usize,
     elements: Vec<i64>
@@ -44,6 +46,31 @@ impl Array {
             index += 1;
         }
         max
+    }
+
+    pub fn get_most_occurring(&self) -> Option<i64> {
+        let mut num_times = HashMap::new();
+        let mut index = 0;
+
+        while index < self.get_size() {
+            match self.get_element(index) {
+                Some(value) => {
+                    let count = num_times.entry(value).or_insert(0);
+                    *count += 1;
+                },
+                None => (),
+            }
+            index += 1;
+        }
+        // convert hashmap into an iterator
+        // max_by_key is provided by iterators and returns the max element of the iterator
+        // |&(_, count)| count) is a closure (a small anonymous function like lambda that
+        // takes a tuple as input and returns the count
+        // .map() is another function provided by iterators
+        // it also converts the iterator of key-val pairs into an iterator of keys
+        // _ is a wildcard pattern that ignores any value that comes its way
+        // _ can also be used to ignore variable values
+        num_times.into_iter().max_by_key(|&(_, count)| count).map(|(val, _)| val)
     }
  }
 

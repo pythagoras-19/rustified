@@ -26,6 +26,8 @@ fn main() {
     arr.get_element(3);
     let m = arr.get_max();
     print_option(m);
+    let mut most_occur = arr.get_most_occurring();
+    print_option(most_occur);
 }
 
 fn print_option(opt: Option<i64>) {
