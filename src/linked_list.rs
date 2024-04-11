@@ -22,6 +22,14 @@ impl LinkedList {
         Self{ head: node }
     }
 
+    pub fn append(&mut self, data: i64) {
+        let mut current = &mut self.head;
+        while current.next.is_some() {
+            current = current.next.as_mut().unwrap();
+        }
+        current.next = Some(Box::new(Node::new(data)));
+    }
+
     pub fn print(&self) {
         let mut current = Some(&self.head);
         while let Some(node) = current {
