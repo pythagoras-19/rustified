@@ -145,5 +145,7 @@ impl Array {
         let sz = self.get_size();
         sum/sz as i64
     }
+
+    
  }
 

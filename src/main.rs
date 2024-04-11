@@ -1,7 +1,19 @@
 mod array;
+mod linked_list;
 
 
 fn main() {
+   //array_ops();
+    linked_list_ops()
+}
+
+fn linked_list_ops() {
+    let mut node = linked_list::Node::new(65);
+    let mut ll = linked_list::LinkedList::new(node);
+    //println!("{:?}", ll);
+    ll.print();
+}
+fn array_ops() {
     let sentence = String::from("Hello my name is");
     let index = first_word(&sentence);
     println!("{}", index);
