@@ -9,7 +9,8 @@ impl Node {
         Self{ data, next: None }
     }
 
-    pub fn get_data() {
+    pub fn get_data(&self) -> i64 {
+        self.data
     }
 }
 #[derive(Debug)]
@@ -19,6 +20,7 @@ pub(crate) struct LinkedList {
 
 impl LinkedList {
     pub fn new(node: Node) -> Self {
+        println!("===LINKED LIST ===");
         Self{ head: node }
     }
 
@@ -33,7 +35,7 @@ impl LinkedList {
     pub fn print(&self) {
         let mut current = Some(&self.head);
         while let Some(node) = current {
-            println!("{}", node.data);
+            println!("{}", node.get_data());
             current = node.next.as_deref(); // to convert from Option<&Box<T>> to Option<&T>
         }
     }

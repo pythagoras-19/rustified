@@ -7,6 +7,7 @@ pub(crate) struct Array {
 
 impl Array {
     pub fn new(size: usize) -> Self {
+        println!("=== ARRAY ===");
         Self { size, elements: vec![0; size] }
     }
 
@@ -146,6 +147,6 @@ impl Array {
         sum/sz as i64
     }
 
-    
+
  }
 
