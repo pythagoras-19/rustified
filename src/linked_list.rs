@@ -26,7 +26,7 @@ impl LinkedList {
         let mut current = Some(&self.head);
         while let Some(node) = current {
             println!("{}", node.data);
-            current = node.next.as_deref();
+            current = node.next.as_deref(); // to convert from Option<&Box<T>> to Option<&T>
         }
     }
 }

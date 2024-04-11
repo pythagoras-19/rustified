@@ -8,9 +8,8 @@ fn main() {
 }
 
 fn linked_list_ops() {
-    let mut node = linked_list::Node::new(65);
+    let node = linked_list::Node::new(65);
     let mut ll = linked_list::LinkedList::new(node);
-    //println!("{:?}", ll);
     ll.print();
 }
 fn array_ops() {
