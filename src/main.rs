@@ -1,3 +1,4 @@
+
 mod linked_list;
 mod array;
 
@@ -52,7 +53,11 @@ fn array_ops() {
     println!("{:?}", min);
     let average = arr.get_average();
     println!("Average: {:?} ", average);
-    arr.to_linked_list();
+    let l = arr.to_linked_list();
+    l.print();
+    println!("array is empty: {}", arr.is_empty());
+    arr.reverse();
+    arr.get_elements();
 }
 
 fn print_option(opt: Option<i64>) {

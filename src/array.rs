@@ -156,7 +156,6 @@ impl Array {
         for index in 1..self.get_size() {
             ll.append(self.get_element(index).unwrap_or(-999));
         }
-        ll.print();
         ll
     }
 
