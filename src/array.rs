@@ -158,7 +158,12 @@ impl Array {
         }
         ll
     }
-
-
+    pub fn remove_at(&mut self, index: usize) {
+        if index < self.size {
+            self.elements.remove(index);
+            println!("===Deleted ===");
+            self.size -= 1;
+        }
+    }
  }
 

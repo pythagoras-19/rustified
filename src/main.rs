@@ -58,6 +58,8 @@ fn array_ops() {
     println!("array is empty: {}", arr.is_empty());
     arr.reverse();
     arr.get_elements();
+    arr.remove_at(3);
+    arr.get_elements();
 }
 
 fn print_option(opt: Option<i64>) {
