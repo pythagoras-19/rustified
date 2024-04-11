@@ -37,6 +37,8 @@ fn main() {
     println!("{}", &sum);
     let min = arr.get_min();
     println!("{:?}", min);
+    let average = arr.get_average();
+    println!("Average: {:?} ", average)
 }
 
 fn print_option(opt: Option<i64>) {

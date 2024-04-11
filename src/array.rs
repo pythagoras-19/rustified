@@ -139,5 +139,11 @@ impl Array {
     pub fn reverse(&mut self) {
         self.elements.reverse();
     }
+
+    pub fn get_average(&self) -> i64 {
+        let sum = self.get_sum();
+        let sz = self.get_size();
+        sum/sz as i64
+    }
  }
 
