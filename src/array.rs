@@ -1,4 +1,6 @@
 use std::collections::*;
+use crate::linked_list::LinkedList;
+use crate::linked_list::Node;
 
 pub(crate) struct Array {
     size: usize,
@@ -145,6 +147,17 @@ impl Array {
         let sum = self.get_sum();
         let sz = self.get_size();
         sum/sz as i64
+    }
+
+    pub fn to_linked_list(&self) -> LinkedList {
+        let head = Node::new(self.get_element(0).unwrap_or(-999));
+        let mut ll = LinkedList::new(head);
+
+        for index in 1..self.get_size() {
+            ll.append(self.get_element(index).unwrap_or(-999));
+        }
+        ll.print();
+        ll
     }
 
 

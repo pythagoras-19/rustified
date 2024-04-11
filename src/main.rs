@@ -51,7 +51,8 @@ fn array_ops() {
     let min = arr.get_min();
     println!("{:?}", min);
     let average = arr.get_average();
-    println!("Average: {:?} ", average)
+    println!("Average: {:?} ", average);
+    arr.to_linked_list();
 }
 
 fn print_option(opt: Option<i64>) {
