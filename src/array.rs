@@ -1,6 +1,7 @@
 use std::collections::*;
 use crate::linked_list::LinkedList;
 use crate::linked_list::Node;
+use rand::Rng;
 
 pub(crate) struct Array {
     size: usize,
@@ -163,6 +164,22 @@ impl Array {
             self.elements.remove(index);
             println!("===Deleted ===");
             self.size -= 1;
+        }
+    }
+
+    pub fn randomize_input(&self) {
+        let mut rng = rand::thread_rng();
+        let n: i8 = rng.gen_range(1..101);
+        println!("Random i8 : {}", n);
+    }
+
+    pub fn randomize_inputs(&mut self) {
+        let mut index = 0;
+        while index < self.get_size() {
+            let mut rng = rand::thread_rng();
+            let n: i64 = rng.gen_range(1..101);
+            self.set_element(index, n);
+            index += 1;
         }
     }
  }

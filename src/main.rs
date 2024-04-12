@@ -25,18 +25,21 @@ fn array_ops() {
     let size = arr.get_size();
     println!("{}", size);
 
-    let e = 999;
-    arr.set_element(0, e);
-    let mut it = 0;
-    while it < arr.get_size() {
-        if it == 3 {
-            arr.set_element(it, 1000);
-        } else {
-            arr.set_element(it,  300);
-        }
-        it += 1;
-    }
+    // let e = 999;
+    // arr.set_element(0, e);
+    // let mut it = 0;
+    // while it < arr.get_size() {
+    //     if it == 3 {
+    //         arr.set_element(it, 1000);
+    //     } else {
+    //         arr.set_element(it,  300);
+    //     }
+    //     it += 1;
+    // }
+    println!("==RANDOMIZING INPUTS==");
+    arr.randomize_inputs();
     arr.get_elements();
+
     println!();
     arr.get_element(3);
     let m = arr.get_max();
@@ -60,6 +63,7 @@ fn array_ops() {
     arr.get_elements();
     arr.remove_at(3);
     arr.get_elements();
+    arr.randomize_inputs();
 }
 
 fn print_option(opt: Option<i64>) {
