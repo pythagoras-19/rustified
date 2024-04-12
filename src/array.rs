@@ -182,5 +182,14 @@ impl Array {
             index += 1;
         }
     }
+
+    pub fn find_index(&self, value: i64) -> Option<usize> {
+        for (index, &item) in self.elements.iter().enumerate() {
+            if item == value {
+                return Some(index);
+            }
+        }
+        None
+    }
  }
 
