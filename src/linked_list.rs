@@ -38,6 +38,6 @@ impl LinkedList {
             print!("{}-->", node.get_data());
             current = node.next.as_deref(); // to convert from Option<&Box<T>> to Option<&T>
         }
-        print!("NULL");
+        println!("NULL");
     }
 }
