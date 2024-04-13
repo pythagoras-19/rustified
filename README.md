@@ -292,6 +292,39 @@ class Dog implements Speak {
 }
 ```
 
+## Closures
+- small anonymous functions like lambdas
+```
+|<parameter-name>: <type>| -> <return-type> { <body> };
+```
+```rust
+fn main() {
+    let f = |x: i32| -> i32 { x * 2 };
+    let f = || println!("Hello, world!"); // with no input parameter
+}
+```
+- closures can be passed as parameters
+```rust
+// A function which takes a function pointer as an argument and calls it with
+// the value `5`.
+fn apply(f: fn(i32) -> i32) -> i32 {
+    // No semicolon, to indicate an implicit return
+    f(5)
+}
+
+fn main() {
+    // Defining the closure
+    let f = |x| x * 2;
+
+    println!("{}", apply(f));  // 10
+    println!("{}", f(5));      // 10
+}
+// can be shortened to:
+fn apply_by_ref(f: impl Fn(i32) -> i32) -> i32 {
+    f(5)
+}
+```
+
 ## Crates
 - Primary bulding blocks of Rust. 
 - Equivalent to library in JavaScript
@@ -317,3 +350,12 @@ fn main() {
 ```
 - In this example, we're using the `rand::Rng` **trait**, which provides methods for generating random numbers. 
 - The `gen` method generates a random number that can be any value that is valid for the type.
+
+## Pointers
+| Type                             | Description                                          | Examples                                                         |
+|----------------------------------|------------------------------------------------------|------------------------------------------------------------------|
+| `&T`<br/>`&mut T`                | References (mutable or immutable)                    | `let x_ref = &x;`<br/>`let x_ref = &mut x;`                      |
+| `Option<&T>`<br/>`Option<&mut T>` | Option wrapped reference<br/>Possibly null reference | `None`<br/>`let x_ref = Some(&x)`<br/>`let x_ref = Some(&mut x);` |
+| Row 3                            | Row 3                                                | Row 3                                                            |
+| Row 4                            | Row 4                                                | Row 4                                                            |
+| Row 5                            | Row 5                                                | Row 5                                                            |

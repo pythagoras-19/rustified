@@ -61,6 +61,15 @@ impl Array {
         max
     }
 
+    pub fn is_present(&self, value: i64) -> bool {
+        for &item in &self.elements {
+            if item == value {
+                return true;
+            }
+        }
+        false
+    }
+
     pub fn get_min(&self) -> Option<i64> {
         if self.elements.is_empty() {
             None
