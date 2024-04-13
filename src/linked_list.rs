@@ -35,8 +35,9 @@ impl LinkedList {
     pub fn print(&self) {
         let mut current = Some(&self.head);
         while let Some(node) = current {
-            println!("{}", node.get_data());
+            print!("{}-->", node.get_data());
             current = node.next.as_deref(); // to convert from Option<&Box<T>> to Option<&T>
         }
+        print!("NULL");
     }
 }
