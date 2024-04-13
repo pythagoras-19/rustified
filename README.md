@@ -8,26 +8,60 @@
 - If they forget to deallocate memory that's no longer needed, a memory leak occurs.  
 - However, in languages with automatic memory management, such as Java, Python, or Rust, the garbage collector or ownership system (in Rust) is designed to prevent memory leaks by automatically deallocating memory that's no longer in use. 
 - In **Rust** specifically, the ownership model ensures that memory is deallocated when there are no more references to it, which helps prevent memory leaks.
-## Ownership and Borrowing
-- **dangling pointer**:  pointer that doesn't point to a valid object of the appropriate type
-  - usually occurs when an object is deleted or deallocated, without modifying the value of the pointer, so it still points to the memory location of the deallocated memory. 
-  - As the system may have reallocated the memory to another object, using the dangling pointer can lead to _unpredictable results_ or program crashes. 
-  - This is a common issue in languages that allow direct memory management, such as C and C++. 
-  - However, in **Rust**, the ownership system prevents this problem at compile time.
 
+
+- **dangling pointer**:  pointer that doesn't point to a valid object of the appropriate type
+    - usually occurs when an object is deleted or deallocated, without modifying the value of the pointer, so it still points to the memory location of the deallocated memory.
+    - As the system may have reallocated the memory to another object, using the dangling pointer can lead to _unpredictable results_ or program crashes.
+    - This is a common issue in languages that allow direct memory management, such as C and C++.
+    - However, in **Rust**, the ownership system prevents this problem at compile time.
+
+## Ownership and Borrowing
 - Rust uses a unique system of Ownership with rules that the compiler checks at compile time. This system ensures that there are no dangling pointers or memory leaks, and all memory is cleaned up once an object goes out of scope.
 
+## The Borrow Checker
+- Portion of the compiler that enforces the rules of borrowing
+  - it checks the code to ensure that references to data obey the following rules
+  1. Any borrow **must** last for a scope no greater than that of the owner
+  2. You may have one or the other these 2 kinds of borrows, BUT NOT BOTH at the same time
+    - One or more references (`&T`) to a resource
+    - Exactly one mutable reference (`&mut T`)
+- example of correct use of borrowing: 
 ```rust
 fn main() {
-    let s1 = String::from("Hello");
-    let s2 = s1; // s1 is no longer valid here
-    println!("{}", s2); // Works fine, s2 owns the data
+    let mut s = String::from("hello");
+
+    change(&mut s);
+    println!("{}", s);
+}
+
+fn change(some_string: &mut String) {
+    some_string.push_str(", world");
+}
+```
+- example of incorrect use of borrowing
+```rust
+fn main() {
+    let mut s = String::from("hello");
+
+    let r1 = &mut s;
+    let r2 = &mut s; // 2 mutable references to s in the same scope! ERROR
+
+    println!("{}, {}", r1, r2);
 }
 ```
 ## Ownership (in more detail)
 - Ownership is a key feature of Rust that makes it possible to manage memory safely and efficiently, without needing a garbage collector. 
 - In Rust, each value has a variable that's called its owner. There can only be one owner at a time. 
 - When the owner goes out of scope, the value will be dropped, and the memory it was using is freed.
+- example:
+```rust
+fn main() {
+    let s1 = String::from("Hello"); // s1 owns the data
+    let s2 = s1; // s1 is no longer valid here, s2 owns the data; s1 is NO LONGER VALID
+    println!("{}", s2); // Works fine, s2 owns the data
+}
+```
 - another example:
 ```rust
 fn s() {
