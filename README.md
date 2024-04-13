@@ -15,7 +15,6 @@
   - This is a common issue in languages that allow direct memory management, such as C and C++. 
   - However, in **Rust**, the ownership system prevents this problem at compile time.
 
-
 - Rust uses a unique system of Ownership with rules that the compiler checks at compile time. This system ensures that there are no dangling pointers or memory leaks, and all memory is cleaned up once an object goes out of scope.
 
 ```rust
@@ -25,6 +24,19 @@ fn main() {
     println!("{}", s2); // Works fine, s2 owns the data
 }
 ```
+## Ownership (in more detail)
+- Ownership is a key feature of Rust that makes it possible to manage memory safely and efficiently, without needing a garbage collector. 
+- In Rust, each value has a variable that's called its owner. There can only be one owner at a time. 
+- When the owner goes out of scope, the value will be dropped, and the memory it was using is freed.
+- another example:
+```rust
+fn s() {
+    let s = String::from("hello"); // s is valid from this point forward
+    // do stuff with s
+} // this scope is now over, and s is no longer valid, so the memory is freed
+```
+- In this example, s is the owner of the string "hello". When s goes out of scope at the end of the block, the string is automatically deallocated.
+
 ## Borrowing
 - Borrowing is a feature in Rust that allows you to access the data of a value without taking ownership over it. This is useful when you want to use a value but don't want to take ownership, which would involve copying or moving the value.
 ```rust
@@ -48,6 +60,9 @@ fn main() {
     // println!("{}", v[v_index]);
 }
 ```
+## No data races 
+- The compiler ensures that you don't have multiple threads with mutable access to the same data.
+
 # Concurrency without Fear
 - Rust's ownership and type system ensure that mutable data cannot be simultaneously accessed from different threads, thus preventing data races at compile time.
 ```rust
@@ -113,3 +128,158 @@ fn main() {
     });
 }
 ```
+
+# Programming Philosophy with Rust
+## Focus
+- Rust's focus is on speed, safety, and concurrency.
+- **Rust's philosophy is about giving the developer low-level control over the system, while providing high-level abstractions and strong safety guarantees**
+- It aims to provide the ability to build reliable and efficient software while minimizing common programming errors like:
+    - null pointer dereferencing
+    - memory leaks
+    - data races
+- Rust is statically typed and compiled with a focus on safety and performance
+- Rust does NOT use classes!
+  - Instead, it uses a combination of `structs` and `impl` blocks to create types and define behavior.
+- `struct`: custom data type that lets the programer name and package together multiple related values
+  - NO INHERITANCE
+- example:
+```rust
+struct Point {
+    x: i32,
+    y: i32,
+}
+
+impl Point {
+    fn new(x: i32, y: i32) -> Point {
+        Point { x, y }
+    }
+
+    fn distance_to_origin(&self) -> f64 {
+        let x2 = self.x.pow(2) as f64;
+        let y2 = self.y.pow(2) as f64;
+        (x2 + y2).sqrt()
+    }
+}
+```
+- `new()`: considered the constructor of a new Point object
+
+## Types
+- a type defines the kind of data that a value can hold and how the data behaves
+- Categories:
+1. Scalar types: represent single value; like integer, floating point numbers, booleans, or characters
+2. Compound types: These group multiple values into 1 type; like tuples and arrays
+3. Custom types: `struct`, `enum`, `union`
+4. Function types: Types of functions, defined by their inputs and output types
+5. Pointer types: these include references: `&T`, `&mut T`. These also include raw pointers: `*const T`, `*mut T`
+6. Trait types: implement a specific **trait**
+7. The Unit type: this indicates an absence of a value or state denoted by `()`
+8. The Never type: indicates a computation that never returns, denoted by `!`
+
+Example of the types:
+```rust
+fn main() {
+    let logical: bool = true; // Boolean type
+
+    let a_float: f64 = 1.0;  // Floating-point type
+
+    let an_integer   = 5i32; // Integer type
+
+    let default_float   = 3.0; // `f64` (default floating-point type)
+
+    let default_integer = 7;   // `i32` (default integer type)
+
+    let c = 'z'; // Character type
+
+    let z = 'ℤ'; // Unicode scalar value
+
+    let heart_eyed_cat = '😻'; // Unicode scalar value
+
+    let tup: (i32, f64, u8) = (500, 6.4, 1); // Tuple type
+
+    let arr = [1, 2, 3, 4, 5]; // Array type
+}
+
+```
+
+## Traits
+- What is it: a way to define shared behavior across types
+- A trait in Rust defines a set of methods that other types can implement.
+- If a type chooses to implement a `trait` it **must** implement all the trait's functions!!
+- example:
+```rust
+trait Speak {
+    fn speak(&self);
+    
+    fn print_one(&self);
+}
+
+struct Human;
+struct Dog;
+
+impl Speak for Human {
+    fn speak(&self) {
+        println!("Hello!");
+    }
+
+    fn print_one(&self) {
+        println!("1");
+    }
+}
+
+impl Speak for Dog {
+    fn speak(&self) {
+        println!("Woof!");
+    }
+
+    fn print_one(&self) {
+        println!("One");
+    }
+}
+```
+- in this example: `Speak` is a trait that has a method `speak()`. 
+- Both `Human` and `Dog` are structs (custom types) that implement their own versions of `speak()`
+
+### A parallel in Java with interfaces
+```java
+interface Speak {
+    void speak();
+}
+
+class Human implements Speak {
+    public void speak() {
+        System.out.println("Hello!");
+    }
+}
+
+class Dog implements Speak {
+    public void speak() {
+        System.out.println("Woof!");
+    }
+}
+```
+
+## Crates
+- Primary bulding blocks of Rust. 
+- Equivalent to library in JavaScript
+- A crate can produce an .exe or a library
+- Useful for: managing and organizing code in a modular way
+- Why use crates?: They provide a way to group related functionality together
+  - makes it easier to share and distribute code
+- example:
+- dependency in `Cargo.toml`
+```toml
+[dependencies]
+rand = "0.8.4"
+```
+- then implemented in Rust: 
+```rust
+use rand::Rng;
+
+fn main() {
+    let mut rng = rand::thread_rng();
+    let n: u32 = rng.gen();
+    println!("Random number: {}", n);
+}
+```
+- In this example, we're using the `rand::Rng` **trait**, which provides methods for generating random numbers. 
+- The `gen` method generates a random number that can be any value that is valid for the type.
