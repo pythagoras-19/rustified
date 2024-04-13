@@ -64,6 +64,7 @@ fn array_ops() {
     arr.remove_at(3);
     arr.get_elements();
     arr.randomize_inputs();
+    println!("Sorted: {}", arr.is_sorted());
 }
 
 fn print_option(opt: Option<i64>) {

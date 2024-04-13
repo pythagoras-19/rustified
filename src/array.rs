@@ -167,12 +167,6 @@ impl Array {
         }
     }
 
-    pub fn randomize_input(&self) {
-        let mut rng = rand::thread_rng();
-        let n: i8 = rng.gen_range(1..101);
-        println!("Random i8 : {}", n);
-    }
-
     pub fn randomize_inputs(&mut self) {
         let mut index = 0;
         while index < self.get_size() {
@@ -183,13 +177,13 @@ impl Array {
         }
     }
 
-    pub fn find_index(&self, value: i64) -> Option<usize> {
-        for (index, &item) in self.elements.iter().enumerate() {
-            if item == value {
-                return Some(index);
+    pub fn is_sorted(&self) -> bool {
+        for i in 0..(self.get_size()-1) {
+            if self.get_element(i) > self.get_element(i+1) {
+                return false
             }
         }
-        None
+        true
     }
  }
 
