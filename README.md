@@ -1,9 +1,22 @@
 # rustified
 # Foundational Rust Principles
-
+### Rust solves memory leak problems with ease
+- **memory leak**: The situation where a computer program incorrectly manages memory allocations. 
+  - In essence, it happens when an **application allocates memory for temporary use and then, due to logical errors**, fails to release it when it's no longer needed. 
+- Over time, a memory leak can cause an application to slow down or crash as it consumes more and more of the system's available memory.  
+- In languages that do not automatically manage memory, like C and C++, developers are responsible for allocating and deallocating memory. 
+- If they forget to deallocate memory that's no longer needed, a memory leak occurs.  
+- However, in languages with automatic memory management, such as Java, Python, or Rust, the garbage collector or ownership system (in Rust) is designed to prevent memory leaks by automatically deallocating memory that's no longer in use. 
+- In **Rust** specifically, the ownership model ensures that memory is deallocated when there are no more references to it, which helps prevent memory leaks.
 ## Ownership and Borrowing
+- **dangling pointer**:  pointer that doesn't point to a valid object of the appropriate type
+  - usually occurs when an object is deleted or deallocated, without modifying the value of the pointer, so it still points to the memory location of the deallocated memory. 
+  - As the system may have reallocated the memory to another object, using the dangling pointer can lead to _unpredictable results_ or program crashes. 
+  - This is a common issue in languages that allow direct memory management, such as C and C++. 
+  - However, in **Rust**, the ownership system prevents this problem at compile time.
 
-Rust uses a unique system of Ownership with rules that the compiler checks at compile time. This system ensures that there are no dangling pointers or memory leaks, and all memory is cleaned up once an object goes out of scope.
+
+- Rust uses a unique system of Ownership with rules that the compiler checks at compile time. This system ensures that there are no dangling pointers or memory leaks, and all memory is cleaned up once an object goes out of scope.
 
 ```rust
 fn main() {
