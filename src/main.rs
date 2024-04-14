@@ -4,6 +4,7 @@ mod array;
 mod currencies;
 
 use crate::currencies::Coin;
+use crate::currencies::Coin::{Dime, Penny};
 use crate::currencies::Dollar;
 
 
@@ -16,6 +17,12 @@ fn main() {
 fn enum_ops() {
     currencies::value_in_cents(Coin::Penny);
     currencies::value_in_dollars(Dollar::BenjaminFranklin);
+
+    let result = currencies::convert_to_dollars(101, Coin::Penny);
+    match result {
+        Ok(value) => println!("Value in dollars: {}", value),
+        Err(e) => println!("Error: {}", e),
+    }
 }
 
 fn linked_list_ops() {
