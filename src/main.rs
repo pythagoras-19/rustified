@@ -1,6 +1,9 @@
 mod linked_list;
 mod array;
 mod currencies;
+mod my_networking;
+mod guess;
+
 use crate::currencies::Coin;
 use crate::currencies::Dollar;
 
@@ -8,32 +11,21 @@ use colored::*;
 
 
 fn main() {
-    //array_ops();
+    // array_ops();
     // linked_list_ops()
-    enum_ops();
+    // enum_ops();
+    networking_ops();
+}
+
+fn networking_ops() {
+    my_networking::start_server_and_client_threads();
 }
 
 fn enum_ops() {
     currencies::value_in_cents(Coin::Penny);
     currencies::value_in_dollars(Dollar::BenjaminFranklin);
+    currencies::parse_thru_currencies();
 
-    let result = currencies::convert_to_dollars(101, Coin::Dime);
-    match result {
-        Ok(value) => println!("Value in dollars: {}", value.to_string().green()),
-        Err(e) => println!("Error: {}", e.red()),
-    }
-
-    let result = currencies::convert_to_dollars(101, Coin::Penny);
-    match result {
-        Ok(value) => println!("Value in dollars: {}", value.to_string().green()),
-        Err(e) => println!("Error: {}", e.red()),
-    }
-
-    let result = currencies::convert_to_dollars(101, Coin::Quarter);
-    match result {
-        Ok(value) => println!("Value in dollars: {}", value.to_string().green()),
-        Err(e) => println!("Error: {}", e.red()),
-    }
 }
 
 fn linked_list_ops() {

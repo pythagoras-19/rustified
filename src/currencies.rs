@@ -1,3 +1,6 @@
+use crate::currencies;
+use colored::*;
+
 pub(crate) enum Coin {
     Penny,
     Nickel,
@@ -51,6 +54,26 @@ pub fn value_in_dollars(dollar: Dollar) -> i16 {
 fn im_rich() {
     for _ in 0..=100 {
         println!("IM RICH!");
+    }
+}
+
+pub fn parse_thru_currencies() {
+    let result = currencies::convert_to_dollars(101, Coin::Dime);
+    match result {
+        Ok(value) => println!("Value in dollars: {}", value.to_string().green()),
+        Err(e) => println!("Error: {}", e.red()),
+    }
+
+    let result = currencies::convert_to_dollars(101, Coin::Penny);
+    match result {
+        Ok(value) => println!("Value in dollars: {}", value.to_string().green()),
+        Err(e) => println!("Error: {}", e.red()),
+    }
+
+    let result = currencies::convert_to_dollars(101, Coin::Quarter);
+    match result {
+        Ok(value) => println!("Value in dollars: {}", value.to_string().green()),
+        Err(e) => println!("Error: {}", e.red()),
     }
 }
 
