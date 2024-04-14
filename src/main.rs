@@ -1,10 +1,10 @@
 
 mod linked_list;
 mod array;
-mod enum_example;
+mod currencies;
 
-use crate::enum_example::Coin;
-use crate::enum_example::Dollar;
+use crate::currencies::Coin;
+use crate::currencies::Dollar;
 
 
 fn main() {
@@ -14,8 +14,8 @@ fn main() {
 }
 
 fn enum_ops() {
-    enum_example::value_in_cents(Coin::Penny);
-    enum_example::value_in_dollars(Dollar::BenjaminFranklin);
+    currencies::value_in_cents(Coin::Penny);
+    currencies::value_in_dollars(Dollar::BenjaminFranklin);
 }
 
 fn linked_list_ops() {
