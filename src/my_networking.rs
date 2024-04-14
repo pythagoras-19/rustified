@@ -16,14 +16,14 @@ pub fn start_server_and_client_threads() {
     //progress bar
     let pb = ProgressBar::new(10);
     pb.set_style(ProgressStyle::default_bar()
-        .template("{spinner:.green} [{elapsed_precise}] [{bar:40.cyan/blue}] {pos}/{len} ({eta})")
-        .unwrap().progress_chars("#>-")); // TODO: might need to change unwrap
+        .template("{spinner:.green} [{bar:40.cyan/blue}] ({eta}) ")
+        .unwrap().progress_chars("#>-"));
 
     // start pb thread
     let progress_thread = thread::spawn(move || {
         for _ in 0..10 {
             pb.inc(1);
-            thread::sleep(Duration::from_millis(100));
+            thread::sleep(Duration::from_millis(500));
         }
         pb.finish_with_message("Server successfully started.");
     });
@@ -93,7 +93,6 @@ pub fn create_tcp_stream(address: &str) -> std::io::Result<()> {
 
     let json_data = serde_json::to_string(&data).unwrap(); // serial the data
     stream.write_all(json_data.as_bytes())?; // send the json over the tcp stream
-    // stream.write_all(b"Hello, server!")?;
 
     Ok(())
 }
