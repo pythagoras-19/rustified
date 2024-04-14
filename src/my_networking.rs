@@ -3,7 +3,7 @@ use std::net:: {TcpListener, TcpStream};
 use std::thread;
 use std::time::Duration;
 use serde:: {Serialize, Deserialize};
-
+use indicatif:: {ProgressBar, ProgressStyle};
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Data {
@@ -12,6 +12,22 @@ struct Data {
 }
 
 pub fn start_server_and_client_threads() {
+    println!("Starting server...");
+    //progress bar
+    let pb = ProgressBar::new(10);
+    pb.set_style(ProgressStyle::default_bar()
+        .template("{spinner:.green} [{elapsed_precise}] [{bar:40.cyan/blue}] {pos}/{len} ({eta})")
+        .unwrap().progress_chars("#>-")); // TODO: might need to change unwrap
+
+    // start pb thread
+    let progress_thread = thread::spawn(move || {
+        for _ in 0..10 {
+            pb.inc(1);
+            thread::sleep(Duration::from_millis(100));
+        }
+        pb.finish_with_message("Server successfully started.");
+    });
+
     // start server and new thread
     let server_thread = thread::spawn( || {
         let result = create_tcp_listener(8888);
@@ -20,6 +36,9 @@ pub fn start_server_and_client_threads() {
             Err(e) => panic!("Error creating the TCP listener: {}", e)
         };
     });
+
+    // wait for pb to finish
+    progress_thread.join().unwrap();
 
     // wait for server to start
     thread::sleep(Duration::from_secs(1));
