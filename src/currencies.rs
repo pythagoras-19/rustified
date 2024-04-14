@@ -57,6 +57,7 @@ fn im_rich() {
 pub fn convert_to_dollars(amount_in_cents: u32, coin: Coin) -> std::result::Result<f32, &'static str> {
     match coin {
         Coin::Penny => std::result::Result::Ok(amount_in_cents as f32 * 0.01),
-        _ => std::result::Result::Err("Conversion is only possible with Penny"),
+        Coin::Dime => std::result::Result::Ok(amount_in_cents as f32 + 0.10),
+        _ => std::result::Result::Err("Conversion is only possible with Penny and Dime"),
     }
 }

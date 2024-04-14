@@ -28,6 +28,12 @@ fn enum_ops() {
         Ok(value) => println!("Value in dollars: {}", value.to_string().green()),
         Err(e) => println!("Error: {}", e.red()),
     }
+
+    let result = currencies::convert_to_dollars(101, Coin::Quarter);
+    match result {
+        Ok(value) => println!("Value in dollars: {}", value.to_string().green()),
+        Err(e) => println!("Error: {}", e.red()),
+    }
 }
 
 fn linked_list_ops() {
