@@ -142,8 +142,11 @@ fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
     } else {
         y
     }
-}
+} 
 ```
+- a `'static` is a special lifetime which represents the entire duration of the program
+  - most often seen on string literals
+
 # Error Handling
 - Rust encourages the use of error handling to deal with exceptional situations. The `Result` and `Option`types are used for functions that can fail, and the `?` operator can be used to propagate errors up the call stack.
 ```rust
