@@ -15,7 +15,6 @@ pub(crate) enum Dollar {
     BenjaminFranklin
 }
 
-// for handling failures
 enum Result<T, E> {
     // T and E are generics
     Ok(T), // success

@@ -1,11 +1,10 @@
-
 mod linked_list;
 mod array;
 mod currencies;
-
 use crate::currencies::Coin;
-use crate::currencies::Coin::{Dime, Penny};
 use crate::currencies::Dollar;
+
+use colored::*;
 
 
 fn main() {
@@ -18,10 +17,16 @@ fn enum_ops() {
     currencies::value_in_cents(Coin::Penny);
     currencies::value_in_dollars(Dollar::BenjaminFranklin);
 
+    let result = currencies::convert_to_dollars(101, Coin::Dime);
+    match result {
+        Ok(value) => println!("Value in dollars: {}", value.to_string().green()),
+        Err(e) => println!("Error: {}", e.red()),
+    }
+
     let result = currencies::convert_to_dollars(101, Coin::Penny);
     match result {
-        Ok(value) => println!("Value in dollars: {}", value),
-        Err(e) => println!("Error: {}", e),
+        Ok(value) => println!("Value in dollars: {}", value.to_string().green()),
+        Err(e) => println!("Error: {}", e.red()),
     }
 }
 
@@ -41,18 +46,6 @@ fn array_ops() {
     let mut arr = array::Array::new(10);
     let size = arr.get_size();
     println!("{}", size);
-
-    // let e = 999;
-    // arr.set_element(0, e);
-    // let mut it = 0;
-    // while it < arr.get_size() {
-    //     if it == 3 {
-    //         arr.set_element(it, 1000);
-    //     } else {
-    //         arr.set_element(it,  300);
-    //     }
-    //     it += 1;
-    // }
     println!("==RANDOMIZING INPUTS==");
     arr.randomize_inputs();
     arr.get_elements();
