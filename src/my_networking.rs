@@ -14,7 +14,7 @@ struct Data {
 pub fn start_server_and_client_threads() {
     println!("Starting server...");
     //progress bar
-    let pb = ProgressBar::new(10);
+    let pb = ProgressBar::new(20);
     pb.set_style(ProgressStyle::default_bar()
         .template("{spinner:.green} [{bar:40.cyan/blue}] ({eta}) ")
         .unwrap().progress_chars("#>-"));
