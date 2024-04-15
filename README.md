@@ -353,6 +353,21 @@ fn main() {
 ```
 - In this example, we're using the `rand::Rng` **trait**, which provides methods for generating random numbers. 
 - The `gen` method generates a random number that can be any value that is valid for the type.
+### std::sync
+- for concurrent programming (multiple threads working at the same time)
+- this is what Rust is known for (safety and concurrency)
+  - MUTEX (Mutual Exclusion)- like having a key to a toy box (remember "locks" in OS class)
+  - ARC (Atomically Reference Counted) - how many times a reference is used
+  - Condvar
+#### std::sync::Arc<T, A = Global>
+- where `A` is Allocator
+- where `T` is `?Sized`
+- what: a thread safe reference counting pointer. 
+  - Stands for **Atomically Reference Counted**
+  - it's like a library card, multiple people can borrow the same card to check out a book, 
+    - and the library keeps track of how many people are reading it
+    - allows multiple threads to share ownership of the same data without requiring deep copies
+- The type `Arc<T>` provides shared ownership of a value of type `T`, allocated on the heap.
 
 ## Pointers
 | Type                             | Description                                          | Examples                                                         |

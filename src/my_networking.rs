@@ -1,6 +1,7 @@
-use std::io::{Read, Write};
+use std::io::{Read, Write, Error};
 use std::net:: {TcpListener, TcpStream};
 use std::thread;
+use std::sync::{Arc, Mutex};
 use std::time::Duration;
 use serde:: {Serialize, Deserialize};
 use indicatif:: {ProgressBar, ProgressStyle};
@@ -18,8 +19,7 @@ pub fn start_server_and_client_threads() {
         .template("{spinner:.green} [{bar:40.cyan/blue}] ({eta}) ")
         .unwrap().progress_chars("#>-"));
 
-    // start pb thread
-    let progress_thread = thread::spawn(move || {
+    let progress_bar_thread = thread::spawn(move || {
         for _ in 0..10 {
             pb.inc(1);
             thread::sleep(Duration::from_millis(500));
@@ -37,7 +37,7 @@ pub fn start_server_and_client_threads() {
     });
 
     // wait for pb to finish
-    progress_thread.join().unwrap();
+    progress_bar_thread.join().unwrap();
 
     // wait for server to start
     thread::sleep(Duration::from_secs(1));
@@ -94,4 +94,8 @@ pub fn create_tcp_stream(address: &str) -> std::io::Result<()> {
     stream.write_all(json_data.as_bytes())?; // send the json over the tcp stream
 
     Ok(())
+}
+
+pub fn start_chat_server() {
+
 }

@@ -3,6 +3,7 @@ mod array;
 mod currencies;
 mod my_networking;
 mod guess;
+mod chat_server;
 
 use crate::currencies::Coin;
 use crate::currencies::Dollar;
