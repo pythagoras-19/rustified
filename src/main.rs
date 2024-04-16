@@ -6,9 +6,11 @@ mod guess;
 mod chat_server;
 mod thread;
 mod channels;
+mod paths;
 
 use crate::currencies::Coin;
 use crate::currencies::Dollar;
+use crate::paths::create_valid_path;
 
 fn main() {
     //array_ops();
@@ -16,7 +18,13 @@ fn main() {
     // enum_ops();
     //networking_ops();
     // thread_ops();
-    channel_ops();
+    // channel_ops();
+    path_ops();
+}
+
+fn path_ops() {
+    // create a new path
+    paths::create_valid_path();
 }
 
 fn channel_ops() {
