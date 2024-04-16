@@ -25,7 +25,7 @@ fn main() {
 }
 
 fn file_ops() {
-    files::open();
+    files::entry();
 }
 
 fn path_ops() {

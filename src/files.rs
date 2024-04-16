@@ -4,6 +4,15 @@ use std::path::{Path, PathBuf};
 use serde::{Deserialize, Serialize};
 use serde_json::Result;
 
+static LOREM_IPSUM: &str =
+    "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+";
+
 #[derive(Serialize, Deserialize)]
 struct MyPermissions {
     readonly: bool,
@@ -26,7 +35,11 @@ struct PathData {
     path_components: Vec<String>,
 }
 
-pub fn open() -> Result<()> {
+pub fn entry() {
+    open().expect("TODO: panic message");
+    write();
+}
+fn open() -> Result<()> {
     // Create a path to the desired file
     let path = Path::new("hello.txt");
     let display = path.display();
@@ -78,4 +91,21 @@ pub fn open() -> Result<()> {
     Ok(())
 
     // `file` goes out of scope, so the "hello.txt" file gets closed automagically
+}
+
+fn write() {
+    let path = Path::new("lorem_ipsum.txt");
+    let display = path.display();
+
+    // Open a file in write-only mode, returns `io::Result<File>`
+    let mut file = match File::create(&path) {
+        Err(why) => panic!("couldn't create {}: {}", display, why),
+        Ok(file) => file,
+    };
+
+    // Write the `LOREM_IPSUM` string to `file`, returns `io::Result<()>`
+    match file.write_all(LOREM_IPSUM.as_bytes()) {
+        Err(why) => panic!("couldn't write to {}: {}", display, why),
+        Ok(_) => println!("successfully wrote to {}", display),
+    }
 }
