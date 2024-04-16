@@ -6,6 +6,8 @@ use std::time::Duration;
 use serde:: {Serialize, Deserialize};
 use indicatif:: {ProgressBar, ProgressStyle};
 
+use crate::chat_server;
+
 #[derive(Serialize, Deserialize, Debug)]
 struct Data {
     message: String,
@@ -97,5 +99,5 @@ pub fn create_tcp_stream(address: &str) -> std::io::Result<()> {
 }
 
 pub fn start_chat_server() {
-
+    chat_server::start();
 }

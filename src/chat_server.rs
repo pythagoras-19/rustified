@@ -2,7 +2,25 @@ use std::io::{Read, Write, Error};
 use std::net::{TcpListener, TcpStream};
 use std::thread;
 use std::sync::{Arc, Mutex};
+use std::time::Duration;
 
+const LOCATION: &str = "localhost:9999";
+
+pub fn start() {
+    let server_thread = thread::spawn(|| {
+        start_server(LOCATION).expect("TODO: panic message");
+    });
+
+    let client_thread = thread::spawn(|| {
+        // Sleep for a bit to ensure the server has time to start
+        thread::sleep(Duration::from_secs(1));
+        start_client(LOCATION).expect("TODO: panic message");
+    });
+
+    // Optionally, wait for both threads to finish
+    server_thread.join().unwrap();
+    client_thread.join().unwrap();
+}
 // Server
 fn handle_client(mut stream: TcpStream, clients: Arc<Mutex<Vec<TcpStream>>>) -> Result<(), Error> {
     println!("New client: {}", stream.peer_addr()?);
@@ -20,7 +38,8 @@ fn handle_client(mut stream: TcpStream, clients: Arc<Mutex<Vec<TcpStream>>>) -> 
     }
 }
 
-fn start_server(addr: &str) -> Result<(), Error> {
+pub(crate) fn start_server(addr: &str) -> Result<(), Error> {
+    println!("Starting server...");
     let listener = TcpListener::bind(addr)?;
     let clients = Arc::new(Mutex::new(Vec::new()));
     for stream in listener.incoming() {
@@ -46,7 +65,8 @@ fn handle_server(mut stream: TcpStream) -> Result<(), Error> {
     }
 }
 
-fn start_client(addr: &str) -> Result<(), Error> {
+pub(crate) fn start_client(addr: &str) -> Result<(), Error> {
+    println!("Starting client...");
     let stream = TcpStream::connect(addr)?;
     thread::spawn(move || {
         handle_server(stream).unwrap_or_else(|error| eprintln!("{:?}", error));

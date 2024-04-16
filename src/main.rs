@@ -9,14 +9,16 @@ use crate::currencies::Coin;
 use crate::currencies::Dollar;
 
 fn main() {
-    array_ops();
-    linked_list_ops();
-    enum_ops();
+    //array_ops();
+    // linked_list_ops();
+    // enum_ops();
     networking_ops();
 }
 
 fn networking_ops() {
-    my_networking::start_server_and_client_threads();
+
+    //my_networking::start_server_and_client_threads();
+    my_networking::start_chat_server();
 }
 
 fn enum_ops() {
