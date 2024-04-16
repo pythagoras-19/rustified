@@ -24,8 +24,6 @@ pub fn threads() {
 // This is another `main` thread
 pub fn map_reduce_th_sum() {
 
-    // This is our data to process.
-    // We will calculate the sum of all digits via a threaded map-reduce algorithm.
     // Each whitespace separated chunk will be handled in a different thread.
     let data = "86967897737416471853297327050364959
                     11861322575564723963297542624962850
