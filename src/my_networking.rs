@@ -1,7 +1,6 @@
 use std::io::{Read, Write, Error};
 use std::net:: {TcpListener, TcpStream};
 use std::thread;
-use std::sync::{Arc, Mutex};
 use std::time::Duration;
 use serde:: {Serialize, Deserialize};
 use indicatif:: {ProgressBar, ProgressStyle};
