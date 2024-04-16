@@ -5,6 +5,7 @@ mod my_networking;
 mod guess;
 mod chat_server;
 mod thread;
+mod channels;
 
 use crate::currencies::Coin;
 use crate::currencies::Dollar;
@@ -14,7 +15,12 @@ fn main() {
     // linked_list_ops();
     // enum_ops();
     //networking_ops();
-    thread_ops();
+    // thread_ops();
+    channel_ops();
+}
+
+fn channel_ops() {
+    channels::channels();
 }
 
 fn thread_ops() {
