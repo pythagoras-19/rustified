@@ -7,6 +7,7 @@ mod chat_server;
 mod thread;
 mod channels;
 mod paths;
+mod files;
 
 use crate::currencies::Coin;
 use crate::currencies::Dollar;
@@ -19,7 +20,12 @@ fn main() {
     //networking_ops();
     // thread_ops();
     // channel_ops();
-    path_ops();
+    // path_ops();
+    file_ops();
+}
+
+fn file_ops() {
+    files::open();
 }
 
 fn path_ops() {
