@@ -18,7 +18,8 @@ fn main() {
 }
 
 fn thread_ops() {
-    thread::threads();
+    //thread::threads();
+    thread::map_reduce_th_sum();
 }
 fn networking_ops() {
 
