@@ -1,4 +1,9 @@
-# rustified
+<p align="center">
+  <img src="krabs.png" alt="Krabs" width="300">
+</p>
+
+<h1 align="center" style="font-family: 'Arial', sans-serif;">rustified</h1>
+
 # Foundational Rust Principles
 ### Rust solves memory leak problems with ease
 - **memory leak**: The situation where a computer program incorrectly manages memory allocations. 
