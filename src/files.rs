@@ -1,8 +1,11 @@
 use std::fs::{File};
 use std::io::prelude::*;
+use std::io::{self, BufRead};
 use std::path::{Path, PathBuf};
 use serde::{Deserialize, Serialize};
 use serde_json::Result;
+
+static FILE_NAME: &str = "./hello.txt";
 
 static LOREM_IPSUM: &str =
     "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
@@ -38,6 +41,7 @@ struct PathData {
 pub fn entry() {
     open().expect("TODO: panic message");
     write();
+    entry_read_lines();
 }
 fn open() -> Result<()> {
     // Create a path to the desired file
@@ -108,4 +112,19 @@ fn write() {
         Err(why) => panic!("couldn't write to {}: {}", display, why),
         Ok(_) => println!("successfully wrote to {}", display),
     }
+}
+
+fn entry_read_lines() {
+    if let Ok(lines) = read_lines(FILE_NAME) {
+        for line in lines {
+            if let Ok(ip) = line {
+                println!("{}", ip);
+            }
+        }
+    }
+}
+
+fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>> where P: AsRef<Path> {
+    let file = File::open(filename)?;
+    Ok(io::BufReader::new(file).lines())
 }
