@@ -2,9 +2,15 @@ use std::thread;
 
 const NTHREADS: u32 = 1000;
 
+
+pub fn entry() {
+    threads();
+    map_reduce_th_sum();
+}
+
 // This is the `main` thread
 // Scheduled by the OS
-pub fn threads() {
+fn threads() {
     // Make a vector to hold the children which are spawned.
     let mut children = vec![];
 
@@ -22,7 +28,7 @@ pub fn threads() {
 }
 
 // This is another `main` thread
-pub fn map_reduce_th_sum() {
+fn map_reduce_th_sum() {
 
     // Each whitespace separated chunk will be handled in a different thread.
     let data = "86967897737416471853297327050364959

@@ -26,27 +26,19 @@ fn main() {
     signal_ops();
 }
 
-fn signal_ops() {
-    my_signals::entry();
-}
+fn signal_ops() { my_signals::entry(); }
 
 fn file_ops() {
     files::entry();
 }
 
-fn path_ops() {
-    // create a new path
-    paths::create_valid_path();
-}
+fn path_ops() { paths::create_valid_path(); }
 
 fn channel_ops() {
     channels::channels();
 }
 
-fn thread_ops() {
-    //thread::threads();
-    thread::map_reduce_th_sum();
-}
+fn thread_ops() { thread::entry(); }
 fn networking_ops() {
 
     //my_networking::start_server_and_client_threads();
