@@ -1,6 +1,11 @@
 use std::path::Path;
 
-pub fn create_valid_path() {
+
+pub fn entry() {
+    create_valid_path();
+}
+
+fn create_valid_path() {
     // Create a `Path` from an `&'static str`
     let path = Path::new(".");
 

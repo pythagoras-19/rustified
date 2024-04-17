@@ -10,18 +10,15 @@ mod paths;
 mod files;
 mod my_signals;
 
-use crate::currencies::Coin;
-use crate::currencies::Dollar;
-use crate::paths::create_valid_path;
 
 fn main() {
     // array_ops();
-    linked_list_ops();
+    // linked_list_ops();
     // enum_ops();
     // networking_ops();
     // thread_ops();
     // channel_ops();
-    // path_ops();
+    path_ops();
     // file_ops();
     // signal_ops();
 }
@@ -30,7 +27,7 @@ fn signal_ops() { my_signals::entry(); }
 
 fn file_ops() { files::entry(); }
 
-fn path_ops() { paths::create_valid_path(); }
+fn path_ops() { paths::entry(); }
 
 fn channel_ops() { channels::channels(); }
 
