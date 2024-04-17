@@ -2,7 +2,7 @@ use std::collections::*;
 use crate::linked_list::LinkedList;
 use crate::linked_list::Node;
 use rand::Rng;
-use crate::{array, print_option};
+use crate::{array, options};
 
 
 pub fn entry() {
@@ -15,9 +15,9 @@ pub fn entry() {
     println!();
     arr.get_element(3);
     let m = arr.get_max();
-    print_option(m);
+    options::print_option(m);
     let most_occur = arr.get_most_occurring();
-    print_option(most_occur);
+    options::print_option(most_occur);
     arr.get_location();
     arr.pointer_stuff();
     let sum = arr.get_sum();
