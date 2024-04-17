@@ -78,6 +78,7 @@ fn main_menu() {
             10 => option_ops(),
             0 => {
                 println!("Exiting...");
+                print_title();
                 break;
             }
             _ => println!("{}", "Invalid choice! Please enter a number between 0 and 10.".red()),
