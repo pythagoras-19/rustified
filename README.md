@@ -377,3 +377,45 @@ fn main() {
 | Row 3                            | Row 3                                                | Row 3                                                            |
 | Row 4                            | Row 4                                                | Row 4                                                            |
 | Row 5                            | Row 5                                                | Row 5                                                            |
+
+# Std library
+## Keywords
+1. `SelfTy`: The implementing type within a trait or impl block, or the current type within a type definition.
+2. `as`: Cast between types, or rename an import.
+3. `async`: Return a Future instead of blocking the current thread.
+4. `await`: Suspend execution until the result of a Future is ready.
+5. `break`: Exit early from a loop.
+6. `const`: Compile-time constants, compile-time evaluable functions, and raw pointers.
+7. `continue`: Skip to the next iteration of a loop.
+8. `crate`: A Rust binary or library.
+9. `dyn`: `dyn` is a prefix of a trait object’s type.
+10. `else`: What expression to evaluate when an if condition evaluates to false.
+11. `enum`: A type that can be any one of several variants.
+12. `extern`: Link to or import external code.
+13. `false`: A value of type bool representing logical false.
+14. `fn`: A function or function pointer.
+15. `for`: Iteration with `in`, trait implementation with `impl`, or higher-ranked trait bounds (`for<'a>`).
+16. `if`: Evaluate a block if a condition holds.
+17. `impl`: Implement some functionality for a type.
+18. `in`: Iterate over a series of values with `for`.
+19. `let`: Bind a value to a variable.
+20. `loop`: Loop indefinitely.
+21. `match`: Control flow based on pattern matching.
+22. `mod`: Organize code into modules.
+23. `move`: Capture a closure’s environment by value.
+24. `mut`: A mutable variable, reference, or pointer.
+25. `pub`: Make an item visible to others.
+26. `ref`: Bind by reference during pattern matching.
+27. `return`: Return a value from a function.
+28. `self`: The receiver of a method, or the current module.
+29. `static`: A static item is a value which is valid for the entire duration of your program (a 'static lifetime).
+30. `struct`: A type that is composed of other types.
+31. `super`: The parent of the current module.
+32. `trait`: A common interface for a group of types.
+33. `true`: A value of type bool representing logical true.
+34. `type`: Define an alias for an existing type.
+35. `union`: The Rust equivalent of a C-style union.
+36. `unsafe`: Code or interfaces whose memory safety cannot be verified by the type system.
+37. `use`: Import or rename items from other crates or modules.
+38. `where`: Add constraints that must be upheld to use an item.
+39. `while`: Loop while a condition is upheld.
