@@ -11,18 +11,69 @@ mod files;
 mod my_signals;
 mod options;
 
+use std::io;
+use std::io::*;
+use colored::*;
+
 
 fn main() {
-    // array_ops();
-    // linked_list_ops();
-    // enum_ops();
-    // networking_ops();
-    // thread_ops();
-    // channel_ops();
-    // path_ops();
-    // file_ops();
-    // signal_ops();
-    option_ops();
+    main_menu();
+}
+
+fn main_menu() {
+    loop {
+        println!("============Main Menu=============");
+        println!("1. Array Operations");
+        println!("2. Linked List Operations");
+        println!("3. Enum Operations");
+        println!("4. Networking Operations");
+        println!("5. Thread Operations");
+        println!("6. Channel Operations");
+        println!("7. Path Operations");
+        println!("8. File Operations");
+        println!("9. Signal Operations");
+        println!("10. Option Operations");
+        println!("{}", "0. Exit".red());
+        println!("===================================");
+
+        // Prompt the user for input
+        print!("{}", "Enter your choice: ".green());
+        io::stdout().flush().unwrap(); // Flush stdout to ensure prompt is displayed
+
+        // Read user input
+        let mut input = String::new();
+        io::stdin().read_line(&mut input).expect("Failed to read line");
+
+        // Trim whitespace and parse input as integer
+        let choice = input.trim().parse::<u32>();
+
+        // Handle invalid input
+        let choice = match choice {
+            Ok(num) => num,
+            Err(_) => {
+                println!("{}", "Invalid input! Please enter a number.".red());
+                continue;
+            }
+        };
+
+        match choice {
+            1 => array_ops(),
+            2 => linked_list_ops(),
+            3 => enum_ops(),
+            4 => networking_ops(),
+            5 => thread_ops(),
+            6 => channel_ops(),
+            7 => path_ops(),
+            8 => file_ops(),
+            9 => signal_ops(),
+            10 => option_ops(),
+            0 => {
+                println!("Exiting...");
+                break;
+            }
+            _ => println!("{}", "Invalid choice! Please enter a number between 0 and 10.".red()),
+        }
+    }
 }
 
 fn signal_ops() { my_signals::entry(); }
