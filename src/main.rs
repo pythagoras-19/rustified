@@ -8,6 +8,7 @@ mod thread;
 mod channels;
 mod paths;
 mod files;
+mod my_signals;
 
 use crate::currencies::Coin;
 use crate::currencies::Dollar;
@@ -21,7 +22,12 @@ fn main() {
     // thread_ops();
     // channel_ops();
     // path_ops();
-    file_ops();
+    // file_ops();
+    signal_ops();
+}
+
+fn signal_ops() {
+    my_signals::entry();
 }
 
 fn file_ops() {
