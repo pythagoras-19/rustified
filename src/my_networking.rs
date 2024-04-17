@@ -13,7 +13,12 @@ struct Data {
     number: i32,
 }
 
-pub fn start_server_and_client_threads() {
+pub fn entry() {
+    start_server_and_client_threads();
+    chat_server::start();
+}
+
+fn start_server_and_client_threads() {
     println!("Starting server...");
     let pb = ProgressBar::new(20);
     pb.set_style(ProgressStyle::default_bar()
@@ -56,7 +61,7 @@ pub fn start_server_and_client_threads() {
     client_thread.join().unwrap();
 }
 
-pub fn create_tcp_listener(port: u16) -> std::io::Result<()> {
+fn create_tcp_listener(port: u16) -> std::io::Result<()> {
     let listener = TcpListener::bind(("localhost", port))?;
     for stream in listener.incoming() {
         let mut stream = match stream {
@@ -83,7 +88,7 @@ pub fn create_tcp_listener(port: u16) -> std::io::Result<()> {
     Ok(())
 }
 
-pub fn create_tcp_stream(address: &str) -> std::io::Result<()> {
+fn create_tcp_stream(address: &str) -> std::io::Result<()> {
     let mut stream = TcpStream::connect(address)?;
 
     let data = Data {
@@ -95,8 +100,4 @@ pub fn create_tcp_stream(address: &str) -> std::io::Result<()> {
     stream.write_all(json_data.as_bytes())?; // send the json over the tcp stream
 
     Ok(())
-}
-
-pub fn start_chat_server() {
-    chat_server::start();
 }

@@ -15,42 +15,30 @@ use crate::currencies::Dollar;
 use crate::paths::create_valid_path;
 
 fn main() {
-    //array_ops();
+    // array_ops();
     // linked_list_ops();
-    // enum_ops();
-    //networking_ops();
+    enum_ops();
+    // networking_ops();
     // thread_ops();
     // channel_ops();
     // path_ops();
     // file_ops();
-    signal_ops();
+    // signal_ops();
 }
 
 fn signal_ops() { my_signals::entry(); }
 
-fn file_ops() {
-    files::entry();
-}
+fn file_ops() { files::entry(); }
 
 fn path_ops() { paths::create_valid_path(); }
 
-fn channel_ops() {
-    channels::channels();
-}
+fn channel_ops() { channels::channels(); }
 
 fn thread_ops() { thread::entry(); }
-fn networking_ops() {
 
-    //my_networking::start_server_and_client_threads();
-    my_networking::start_chat_server();
-}
+fn networking_ops() { my_networking::entry(); }
 
-fn enum_ops() {
-    currencies::value_in_cents(Coin::Penny);
-    currencies::value_in_dollars(Dollar::BenjaminFranklin);
-    currencies::parse_thru_currencies();
-
-}
+fn enum_ops() { currencies::entry(); }
 
 fn linked_list_ops() {
     let node = linked_list::Node::new(65);
