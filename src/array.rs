@@ -2,23 +2,57 @@ use std::collections::*;
 use crate::linked_list::LinkedList;
 use crate::linked_list::Node;
 use rand::Rng;
+use crate::{array, print_option};
 
-pub(crate) struct Array {
+
+pub fn entry() {
+    let mut arr = Array::new(10);
+    let size = arr.get_size();
+    println!("{}", size);
+    println!("==RANDOMIZING INPUTS==");
+    arr.randomize_inputs();
+    arr.get_elements();
+    println!();
+    arr.get_element(3);
+    let m = arr.get_max();
+    print_option(m);
+    let most_occur = arr.get_most_occurring();
+    print_option(most_occur);
+    arr.get_location();
+    arr.pointer_stuff();
+    let sum = arr.get_sum();
+    println!("{}", &sum);
+    let min = arr.get_min();
+    println!("{:?}", min);
+    let average = arr.get_average();
+    println!("Average: {:?} ", average);
+    let l = arr.to_linked_list();
+    l.print();
+    println!("array is empty: {}", arr.is_empty());
+    arr.reverse();
+    arr.get_elements();
+    arr.remove_at(3);
+    arr.get_elements();
+    arr.randomize_inputs();
+    println!("Sorted: {}", arr.is_sorted());
+}
+
+struct Array {
     size: usize,
     elements: Vec<i64>
 }
 
 impl Array {
-    pub fn new(size: usize) -> Self {
+     fn new(size: usize) -> Self {
         println!("=== ARRAY ===");
         Self { size, elements: vec![0; size] }
     }
 
-    pub fn get_size(&self) -> usize {
+     fn get_size(&self) -> usize {
         self.size
     }
 
-    pub fn is_empty(&self) -> bool {
+     fn is_empty(&self) -> bool {
         if self.get_size() > 0 {
             false
         } else {
@@ -26,13 +60,13 @@ impl Array {
         }
     }
 
-    pub fn set_element(&mut self, index: usize, value: i64) {
+     fn set_element(&mut self, index: usize, value: i64) {
         if index < self.size {
             self.elements[index] = value;
         }
     }
 
-    pub fn get_element(&self, index: usize) -> Option<i64> {
+     fn get_element(&self, index: usize) -> Option<i64> {
         if index < self.size {
             Some(self.elements[index])
         } else {
@@ -40,7 +74,7 @@ impl Array {
         }
     }
 
-    pub fn get_elements(&self) {
+     fn get_elements(&self) {
         let mut index = 0;
         while index < self.get_size() {
             println!("{:?}", self.get_element(index));
@@ -48,7 +82,7 @@ impl Array {
         }
     }
 
-    pub fn get_max(&self) -> Option<i64> {
+     fn get_max(&self) -> Option<i64> {
         let mut max = self.get_element(0);
         let mut index = 0;
 
@@ -61,7 +95,7 @@ impl Array {
         max
     }
 
-    pub fn is_present(&self, value: i64) -> bool {
+     fn is_present(&self, value: i64) -> bool {
         for &item in &self.elements {
             if item == value {
                 return true;
@@ -70,7 +104,7 @@ impl Array {
         false
     }
 
-    pub fn get_min(&self) -> Option<i64> {
+     fn get_min(&self) -> Option<i64> {
         if self.elements.is_empty() {
             None
         } else {
@@ -87,7 +121,7 @@ impl Array {
         }
     }
 
-    pub fn get_most_occurring(&self) -> Option<i64> {
+     fn get_most_occurring(&self) -> Option<i64> {
         let mut num_times = HashMap::new();
         let mut index = 0;
 
@@ -113,7 +147,7 @@ impl Array {
         num_times.into_iter().max_by_key(|&(_, count)| count).map(|(val, _)| val)
     }
 
-    pub fn get_median(&self) -> Option<f64> {
+     fn get_median(&self) -> Option<f64> {
         if self.get_size() == 0 {
             None
         } else {
@@ -129,19 +163,19 @@ impl Array {
         }
     }
 
-    pub fn get_location(&self) {
+     fn get_location(&self) {
         let loc = &self as *const _;
         println!("Memory location of arr is: {:?}", loc);
     }
 
-    pub fn pointer_stuff(&self) {
+     fn pointer_stuff(&self) {
         let x = &self.get_element(3);
         let raw = &x as *const &Option<i64>;
         let points_at = unsafe { *raw };
         println!("{:?}", points_at);
     }
 
-    pub fn get_sum(&self) -> i64 {
+     fn get_sum(&self) -> i64 {
         let mut sum = 0;
         for &value in &self.elements {
             sum += value;
@@ -149,17 +183,17 @@ impl Array {
         sum
     }
 
-    pub fn reverse(&mut self) {
+     fn reverse(&mut self) {
         self.elements.reverse();
     }
 
-    pub fn get_average(&self) -> i64 {
+     fn get_average(&self) -> i64 {
         let sum = self.get_sum();
         let sz = self.get_size();
         sum/sz as i64
     }
 
-    pub fn to_linked_list(&self) -> LinkedList {
+     fn to_linked_list(&self) -> LinkedList {
         let head = Node::new(self.get_element(0).unwrap_or(-999));
         let mut ll = LinkedList::new(head);
 
@@ -168,7 +202,7 @@ impl Array {
         }
         ll
     }
-    pub fn remove_at(&mut self, index: usize) {
+     fn remove_at(&mut self, index: usize) {
         if index < self.size {
             self.elements.remove(index);
             println!("===Deleted ===");
@@ -176,7 +210,7 @@ impl Array {
         }
     }
 
-    pub fn randomize_inputs(&mut self) {
+     fn randomize_inputs(&mut self) {
         let mut index = 0;
         while index < self.get_size() {
             let mut rng = rand::thread_rng();
@@ -186,7 +220,7 @@ impl Array {
         }
     }
 
-    pub fn find_index(&self, value: i64) -> Option<usize> {
+     fn find_index(&self, value: i64) -> Option<usize> {
         for (index, &item) in self.elements.iter().enumerate() {
             if item == value {
                 return Some(index);
@@ -195,7 +229,7 @@ impl Array {
         None
     }
 
-    pub fn is_sorted(&self) -> bool {
+     fn is_sorted(&self) -> bool {
         for i in 0..(self.get_size()-1) {
             if self.get_element(i) > self.get_element(i+1) {
                 return false
