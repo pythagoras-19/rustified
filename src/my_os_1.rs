@@ -1,5 +1,6 @@
 use nix::sys::signal::{self, Signal, SigHandler, SigAction, SaFlags};
 use std::sync::atomic::{AtomicBool, Ordering};
+use indicatif::*;
 
 
 static SHOULD_TERMINATE: AtomicBool = AtomicBool::new(false);
@@ -28,13 +29,20 @@ fn my_os_1_main() -> Result<(), nix::Error> {
         signal::sigaction(Signal::SIGINT, &sig_action)?;
     }
 
+    let mut time = 0;
+    let bar = ProgressBar::new(10);
     // main loop
     while !SHOULD_TERMINATE.load(Ordering::SeqCst) {
-
+        time += 1;
         //todo: do some werk
-
+        for i in 0..18 {
+            println!("...{}", i);
+        }
+        println!("Time: {}", time);
+        bar.inc(1);
         std::thread::sleep(std::time::Duration::from_secs(1));
     }
+    bar.finish();
 
     println!("Shutting down os 1...");
 
