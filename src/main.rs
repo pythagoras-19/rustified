@@ -10,10 +10,12 @@ mod paths;
 mod files;
 mod my_signals;
 mod options;
+mod pipes;
 
 use std::io;
 use std::io::*;
 use colored::*;
+use crate::pipes::pipes_entry;
 
 
 fn main() {
@@ -42,6 +44,7 @@ fn main_menu() {
         println!("8. File Operations");
         println!("9. Signal Operations");
         println!("10. Option Operations");
+        println!("11. Pipe Operations");
         println!("{}", "0. Exit".red());
         println!("===================================");
 
@@ -76,6 +79,7 @@ fn main_menu() {
             8 => file_ops(),
             9 => signal_ops(),
             10 => option_ops(),
+            11 => pipes_ops(),
             0 => {
                 println!("Exiting...");
                 print_title();
@@ -105,3 +109,5 @@ fn linked_list_ops() { linked_list::entry(); }
 fn array_ops() { array::entry(); }
 
 fn option_ops() { options::entry(); }
+
+fn pipes_ops() { pipes::pipes_entry(); }
