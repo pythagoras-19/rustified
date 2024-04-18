@@ -195,6 +195,7 @@ dependencies = [
  "colored",
  "ctrlc",
  "indicatif",
+ "nix",
  "rand",
  "serde",
  "serde_json",

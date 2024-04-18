@@ -4,7 +4,7 @@ use std::process::{Command, Stdio};
 static PANGRAM: &'static str =
     "the quick brown fox jumped over the lazy dog\n";
 
-pub fn pipes_entry() {
+pub fn entry() {
     pipes();
 }
 fn pipes() {
