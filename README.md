@@ -4,6 +4,9 @@
 
 <h1 align="center" style="font-family: 'Arial', sans-serif;">rustified</h1>
 
+<h4 align="center">A console app showcasing major features of the Rust programming language.</h4>
+
+
 # Foundational Rust Principles
 ### Rust solves memory leak problems with ease
 - **memory leak**: The situation where a computer program incorrectly manages memory allocations. 
