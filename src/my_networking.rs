@@ -14,7 +14,6 @@ struct Data {
 
 pub fn entry() {
     start_server_and_client_threads();
-    //chat_server::start();
 }
 
 fn start_server_and_client_threads() {
