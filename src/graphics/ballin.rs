@@ -9,8 +9,8 @@ struct Ball {
     velocity_x: f64,
 }
 
-pub fn entry() {
-    let mut window: PistonWindow = WindowSettings::new("Bouncing Ball", [640, 480])
+pub fn entry() -> bool {
+    let mut window: PistonWindow = WindowSettings::new("Bouncing Ball", [1920, 480])
         .exit_on_esc(true)
         .build()
         .unwrap();
@@ -20,7 +20,10 @@ pub fn entry() {
 
     while let Some(e) = window.next() {
         if let Some(_) = e.close_args() {
-            break;
+            //window.set_should_close(true);
+            println!("Dropping window!");
+            std::mem::drop(e); // drop the window before returning to main menu!
+            return true;
         }
 
         e.mouse_cursor(|pos| {
@@ -36,7 +39,10 @@ pub fn entry() {
             ball.draw(c, g);
         });
     }
+    false
 }
+
+
 impl Ball {
     fn new(x: f64, y: f64, radius: f64) -> Ball {
         Ball {
@@ -61,7 +67,7 @@ impl Ball {
         self.y += self.velocity_y * dt;
 
         // Ground collision
-        if self.y + self.radius > 300.0 { // assuming ground is at y = 300
+        if self.y + self.radius > 300.0 { // Ground is at 300
             self.y = 300.0 - self.radius;
             self.velocity_y *= -elasticity;
             self.velocity_x *= ground_friction;
