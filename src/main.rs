@@ -13,6 +13,10 @@ mod options;
 mod pipes;
 mod my_os_1;
 
+mod graphics {
+    pub mod ballin;
+}
+
 use std::io;
 use std::io::*;
 use colored::*;
@@ -47,6 +51,7 @@ fn main_menu() {
         println!("11. Pipe Operations");
         println!("12. OS (1) Operations");
         println!("13, Init Chat Server");
+        println!("14. Ballin Ops (Graphics)");
         println!("{}", "0. Exit".red());
         println!("===================================");
 
@@ -84,6 +89,7 @@ fn main_menu() {
             11 => pipes_ops(),
             12 => os_1_ops(),
             13 => chat_server_ops(),
+            14 => graphics_ballin_ops(),
             0 => {
                 println!("Exiting...");
                 print_title();
@@ -119,3 +125,5 @@ fn pipes_ops() { pipes::entry(); }
 fn os_1_ops() { my_os_1::entry(); }
 
 fn chat_server_ops() { chat_server::entry(); }
+
+fn graphics_ballin_ops() { graphics::ballin::entry(); }
