@@ -10,12 +10,12 @@ struct Ball {
 }
 
 pub fn entry() -> bool {
-    let mut window: PistonWindow = WindowSettings::new("Bouncing Ball", [1920, 480])
+    let mut window: PistonWindow = WindowSettings::new("Bouncing Ball", [380, 200])
         .exit_on_esc(true)
         .build()
         .unwrap();
 
-    let mut ball = Ball::new(100.0, 0.0, 35.0);
+    let mut ball = Ball::new(100.0, 0.0, 15.0);
     let mut cursor = [0.0, 0.0];
 
     while let Some(e) = window.next() {
@@ -55,7 +55,7 @@ impl Ball {
     }
 
     fn update(&mut self, dt: f64) {
-        let gravity = 9.8;
+        let gravity = 80.8;
         let ground_friction = 0.9;
         let elasticity = 0.7;
 
@@ -67,8 +67,8 @@ impl Ball {
         self.y += self.velocity_y * dt;
 
         // Ground collision
-        if self.y + self.radius > 300.0 { // Ground is at 300
-            self.y = 300.0 - self.radius;
+        if self.y + self.radius > 200.0 { // Ground is at 300
+            self.y = 200.0 - self.radius;
             self.velocity_y *= -elasticity;
             self.velocity_x *= ground_friction;
         }
