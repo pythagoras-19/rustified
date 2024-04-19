@@ -5,7 +5,8 @@ use std::sync::{Arc, Mutex};
 use std::sync::atomic::{ AtomicBool, Ordering };
 use std::time::Duration;
 /**
-    TODO: Bug: Cant exit with CTRL-C
+    TODO: Bug: Cant exit with CTRL-C; Fix: start()
+    Usage: `telnet 127.0.0.1 <PORT>` in a separate terminal to communicate to server
 **/
 const LOCATION: &str = "localhost:9999";
 
@@ -36,10 +37,6 @@ fn start() {
             start_client(LOCATION).expect("TODO: panic message");
         }
     });
-
-    // Optionally, wait for both threads to finish
-    server_thread.join().unwrap();
-    client_thread.join().unwrap();
 }
 
 // Server
