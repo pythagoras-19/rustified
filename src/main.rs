@@ -46,6 +46,7 @@ fn main_menu() {
         println!("10. Option Operations");
         println!("11. Pipe Operations");
         println!("12. OS (1) Operations");
+        println!("13, Init Chat Server");
         println!("{}", "0. Exit".red());
         println!("===================================");
 
@@ -82,6 +83,7 @@ fn main_menu() {
             10 => option_ops(),
             11 => pipes_ops(),
             12 => os_1_ops(),
+            13 => chat_server_ops(),
             0 => {
                 println!("Exiting...");
                 print_title();
@@ -115,3 +117,5 @@ fn option_ops() { options::entry(); }
 fn pipes_ops() { pipes::entry(); }
 
 fn os_1_ops() { my_os_1::entry(); }
+
+fn chat_server_ops() { chat_server::entry(); }

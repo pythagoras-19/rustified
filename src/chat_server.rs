@@ -6,7 +6,12 @@ use std::time::Duration;
 
 const LOCATION: &str = "localhost:9999";
 
-pub fn start() {
+pub fn entry() {
+    start();
+}
+
+fn start() {
+    println!("Starting chat server...");
     let server_thread = thread::spawn(|| {
         start_server(LOCATION).expect("TODO: panic message");
     });

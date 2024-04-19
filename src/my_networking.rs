@@ -5,7 +5,6 @@ use std::time::Duration;
 use serde:: {Serialize, Deserialize};
 use indicatif:: {ProgressBar, ProgressStyle};
 
-use crate::chat_server;
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Data {
@@ -15,16 +14,17 @@ struct Data {
 
 pub fn entry() {
     start_server_and_client_threads();
-    chat_server::start();
+    //chat_server::start();
 }
 
 fn start_server_and_client_threads() {
-    println!("Starting server...");
+    println!("Starting server in my_networking...");
     let pb = ProgressBar::new(20);
+
+    // progress bar stuff
     pb.set_style(ProgressStyle::default_bar()
         .template("{spinner:.green} [{bar:40.cyan/blue}] ({eta}) ")
         .unwrap().progress_chars("#>-"));
-
     let progress_bar_thread = thread::spawn(move || {
         for _ in 0..10 {
             pb.inc(1);
