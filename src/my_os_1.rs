@@ -1,13 +1,22 @@
+// to handle UNIX signals
 use nix::sys::signal::{self, Signal, SigHandler, SigAction, SaFlags};
 use std::sync::atomic::{AtomicBool, Ordering};
 use indicatif::*;
 
 
-static SHOULD_TERMINATE: AtomicBool = AtomicBool::new(false);
+// to coordinate between the signal handler and the main application logic
+static SHOULD_TERMINATE: AtomicBool = AtomicBool::new(false); // can be shared amongst mult threads
 
 // ffi with C
 extern "C" fn handle_sigint(_:i32) {
-    SHOULD_TERMINATE.store(true, Ordering::SeqCst);
+    SHOULD_TERMINATE.store(true, Ordering::SeqCst); // SeqCst = "Sequential Consistency"
+    /*
+    Memory ordering: crucial to concurrent programming, particularly when using atomic variables to coordinate
+    between threads.
+
+    SeqCst is one of the memory ordering options available in atomic operations.
+    It is part of the the std::sync::atomic library
+     */
     println!();
     println!("Caught SIGINT!");
 }
@@ -34,7 +43,6 @@ fn my_os_1_main() -> Result<(), nix::Error> {
     // main loop
     while !SHOULD_TERMINATE.load(Ordering::SeqCst) {
         time += 1;
-        //todo: do some werk
         for i in 0..18 {
             println!("...{}", i);
         }
