@@ -98,7 +98,7 @@ fn file_ops() { files::entry(); }
 
 fn path_ops() { paths::entry(); }
 
-fn channel_ops() { channels::channels(); }
+fn channel_ops() { channels::entry(); }
 
 fn thread_ops() { thread::entry(); }
 

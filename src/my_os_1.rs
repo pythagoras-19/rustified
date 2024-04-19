@@ -15,7 +15,7 @@ extern "C" fn handle_sigint(_:i32) {
     between threads.
 
     SeqCst is one of the memory ordering options available in atomic operations.
-    It is part of the the std::sync::atomic library
+    It is part of the std::sync::atomic library
      */
     println!();
     println!("Caught SIGINT!");

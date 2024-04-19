@@ -7,7 +7,11 @@ static NTHREADS: i32 = 6;
 // Channels are used for communication between threads.
 // Channels allow a unidirectional flow of information between two end-points: the Sender and the Receiver.
 
-pub fn channels() {
+pub fn entry() {
+    channels();
+}
+
+fn channels() {
     // Channels have two endpoints: the `Sender<T>` and the `Receiver<T>`,
     // where `T` is the type of the message to be transferred
     let (tx, rx): (Sender<i32>, Receiver<i32>) = mpsc::channel();
