@@ -6,7 +6,8 @@
 
 <h4 align="center">A console app showcasing major features of the Rust programming language.</h4>
 
-
+# Bugs
+- Closing the spinning square window kills the entire program, make it exit gracefully back to main menu
 # Foundational Rust Principles
 ### Rust solves memory leak problems with ease
 - **memory leak**: The situation where a computer program incorrectly manages memory allocations. 
