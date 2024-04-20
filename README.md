@@ -8,6 +8,8 @@
 
 # Bugs
 - Closing the spinning square window kills the entire program, make it exit gracefully back to main menu
+# TODO
+1. Add piston ops https://github.com/PistonDevelopers/piston-examples/tree/master/examples
 # Foundational Rust Principles
 ### Rust solves memory leak problems with ease
 - **memory leak**: The situation where a computer program incorrectly manages memory allocations. 
