@@ -15,6 +15,7 @@ mod my_os_1;
 
 mod graphics {
     pub mod ballin;
+    pub mod spinning_square;
 }
 
 use std::io;
@@ -52,6 +53,7 @@ fn main_menu() {
         println!("12. OS (1) Operations");
         println!("13, Init Chat Server");
         println!("14. Ballin Ops (Graphics)");
+        println!("15. Spinning Square (Graphics)");
         println!("{}", "0. Exit".red());
         println!("===================================");
 
@@ -90,6 +92,7 @@ fn main_menu() {
             12 => os_1_ops(),
             13 => chat_server_ops(),
             14 => graphics_ballin_ops(),
+            15 => spinning_square(),
             0 => {
                 println!("Exiting...");
                 print_title();
@@ -127,3 +130,5 @@ fn os_1_ops() { my_os_1::entry(); }
 fn chat_server_ops() { chat_server::entry(); }
 
 fn graphics_ballin_ops() { graphics::ballin::entry(); }
+
+fn spinning_square() { graphics::spinning_square::entry(); }

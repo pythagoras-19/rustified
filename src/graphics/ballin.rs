@@ -1,5 +1,7 @@
 extern crate piston_window;
 use piston_window::*;
+use serde_json::*;
+
 
 struct Ball {
     x: f64,
@@ -44,6 +46,22 @@ pub fn entry() -> bool {
 
 
 impl Ball {
+    fn get_x(&self) -> f64 {
+        self.x
+    }
+
+    fn get_y(&self) -> f64 {
+        self.y
+    }
+
+    fn get_velocity_y(&self) -> f64 {
+        self.velocity_y
+    }
+
+    fn get_velocity_x(&self) -> f64 {
+        self.velocity_x
+    }
+
     fn new(x: f64, y: f64, radius: f64) -> Ball {
         Ball {
             x,
@@ -78,5 +96,14 @@ impl Ball {
         ellipse([1.0, 0.0, 0.0, 1.0], // red color
                 [self.x - self.radius, self.y - self.radius, self.radius * 2.0, self.radius * 2.0],
                 c.transform, g);
+    }
+
+    fn analytics() {
+        // print the serialized data
+        println!();
+    }
+
+    fn serialize() {
+
     }
 }
