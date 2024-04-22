@@ -10,22 +10,21 @@ use piston::event_loop::{EventSettings, Events};
 use piston::input::{RenderArgs, RenderEvent, UpdateArgs, UpdateEvent};
 use piston_window::WindowSettings;
 
-/**
-TODO: Bug with exiting to main menu and then trying to open ballin.rs.
- **/
-
 pub fn entry() {
-    let window: Window = WindowSettings::new("spinning-square", [200, 200])
+    let window: Window = WindowSettings::new("spinning-square", [400, 400])
         .graphics_api(OpenGL::V3_2)
         .exit_on_esc(true)
         .build()
         .unwrap();
+
     SpinningSquare::setup(window);
 }
 
 pub struct SpinningSquare {
-    gl: GlGraphics, // OpenGL for drawing backend
+    gl: GlGraphics,
     rotation: f64,
+    x_pos: f64,
+    direction: bool,
     window: Window,
 }
 
@@ -34,6 +33,8 @@ impl SpinningSquare {
         Self {
             gl,
             rotation: 0.0,
+            x_pos: 200.0,  // initialize to the center of the screen
+            direction: true,  // true = right, false = left
             window,
         }
     }
@@ -46,7 +47,7 @@ impl SpinningSquare {
 
         let square = rectangle::square(0.0, 0.0, 50.0);
         let rotation = self.rotation;
-        let (x,y) = (args.window_size[0] / 2.0, args.window_size[1] / 2.0);
+        let (x, y) = (self.x_pos, args.window_size[1] / 2.0);
 
         self.gl.draw(args.viewport(), |c, gl| {
             // Clear screen.
@@ -54,34 +55,47 @@ impl SpinningSquare {
 
             let transform = c
                 .transform
-                .trans(x, y)
-                .rot_rad(rotation)
-                .trans(-25.0, -25.0);
+                .trans(x, y)  // update position with x_pos
+                .rot_rad(rotation)  // apply rotation
+                .trans(-25.0, -25.0);  //center the square
 
-            // Draw a box rotating around the middle of the screen.
+            // Draw a spinning square.
             rectangle(RED, square, transform, gl);
         });
     }
 
     fn update(&mut self, args: &UpdateArgs) {
-        // rotate 2 rads per second.
-        self.rotation += 2.0 * args.dt;
+        self.rotation += 9.0 * args.dt;
+
+        // Update position based on direction
+        if self.direction {
+            self.x_pos += 2.0;  // Move right
+        } else {
+            self.x_pos -= 2.0;  // Move left
+        }
+
+        // change direction when hit boundaries
+        if self.x_pos >= 375.0 {
+            self.direction = false;  // Switch to moving left
+        } else if self.x_pos <= 25.0 {
+            self.direction = true;  // Switch to moving right
+        }
     }
 
     fn setup(window: Window) {
         let opengl = OpenGL::V3_2;
 
-        //create new game
+        // Create the application instance
         let mut app = SpinningSquare::new(GlGraphics::new(opengl), window);
 
         let mut events = Events::new(EventSettings::new());
-        while let Some(e) = events.next(&mut app.window) {
-            if let Some(args) = e.render_args() {
-                app.render(&args);
+        while let Some(ev) = events.next(&mut app.window) {
+            if let Some(args) = ev.render_args() {
+                app.render(&args);  // Render square
             }
 
-            if let Some(args) = e.update_args() {
-                app.update(&args);
+            if let Some(args) = ev.update_args() {
+                app.update(&args);  // Update the square state
             }
         }
     }
