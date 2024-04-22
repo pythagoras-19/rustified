@@ -90,7 +90,7 @@ impl SpinningSquare {
 
         self.gl.draw(args.viewport(), |c, gl| {
             // Clear screen.
-            clear(WHITE, gl);
+            clear(BLUE, gl);
 
             let transform = c
                 .transform
