@@ -24,7 +24,10 @@ pub struct SpinningSquare {
     gl: GlGraphics,
     rotation: f64,
     x_pos: f64,
-    direction: bool,
+    x_direction: bool,
+    y_pos: f64,
+    y_direction: bool,
+    moving_x_or_y: bool,
     window: Window,
 }
 
@@ -34,7 +37,10 @@ impl SpinningSquare {
             gl,
             rotation: 0.0,
             x_pos: 200.0,  // initialize to the center of the screen
-            direction: true,  // true = right, false = left
+            y_pos: 200.0, // todo: maybe adjust me
+            moving_x_or_y: false, // true = x direction, false = y direction
+            x_direction: true,  // true = right, false = left
+            y_direction: true, // true = up, false = down
             window,
         }
     }
@@ -47,7 +53,7 @@ impl SpinningSquare {
 
         let square = rectangle::square(0.0, 0.0, 50.0);
         let rotation = self.rotation;
-        let (x, y) = (self.x_pos, args.window_size[1] / 2.0);
+        let (x, y) = (self.x_pos, self.y_pos);
 
         self.gl.draw(args.viewport(), |c, gl| {
             // Clear screen.
@@ -76,19 +82,33 @@ impl SpinningSquare {
        ██    ██   ██ ██   ██ ██   ████ ███████ ███████ ██   ██    ██    ██  ██████  ██   ████ ███████
 
         **/
+        if (self.moving_x_or_y == true) {
+            // Update position based on direction
+            if self.x_direction {
+                self.x_pos += 2.0;  // Move right
+            } else {
+                self.x_pos -= 2.0;  // Move left
+            }
 
-        // Update position based on direction
-        if self.direction {
-            self.x_pos += 2.0;  // Move right
+            // change direction when hit boundaries
+            if self.x_pos >= 375.0 {
+                self.x_direction = false;  // Switch to moving left
+            } else if self.x_pos <= 25.0 {
+                self.x_direction = true;  // Switch to moving right
+            }
         } else {
-            self.x_pos -= 2.0;  // Move left
-        }
+            if self.y_direction {
+                self.y_pos -= 2.0;  // Move up
+            } else {
+                self.y_pos += 2.0;  // Move down
+            }
 
-        // change direction when hit boundaries
-        if self.x_pos >= 375.0 {
-            self.direction = false;  // Switch to moving left
-        } else if self.x_pos <= 25.0 {
-            self.direction = true;  // Switch to moving right
+            // change direction when hit boundaries
+            if self.y_pos <= 25.0  {
+                self.y_direction = false;  // Switch to moving down
+            } else if self.y_pos >= 375.0 {
+                self.y_direction = true;  // Switch to moving up
+            }
         }
     }
 
@@ -108,5 +128,9 @@ impl SpinningSquare {
                 app.update(&args);  // Update the square state
             }
         }
+    }
+
+    fn switch_xy_direction(&self) {
+        let _ = !self.moving_x_or_y;
     }
 }
