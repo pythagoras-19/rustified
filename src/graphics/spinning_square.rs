@@ -95,6 +95,7 @@ impl SpinningSquare {
                 self.x_direction = false;  // Switch to moving left
             } else if self.x_pos <= 25.0 {
                 self.x_direction = true;  // Switch to moving right
+                self.switch_xy_direction(); // switch to moving in y direction
             }
         } else {
             if self.y_direction {
@@ -108,6 +109,7 @@ impl SpinningSquare {
                 self.y_direction = false;  // Switch to moving down
             } else if self.y_pos >= 375.0 {
                 self.y_direction = true;  // Switch to moving up
+                self.switch_xy_direction(); // switch to moving in x direction
             }
         }
     }
@@ -130,7 +132,7 @@ impl SpinningSquare {
         }
     }
 
-    fn switch_xy_direction(&self) {
-        let _ = !self.moving_x_or_y;
+    fn switch_xy_direction(&mut self) {
+        self.moving_x_or_y = !self.moving_x_or_y;
     }
 }
