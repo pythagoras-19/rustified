@@ -5,13 +5,18 @@ extern crate piston;
 
 use glutin_window::GlutinWindow as Window;
 use graphics::rectangle;
+use nix::libc::rand;
 use opengl_graphics::{GlGraphics, OpenGL};
 use piston::event_loop::{EventSettings, Events};
 use piston::input::{RenderArgs, RenderEvent, UpdateArgs, UpdateEvent};
 use piston_window::WindowSettings;
 
+const WHITE: [f32; 4] = [1.0, 1.0, 1.0, 1.0];
+const RED: [f32; 4] = [1.0, 0.0, 0.0, 1.0];
+const BLUE: [f32; 4] = [0.0, 0.0, 1.0, 1.0];
+
 pub fn entry() {
-    let window: Window = WindowSettings::new("spinning-square", [400, 400])
+    let window: Window = WindowSettings::new("party square !", [400, 400])
         .graphics_api(OpenGL::V3_2)
         .exit_on_esc(true)
         .build()
@@ -22,6 +27,7 @@ pub fn entry() {
 
 pub struct SpinningSquare {
     gl: GlGraphics,
+    color: [f32; 4],
     rotation: f64,
     x_pos: f64,
     x_direction: bool,
@@ -35,6 +41,7 @@ impl SpinningSquare {
     pub fn new(gl: GlGraphics, window: Window) -> Self {
         Self {
             gl,
+            color: BLUE,
             rotation: 0.0,
             x_pos: 200.0,  // initialize to the center of the screen
             y_pos: 200.0, // todo: maybe adjust me
@@ -47,9 +54,6 @@ impl SpinningSquare {
 
     fn render(&mut self, args: &RenderArgs) {
         use graphics::*;
-
-        const WHITE: [f32; 4] = [1.0, 1.0, 1.0, 1.0];
-        const RED: [f32; 4] = [1.0, 0.0, 0.0, 1.0];
 
         let square = rectangle::square(0.0, 0.0, 50.0);
         let rotation = self.rotation;
@@ -66,7 +70,7 @@ impl SpinningSquare {
                 .trans(-25.0, -25.0);  //center the square
 
             // Draw a spinning square.
-            rectangle(RED, square, transform, gl);
+            rectangle(self.color, square, transform, gl);
         });
     }
 
@@ -130,6 +134,8 @@ impl SpinningSquare {
         if rand::random() {
             self.switch_xy_direction();
         }
+
+        self.randomize_square_color();
     }
 
     fn setup(window: Window) {
@@ -152,5 +158,13 @@ impl SpinningSquare {
 
     fn switch_xy_direction(&mut self) {
         self.moving_x_or_y = !self.moving_x_or_y;
+    }
+
+    fn randomize_square_color(&mut self) {
+        if rand::random() {
+            self.color = RED;
+        } else {
+            self.color = BLUE;
+        }
     }
 }
