@@ -5,15 +5,44 @@ extern crate piston;
 
 use glutin_window::GlutinWindow as Window;
 use graphics::rectangle;
-use nix::libc::rand;
 use opengl_graphics::{GlGraphics, OpenGL};
 use piston::event_loop::{EventSettings, Events};
 use piston::input::{RenderArgs, RenderEvent, UpdateArgs, UpdateEvent};
 use piston_window::WindowSettings;
+use rand::Rng;
 
 const WHITE: [f32; 4] = [1.0, 1.0, 1.0, 1.0];
 const RED: [f32; 4] = [1.0, 0.0, 0.0, 1.0];
 const BLUE: [f32; 4] = [0.0, 0.0, 1.0, 1.0];
+const GREEN: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
+const YELLOW: [f32; 4] = [1.0, 1.0, 0.0, 1.0];
+const PURPLE: [f32; 4] = [0.5, 0.0, 0.5, 1.0];
+const ORANGE: [f32; 4] = [1.0, 0.5, 0.0, 1.0];
+const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 1.0];
+
+pub enum SquareColor {
+    RED,
+    BLUE,
+    GREEN,
+    YELLOW,
+    PURPLE,
+    ORANGE,
+    BLACK,
+}
+
+impl SquareColor {
+    fn value(&self) -> [f32; 4] {
+        match *self {
+            SquareColor::RED => RED,
+            SquareColor::BLUE => BLUE,
+            SquareColor::GREEN => GREEN,
+            SquareColor::YELLOW => YELLOW,
+            SquareColor::PURPLE => PURPLE,
+            SquareColor::ORANGE => ORANGE,
+            SquareColor::BLACK => BLACK,
+        }
+    }
+}
 
 pub fn entry() {
     let window: Window = WindowSettings::new("party square !", [400, 400])
@@ -27,7 +56,7 @@ pub fn entry() {
 
 pub struct SpinningSquare {
     gl: GlGraphics,
-    color: [f32; 4],
+    color: SquareColor,
     rotation: f64,
     x_pos: f64,
     x_direction: bool,
@@ -41,10 +70,10 @@ impl SpinningSquare {
     pub fn new(gl: GlGraphics, window: Window) -> Self {
         Self {
             gl,
-            color: BLUE,
+            color: SquareColor::BLUE,
             rotation: 0.0,
             x_pos: 200.0,  // initialize to the center of the screen
-            y_pos: 200.0, // todo: maybe adjust me
+            y_pos: 200.0,
             moving_x_or_y: false, // true = x direction, false = y direction
             x_direction: true,  // true = right, false = left
             y_direction: true, // true = up, false = down
@@ -70,7 +99,8 @@ impl SpinningSquare {
                 .trans(-25.0, -25.0);  //center the square
 
             // Draw a spinning square.
-            rectangle(self.color, square, transform, gl);
+            let color = self.color.value();
+            rectangle(color, square, transform, gl);
         });
     }
 
@@ -79,12 +109,12 @@ impl SpinningSquare {
 
         /**
 
-    ████████ ██████   █████  ███    ██ ███████ ██       █████  ████████ ██  ██████  ███    ██ ███████
-       ██    ██   ██ ██   ██ ████   ██ ██      ██      ██   ██    ██    ██ ██    ██ ████   ██ ██
-       ██    ██████  ███████ ██ ██  ██ ███████ ██      ███████    ██    ██ ██    ██ ██ ██  ██ ███████
-       ██    ██   ██ ██   ██ ██  ██ ██      ██ ██      ██   ██    ██    ██ ██    ██ ██  ██ ██      ██
-       ██    ██   ██ ██   ██ ██   ████ ███████ ███████ ██   ██    ██    ██  ██████  ██   ████ ███████
-
+    ████████╗██████╗  █████╗ ███╗   ██╗███████╗██╗      █████╗ ████████╗██╗ ██████╗ ███╗   ██╗███████╗
+    ╚══██╔══╝██╔══██╗██╔══██╗████╗  ██║██╔════╝██║     ██╔══██╗╚══██╔══╝██║██╔═══██╗████╗  ██║██╔════╝
+       ██║   ██████╔╝███████║██╔██╗ ██║███████╗██║     ███████║   ██║   ██║██║   ██║██╔██╗ ██║███████╗
+       ██║   ██╔══██╗██╔══██║██║╚██╗██║╚════██║██║     ██╔══██║   ██║   ██║██║   ██║██║╚██╗██║╚════██║
+       ██║   ██║  ██║██║  ██║██║ ╚████║███████║███████╗██║  ██║   ██║   ██║╚██████╔╝██║ ╚████║███████║
+       ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
         **/
         if (self.moving_x_or_y == true) {
             // Update position based on direction
@@ -161,10 +191,18 @@ impl SpinningSquare {
     }
 
     fn randomize_square_color(&mut self) {
-        if rand::random() {
-            self.color = RED;
-        } else {
-            self.color = BLUE;
-        }
+        let mut rng = rand::thread_rng();
+        let num = rng.gen_range(0..8);  // Generate a random number in the range 0-7
+
+        self.color = match num {
+            0 => SquareColor::RED,
+            1 => SquareColor::BLUE,
+            2 => SquareColor::GREEN,
+            3 => SquareColor::YELLOW,
+            4 => SquareColor::PURPLE,
+            5 => SquareColor::ORANGE,
+            6 => SquareColor::BLACK,
+            _ => SquareColor::YELLOW,
+        };
     }
 }
