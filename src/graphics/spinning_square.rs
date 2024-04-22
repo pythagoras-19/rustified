@@ -2,9 +2,7 @@ extern crate glutin_window;
 extern crate graphics;
 extern crate opengl_graphics;
 extern crate piston;
-/**
-    TODO: Bug with exiting the square back to main menu!
-**/
+
 use glutin_window::GlutinWindow as Window;
 use graphics::rectangle;
 use opengl_graphics::{GlGraphics, OpenGL};
@@ -12,16 +10,34 @@ use piston::event_loop::{EventSettings, Events};
 use piston::input::{RenderArgs, RenderEvent, UpdateArgs, UpdateEvent};
 use piston_window::WindowSettings;
 
+/**
+TODO: Bug with exiting to main menu and then trying to open ballin.rs.
+ **/
+
 pub fn entry() {
-    SpinningSquare::setup();
+    let window: Window = WindowSettings::new("spinning-square", [200, 200])
+        .graphics_api(OpenGL::V3_2)
+        .exit_on_esc(true)
+        .build()
+        .unwrap();
+    SpinningSquare::setup(window);
 }
 
 pub struct SpinningSquare {
     gl: GlGraphics, // OpenGL for drawing backend
     rotation: f64,
+    window: Window,
 }
 
 impl SpinningSquare {
+    pub fn new(gl: GlGraphics, window: Window) -> Self {
+        Self {
+            gl,
+            rotation: 0.0,
+            window,
+        }
+    }
+
     fn render(&mut self, args: &RenderArgs) {
         use graphics::*;
 
@@ -52,24 +68,14 @@ impl SpinningSquare {
         self.rotation += 2.0 * args.dt;
     }
 
-    fn setup() {
+    fn setup(window: Window) {
         let opengl = OpenGL::V3_2;
 
-        // Create a Glutin window.
-        let mut window: Window = WindowSettings::new("spinning-square", [200, 200])
-            .graphics_api(opengl)
-            .exit_on_esc(true)
-            .build()
-            .unwrap();
-
-        // Create a new game and run it.
-        let mut app = SpinningSquare {
-            gl: GlGraphics::new(opengl),
-            rotation: 0.0,
-        };
+        //create new game
+        let mut app = SpinningSquare::new(GlGraphics::new(opengl), window);
 
         let mut events = Events::new(EventSettings::new());
-        while let Some(e) = events.next(&mut window) {
+        while let Some(e) = events.next(&mut app.window) {
             if let Some(args) = e.render_args() {
                 app.render(&args);
             }
