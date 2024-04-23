@@ -2,7 +2,7 @@
   <img src="krabs.png" alt="Krabs" width="300">
 </p>
 
-<h1 align="center" style="font-family: 'Arial', sans-serif;">rustified</h1>
+<h1 align="center" style="font-family: 'Arial', sans-serif;">🦀 rustified 🦀</h1>
 
 <h4 align="center">A console app showcasing major features of the Rust programming language.</h4>
 
