@@ -3,6 +3,7 @@ extern crate graphics;
 extern crate opengl_graphics;
 extern crate piston;
 
+use std::time::SystemTime;
 use glutin_window::GlutinWindow as Window;
 use graphics::rectangle;
 use opengl_graphics::{GlGraphics, OpenGL};
@@ -10,6 +11,7 @@ use piston::event_loop::{EventSettings, Events};
 use piston::input::{RenderArgs, RenderEvent, UpdateArgs, UpdateEvent};
 use piston_window::WindowSettings;
 use rand::Rng;
+// crate::graphics::spinning_square::SquareColor::PURPLE;
 
 const WHITE: [f32; 4] = [1.0, 1.0, 1.0, 1.0];
 const RED: [f32; 4] = [1.0, 0.0, 0.0, 1.0];
@@ -85,14 +87,19 @@ impl SpinningSquare {
 
     fn render(&mut self, args: &RenderArgs) {
         use graphics::*;
+        use std::time::SystemTime;
 
         let square = rectangle::square(0.0, 0.0, 50.0);
         let rotation = self.rotation;
         let (x, y) = (self.x_pos, self.y_pos);
 
         self.gl.draw(args.viewport(), |c, gl| {
+            let now = SystemTime::now();
+            let seconds = now.duration_since(SystemTime::UNIX_EPOCH).unwrap().as_secs();
+            let bg_color = if seconds % 20 < 10 { PURPLE } else { BLUE }; // alternate bg color
+
             // Clear screen.
-            clear(BLUE, gl);
+            clear(bg_color, gl);
 
             let transform = c
                 .transform
@@ -179,7 +186,7 @@ impl SpinningSquare {
 
         let path_color = self.randomize_path_color();
         self.path.push(([self.x_pos, self.y_pos], path_color));
-        const MAX_PATH_SIZE: usize = 2500;
+        const MAX_PATH_SIZE: usize = 1000;
         if self.path.len() > MAX_PATH_SIZE {
             let drop_amt = self.path.len() - MAX_PATH_SIZE;
             self.path.drain(0..drop_amt);
