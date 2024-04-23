@@ -192,7 +192,7 @@ impl SpinningSquare {
             self.path.drain(0..drop_amt);
         }
 
-        /**
+        /*
 
         ███████╗ ██████╗ ██╗   ██╗ █████╗ ██████╗ ███████╗
         ██╔════╝██╔═══██╗██║   ██║██╔══██╗██╔══██╗██╔════╝
@@ -208,20 +208,9 @@ impl SpinningSquare {
         ███████║██║███████╗███████╗
         ╚══════╝╚═╝╚══════╝╚══════╝
 
-        **/
-        if self.increasing_size {
-            self.size += 0.05;
-        } else {
-            self.size -= 0.05;
-        }
-        // Switch between increasing and decreasing every 10 seconds
-        let now = SystemTime::now();
-        let secs = now.duration_since(SystemTime::UNIX_EPOCH).unwrap().as_secs();
-        if secs % 20 < 5 {
-            self.increasing_size = true;
-        } else {
-            self.increasing_size = false;
-        }
+        */
+        // For Slingshot version uncomment next line!
+        //self.adjust_size();
     }
 
     fn setup(window: Window) {
@@ -289,6 +278,22 @@ impl SpinningSquare {
             RED
         } else {
             ORANGE
+        }
+    }
+
+    fn adjust_size(&mut self) {
+        if self.increasing_size {
+            self.size += 0.05;
+        } else {
+            self.size -= 0.05;
+        }
+        // Switch between increasing and decreasing every 10 seconds
+        let now = SystemTime::now();
+        let secs = now.duration_since(SystemTime::UNIX_EPOCH).unwrap().as_secs();
+        if secs % 20 < 5 {
+            self.increasing_size = true;
+        } else {
+            self.increasing_size = false;
         }
     }
 }
