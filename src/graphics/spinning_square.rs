@@ -3,6 +3,7 @@ extern crate graphics;
 extern crate opengl_graphics;
 extern crate piston;
 
+use piston_window::types::Color;
 use std::time::SystemTime;
 use glutin_window::GlutinWindow as Window;
 use graphics::rectangle;
@@ -11,7 +12,6 @@ use piston::event_loop::{EventSettings, Events};
 use piston::input::{RenderArgs, RenderEvent, UpdateArgs, UpdateEvent};
 use piston_window::WindowSettings;
 use rand::Rng;
-// crate::graphics::spinning_square::SquareColor::PURPLE;
 
 const WHITE: [f32; 4] = [1.0, 1.0, 1.0, 1.0];
 const RED: [f32; 4] = [1.0, 0.0, 0.0, 1.0];
@@ -87,18 +87,14 @@ impl SpinningSquare {
 
     fn render(&mut self, args: &RenderArgs) {
         use graphics::*;
-        use std::time::SystemTime;
 
         let square = rectangle::square(0.0, 0.0, 50.0);
         let rotation = self.rotation;
         let (x, y) = (self.x_pos, self.y_pos);
+        let bg_color = self.change_bg_color(); // alternate bg color
 
         self.gl.draw(args.viewport(), |c, gl| {
-            let now = SystemTime::now();
-            let seconds = now.duration_since(SystemTime::UNIX_EPOCH).unwrap().as_secs();
-            let bg_color = if seconds % 20 < 10 { PURPLE } else { BLUE }; // alternate bg color
-
-            // Clear screen.
+            // clear with new bg color
             clear(bg_color, gl);
 
             let transform = c
@@ -114,7 +110,7 @@ impl SpinningSquare {
             //draw path
             println!("Path size: {}", self.path.len());
             for i in 1..self.path.len() {
-                let ([x1, y1], color1) = &self.path[i-1];
+                let ([x1, y1], color1) = &self.path[i - 1];
                 let ([x2, y2], _) = &self.path[i];
                 line(color1.value(), 1.0, [*x1, *y1, *x2, *y2], c.transform, gl);
             }
@@ -126,13 +122,13 @@ impl SpinningSquare {
 
         /**
 
-    ████████╗██████╗  █████╗ ███╗   ██╗███████╗██╗      █████╗ ████████╗██╗ ██████╗ ███╗   ██╗███████╗
-    ╚══██╔══╝██╔══██╗██╔══██╗████╗  ██║██╔════╝██║     ██╔══██╗╚══██╔══╝██║██╔═══██╗████╗  ██║██╔════╝
-       ██║   ██████╔╝███████║██╔██╗ ██║███████╗██║     ███████║   ██║   ██║██║   ██║██╔██╗ ██║███████╗
-       ██║   ██╔══██╗██╔══██║██║╚██╗██║╚════██║██║     ██╔══██║   ██║   ██║██║   ██║██║╚██╗██║╚════██║
-       ██║   ██║  ██║██║  ██║██║ ╚████║███████║███████╗██║  ██║   ██║   ██║╚██████╔╝██║ ╚████║███████║
-       ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
-        **/
+        ████████╗██████╗  █████╗ ███╗   ██╗███████╗██╗      █████╗ ████████╗██╗ ██████╗ ███╗   ██╗███████╗
+        ╚══██╔══╝██╔══██╗██╔══██╗████╗  ██║██╔════╝██║     ██╔══██╗╚══██╔══╝██║██╔═══██╗████╗  ██║██╔════╝
+           ██║   ██████╔╝███████║██╔██╗ ██║███████╗██║     ███████║   ██║   ██║██║   ██║██╔██╗ ██║███████╗
+           ██║   ██╔══██╗██╔══██║██║╚██╗██║╚════██║██║     ██╔══██║   ██║   ██║██║   ██║██║╚██╗██║╚════██║
+           ██║   ██║  ██║██║  ██║██║ ╚████║███████║███████╗██║  ██║   ██║   ██║╚██████╔╝██║ ╚████║███████║
+           ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
+            **/
         if self.moving_x_or_y == true {
             // Update position based on direction
             if self.x_direction {
@@ -155,7 +151,7 @@ impl SpinningSquare {
             }
 
             // change direction when hit boundaries
-            if self.y_pos <= 25.0  {
+            if self.y_pos <= 25.0 {
                 self.y_direction = false;  // Switch to moving down
             } else if self.y_pos >= 375.0 {
                 self.y_direction = true;  // Switch to moving up
@@ -245,6 +241,17 @@ impl SpinningSquare {
             6 => SquareColor::BLACK,
             _ => SquareColor::YELLOW,
         }
+    }
 
+    fn change_bg_color(&mut self) -> Color {
+        let now = SystemTime::now();
+        let seconds = now.duration_since(SystemTime::UNIX_EPOCH).unwrap().as_secs();
+        if seconds % 30 < 10 {
+            PURPLE
+        } else if seconds % 20 < 10 {
+            BLUE
+        } else {
+            RED
+        }
     }
 }
