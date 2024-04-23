@@ -63,6 +63,7 @@ pub struct SpinningSquare {
     y_pos: f64,
     y_direction: bool,
     moving_x_or_y: bool,
+    path: Vec<[f64; 2]>,
     window: Window,
 }
 
@@ -78,6 +79,7 @@ impl SpinningSquare {
             x_direction: true,  // true = right, false = left
             y_direction: true, // true = up, false = down
             window,
+            path: vec![], // todo: maybe fix me
         }
     }
 
@@ -101,6 +103,13 @@ impl SpinningSquare {
             // Draw a spinning square.
             let color = self.color.value();
             rectangle(color, square, transform, gl);
+
+            //draw path
+            for i in 1..self.path.len() {
+                let [x1, y1] = self.path[i-1];
+                let [x2, y2] = self.path[i];
+                line(WHITE, 1.0, [x1, y1, x2, y2], c.transform, gl);
+            }
         });
     }
 
@@ -116,7 +125,7 @@ impl SpinningSquare {
        ██║   ██║  ██║██║  ██║██║ ╚████║███████║███████╗██║  ██║   ██║   ██║╚██████╔╝██║ ╚████║███████║
        ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
         **/
-        if (self.moving_x_or_y == true) {
+        if self.moving_x_or_y == true {
             // Update position based on direction
             if self.x_direction {
                 self.x_pos += 2.0;  // Move right
@@ -166,6 +175,8 @@ impl SpinningSquare {
         }
 
         self.randomize_square_color();
+
+        self.path.push([self.x_pos, self.y_pos]);
     }
 
     fn setup(window: Window) {
