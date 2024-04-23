@@ -246,12 +246,14 @@ impl SpinningSquare {
     fn change_bg_color(&mut self) -> Color {
         let now = SystemTime::now();
         let seconds = now.duration_since(SystemTime::UNIX_EPOCH).unwrap().as_secs();
-        if seconds % 30 < 10 {
+        if seconds % 40 < 10 {
             PURPLE
-        } else if seconds % 20 < 10 {
+        } else if seconds % 40 < 20 {
             BLUE
-        } else {
+        } else if seconds % 40 < 30 {
             RED
+        } else {
+            ORANGE
         }
     }
 }
