@@ -66,6 +66,8 @@ pub struct SpinningSquare {
     y_direction: bool,
     moving_x_or_y: bool,
     path: Vec<([f64; 2], SquareColor)>,
+    size: f64,
+    increasing_size: bool,
     window: Window,
 }
 
@@ -81,14 +83,16 @@ impl SpinningSquare {
             x_direction: true,  // true = right, false = left
             y_direction: true, // true = up, false = down
             window,
-            path: vec![], // todo: maybe fix me
+            path: vec![],
+            size: 50.0,
+            increasing_size: true,
         }
     }
 
     fn render(&mut self, args: &RenderArgs) {
         use graphics::*;
 
-        let square = rectangle::square(0.0, 0.0, 50.0);
+        let square = rectangle::square(0.0, 0.0, self.size);
         let rotation = self.rotation;
         let (x, y) = (self.x_pos, self.y_pos);
         let bg_color = self.change_bg_color(); // alternate bg color
@@ -186,6 +190,37 @@ impl SpinningSquare {
         if self.path.len() > MAX_PATH_SIZE {
             let drop_amt = self.path.len() - MAX_PATH_SIZE;
             self.path.drain(0..drop_amt);
+        }
+
+        /**
+
+        ███████╗ ██████╗ ██╗   ██╗ █████╗ ██████╗ ███████╗
+        ██╔════╝██╔═══██╗██║   ██║██╔══██╗██╔══██╗██╔════╝
+        ███████╗██║   ██║██║   ██║███████║██████╔╝█████╗
+        ╚════██║██║▄▄ ██║██║   ██║██╔══██║██╔══██╗██╔══╝
+        ███████║╚██████╔╝╚██████╔╝██║  ██║██║  ██║███████╗
+        ╚══════╝ ╚══▀▀═╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝
+
+        ███████╗██╗███████╗███████╗
+        ██╔════╝██║╚══███╔╝██╔════╝
+        ███████╗██║  ███╔╝ █████╗
+        ╚════██║██║ ███╔╝  ██╔══╝
+        ███████║██║███████╗███████╗
+        ╚══════╝╚═╝╚══════╝╚══════╝
+
+        **/
+        if self.increasing_size {
+            self.size += 0.05;
+        } else {
+            self.size -= 0.05;
+        }
+        // Switch between increasing and decreasing every 10 seconds
+        let now = SystemTime::now();
+        let secs = now.duration_since(SystemTime::UNIX_EPOCH).unwrap().as_secs();
+        if secs % 20 < 5 {
+            self.increasing_size = true;
+        } else {
+            self.increasing_size = false;
         }
     }
 
