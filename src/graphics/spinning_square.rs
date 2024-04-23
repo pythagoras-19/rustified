@@ -63,7 +63,7 @@ pub struct SpinningSquare {
     y_pos: f64,
     y_direction: bool,
     moving_x_or_y: bool,
-    path: Vec<[f64; 2]>,
+    path: Vec<([f64; 2], SquareColor)>,
     window: Window,
 }
 
@@ -107,9 +107,9 @@ impl SpinningSquare {
             //draw path
             println!("Path size: {}", self.path.len());
             for i in 1..self.path.len() {
-                let [x1, y1] = self.path[i-1];
-                let [x2, y2] = self.path[i];
-                line(WHITE, 1.0, [x1, y1, x2, y2], c.transform, gl);
+                let ([x1, y1], color1) = &self.path[i-1];
+                let ([x2, y2], _) = &self.path[i];
+                line(color1.value(), 1.0, [*x1, *y1, *x2, *y2], c.transform, gl);
             }
         });
     }
@@ -177,7 +177,8 @@ impl SpinningSquare {
 
         self.randomize_square_color();
 
-        self.path.push([self.x_pos, self.y_pos]);
+        let path_color = self.randomize_path_color();
+        self.path.push(([self.x_pos, self.y_pos], path_color));
         const MAX_PATH_SIZE: usize = 2500;
         if self.path.len() > MAX_PATH_SIZE {
             let drop_amt = self.path.len() - MAX_PATH_SIZE;
@@ -221,5 +222,22 @@ impl SpinningSquare {
             6 => SquareColor::BLACK,
             _ => SquareColor::YELLOW,
         };
+    }
+
+    fn randomize_path_color(&mut self) -> SquareColor {
+        let mut rng = rand::thread_rng();
+        let num = rng.gen_range(0..8);
+
+        match num {
+            0 => SquareColor::RED,
+            1 => SquareColor::BLUE,
+            2 => SquareColor::GREEN,
+            3 => SquareColor::YELLOW,
+            4 => SquareColor::PURPLE,
+            5 => SquareColor::ORANGE,
+            6 => SquareColor::BLACK,
+            _ => SquareColor::YELLOW,
+        }
+
     }
 }
