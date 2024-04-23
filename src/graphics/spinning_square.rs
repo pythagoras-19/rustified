@@ -45,7 +45,7 @@ impl SquareColor {
 }
 
 pub fn entry() {
-    let window: Window = WindowSettings::new("party square !", [400, 400])
+    let window: Window = WindowSettings::new("==SQUARE DANCING==", [400, 400])
         .graphics_api(OpenGL::V3_2)
         .exit_on_esc(true)
         .build()
@@ -105,6 +105,7 @@ impl SpinningSquare {
             rectangle(color, square, transform, gl);
 
             //draw path
+            println!("Path size: {}", self.path.len());
             for i in 1..self.path.len() {
                 let [x1, y1] = self.path[i-1];
                 let [x2, y2] = self.path[i];
@@ -177,6 +178,11 @@ impl SpinningSquare {
         self.randomize_square_color();
 
         self.path.push([self.x_pos, self.y_pos]);
+        const MAX_PATH_SIZE: usize = 2500;
+        if self.path.len() > MAX_PATH_SIZE {
+            let drop_amt = self.path.len() - MAX_PATH_SIZE;
+            self.path.drain(0..drop_amt);
+        }
     }
 
     fn setup(window: Window) {
