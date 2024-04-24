@@ -6,6 +6,7 @@ extern crate piston;
 use piston_window::types::Color;
 use std::time::SystemTime;
 use glutin_window::GlutinWindow as Window;
+use graphics::color::{NAVY, TRANSPARENT};
 use graphics::rectangle;
 use opengl_graphics::{GlGraphics, OpenGL};
 use piston::event_loop::{EventSettings, Events};
@@ -271,13 +272,13 @@ impl SpinningSquare {
         let now = SystemTime::now();
         let seconds = now.duration_since(SystemTime::UNIX_EPOCH).unwrap().as_secs();
         if seconds % 40 < 10 {
-            PURPLE
+            YELLOW
         } else if seconds % 40 < 20 {
-            BLUE
+            NAVY
         } else if seconds % 40 < 30 {
             RED
         } else {
-            ORANGE
+            TRANSPARENT
         }
     }
 
