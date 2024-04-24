@@ -4,10 +4,13 @@ extern crate opengl_graphics;
 extern crate piston;
 
 use piston_window::types::Color;
+use piston_window::ellipse::Border as PistonBorder;
 use std::time::SystemTime;
 use glutin_window::GlutinWindow as Window;
 use graphics::color::{NAVY, TRANSPARENT};
-use graphics::rectangle;
+use graphics::{DrawState, Graphics, rectangle, Rectangle};
+use graphics::math::Matrix2d;
+use graphics::types::{Radius, Resolution};
 use opengl_graphics::{GlGraphics, OpenGL};
 use piston::event_loop::{EventSettings, Events};
 use piston::input::{RenderArgs, RenderEvent, UpdateArgs, UpdateEvent};
@@ -22,6 +25,16 @@ const YELLOW: [f32; 4] = [1.0, 1.0, 0.0, 1.0];
 const PURPLE: [f32; 4] = [0.5, 0.0, 0.5, 1.0];
 const ORANGE: [f32; 4] = [1.0, 0.5, 0.0, 1.0];
 const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 1.0];
+
+pub fn entry() {
+    let window: Window = WindowSettings::new("==SQUARE DANCING==", [400, 400])
+        .graphics_api(OpenGL::V3_2)
+        .exit_on_esc(true)
+        .build()
+        .unwrap();
+
+    SpinningSquare::setup(window);
+}
 
 pub enum SquareColor {
     RED,
@@ -47,14 +60,66 @@ impl SquareColor {
     }
 }
 
-pub fn entry() {
-    let window: Window = WindowSettings::new("==SQUARE DANCING==", [400, 400])
-        .graphics_api(OpenGL::V3_2)
-        .exit_on_esc(true)
-        .build()
-        .unwrap();
+#[derive(Copy, Clone)]
+pub struct Border {
+    pub color: Color,
+    pub radius: Radius,
+}
 
-    SpinningSquare::setup(window);
+pub struct Line {
+    pub color: [f32; 4],
+    pub radius: Radius,
+}
+
+pub struct Ellipse {
+    pub color: Color,
+    pub border: Option<Border>,
+    pub resolution: Resolution,
+}
+
+impl Ellipse {
+    pub fn new(color: Color) -> Ellipse {
+        Ellipse {
+            color,
+            border: None,
+            resolution: 128,
+        }
+    }
+
+    pub fn new_border(color: Color, radius: Radius) -> Ellipse {
+        Ellipse {
+            color: [0.0; 4],
+            border: Some(Border {
+                color,
+                radius,
+            }),
+            resolution: 128,
+        }
+    }
+
+    pub fn color(mut self, value: Color) -> Self {
+        self.color = value;
+        self
+    }
+
+    pub fn border(mut self, value: Border) -> Self {
+        self.border = Some(value);
+        self
+    }
+
+    #[inline(always)]
+    pub fn draw<R: Into<[f64; 4]>, G>(&self, rectangle: R, draw_state: &DrawState, transform: Matrix2d, g: &mut G)
+        where G: Graphics
+    {
+        let ellipse = piston_window::Ellipse::new(self.color)
+            .resolution(self.resolution)
+            .border(PistonBorder {
+                color: self.border.as_ref().map(|b| b.color).unwrap_or([0.0; 4]),
+                radius: self.border.as_ref().map(|b| b.radius).unwrap_or(0.0),
+            });
+
+        g.ellipse(&ellipse, rectangle.into(), draw_state, transform);
+    }
 }
 
 pub struct SpinningSquare {
@@ -98,6 +163,12 @@ impl SpinningSquare {
         let (x, y) = (self.x_pos, self.y_pos);
         let bg_color = self.change_bg_color(); // alternate bg color
 
+        let ellipse = Ellipse::new(WHITE)
+            .border(PistonBorder {
+                color: WHITE,
+                radius: 2.0,
+            });
+
         self.gl.draw(args.viewport(), |c, gl| {
             // clear with new bg color
             clear(bg_color, gl);
@@ -111,6 +182,15 @@ impl SpinningSquare {
             // Draw a spinning square.
             let color = self.color.value();
             rectangle(color, square, transform, gl);
+
+            let ellipse_transform = c
+                .transform
+                .trans(x + 10.0, y + 10.0)
+                .rot_rad(rotation)
+                .trans(-25.0, -25.0);
+
+            let draw_state = &DrawState::default();
+            ellipse.draw(square, draw_state, transform, gl);
 
             //draw path
             println!("Path size: {}", self.path.len());
