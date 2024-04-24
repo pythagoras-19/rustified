@@ -7,8 +7,9 @@
 <h4 align="center">A console app showcasing major features of the Rust programming language.</h4>
 
 # Bugs
-
+- separate the ellipse from the square
 # TODO
+
 
 # Foundational Rust Principles
 ### Rust solves memory leak problems with ease
