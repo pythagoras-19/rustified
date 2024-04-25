@@ -36,6 +36,7 @@ pub fn entry() {
     SpinningSquare::setup(window);
 }
 
+#[derive(Clone)]
 pub enum SquareColor {
     RED,
     BLUE,
@@ -72,13 +73,13 @@ pub struct Line {
 }
 
 pub struct Ellipse {
-    pub color: Color,
+    pub color: SquareColor,
     pub border: Option<Border>,
     pub resolution: Resolution,
 }
 
 impl Ellipse {
-    pub fn new(color: Color) -> Ellipse {
+    pub fn new(color: SquareColor) -> Ellipse {
         Ellipse {
             color,
             border: None,
@@ -86,18 +87,19 @@ impl Ellipse {
         }
     }
 
-    pub fn new_border(color: Color, radius: Radius) -> Ellipse {
+    pub fn new_border(color: SquareColor, radius: Radius) -> Ellipse {
+        let color_clone = color.clone();
         Ellipse {
-            color: [0.0; 4],
+            color,
             border: Some(Border {
-                color,
+                color: color_clone.value(),
                 radius,
             }),
             resolution: 128,
         }
     }
 
-    pub fn color(mut self, value: Color) -> Self {
+    pub fn color(mut self, value: SquareColor) -> Self {
         self.color = value;
         self
     }
@@ -108,10 +110,11 @@ impl Ellipse {
     }
 
     #[inline(always)]
-    pub fn draw<R: Into<[f64; 4]>, G>(&self, rectangle: R, draw_state: &DrawState, transform: Matrix2d, g: &mut G)
+    pub fn draw<R: Into<[f64; 4]>, G>(&mut self, rectangle: R, draw_state: &DrawState, transform: Matrix2d, g: &mut G)
         where G: Graphics
     {
-        let ellipse = piston_window::Ellipse::new(self.color)
+        println!("drawing ellipse");
+        let ellipse = piston_window::Ellipse::new(self.color.value())
             .resolution(self.resolution)
             .border(PistonBorder {
                 color: self.border.as_ref().map(|b| b.color).unwrap_or([0.0; 4]),
@@ -119,6 +122,22 @@ impl Ellipse {
             });
 
         g.ellipse(&ellipse, rectangle.into(), draw_state, transform);
+    }
+
+    fn randomize_ellipse_color(&mut self) -> Color {
+        let mut rng = rand::thread_rng();
+        let num = rng.gen_range(0..8);
+
+        match num {
+            0 => RED,
+            1 => BLUE,
+            2 => GREEN,
+            3 => YELLOW,
+            4 => PURPLE,
+            5 => ORANGE,
+            6 => BLACK,
+            _ => YELLOW,
+        }
     }
 }
 
@@ -163,9 +182,9 @@ impl SpinningSquare {
         let (x, y) = (self.x_pos, self.y_pos);
         let bg_color = self.change_bg_color(); // alternate bg color
 
-        let ellipse = Ellipse::new(WHITE)
+        let ellipse = Ellipse::new(self.color.clone().value())
             .border(PistonBorder {
-                color: WHITE,
+                color: BLACK,
                 radius: 2.0,
             });
 
