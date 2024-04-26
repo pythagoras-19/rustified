@@ -11,9 +11,11 @@ use graphics::color::{NAVY, TRANSPARENT};
 use graphics::{DrawState, Graphics, rectangle, Rectangle};
 use graphics::math::Matrix2d;
 use graphics::types::{Radius, Resolution};
+use nix::libc::size_t;
 use opengl_graphics::{GlGraphics, OpenGL};
 use piston::event_loop::{EventSettings, Events};
 use piston::input::{RenderArgs, RenderEvent, UpdateArgs, UpdateEvent};
+use piston::Size;
 use piston_window::WindowSettings;
 use rand::Rng;
 
@@ -26,8 +28,22 @@ const PURPLE: [f32; 4] = [0.5, 0.0, 0.5, 1.0];
 const ORANGE: [f32; 4] = [1.0, 0.5, 0.0, 1.0];
 const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 1.0];
 
+// GAME OBJECT SIZES
+const SPINNING_SQUARE_SIZE: f64 = 50.0;
+
+// WINDOW CONSTANTS
+const WIDTH: u32 = 1000;
+const HEIGHT: u32 = 1000;
+
+// TRANSLATION CONSTANTS
+const MOVEMENT: f64 = 2.0;
+const RIGHT_BORDER: u32 = WIDTH - (SPINNING_SQUARE_SIZE/2.0) as u32;
+const LEFT_BORDER: u32 = 0 + (SPINNING_SQUARE_SIZE/2.0) as u32;
+const TOP_BORDER: u32 = 0 + (SPINNING_SQUARE_SIZE/2.0) as u32;
+const BOTTOM_BORDER: u32 = HEIGHT - (SPINNING_SQUARE_SIZE/2.0) as u32;
+
 pub fn entry() {
-    let window: Window = WindowSettings::new("==SQUARE DANCING==", [400, 400])
+    let window: Window = WindowSettings::new("==SQUARE DANCING==", [WIDTH, HEIGHT])
         .graphics_api(OpenGL::V3_2)
         .exit_on_esc(true)
         .build()
@@ -169,7 +185,7 @@ impl SpinningSquare {
             y_direction: true, // true = up, false = down
             window,
             path: vec![],
-            size: 50.0,
+            size: SPINNING_SQUARE_SIZE,
             increasing_size: true,
         }
     }
@@ -243,28 +259,28 @@ impl SpinningSquare {
         if self.moving_x_or_y == true {
             // Update position based on direction
             if self.x_direction {
-                self.x_pos += 2.0;  // Move right
+                self.x_pos += MOVEMENT;  // Move right
             } else {
-                self.x_pos -= 2.0;  // Move left
+                self.x_pos -= MOVEMENT;  // Move left
             }
 
             // change direction when hit boundaries
-            if self.x_pos >= 375.0 {
+            if self.x_pos >= RIGHT_BORDER as f64 {
                 self.x_direction = false;  // Switch to moving left
-            } else if self.x_pos <= 25.0 {
+            } else if self.x_pos <= LEFT_BORDER as f64 {
                 self.x_direction = true;  // Switch to moving right
             }
         } else {
             if self.y_direction {
-                self.y_pos -= 2.0;  // Move up
+                self.y_pos -= MOVEMENT;  // Move up
             } else {
-                self.y_pos += 2.0;  // Move down
+                self.y_pos += MOVEMENT;  // Move down
             }
 
             // change direction when hit boundaries
-            if self.y_pos <= 25.0 {
+            if self.y_pos <= TOP_BORDER as f64 {
                 self.y_direction = false;  // Switch to moving down
-            } else if self.y_pos >= 375.0 {
+            } else if self.y_pos >= BOTTOM_BORDER as f64 {
                 self.y_direction = true;  // Switch to moving up
             }
         }
