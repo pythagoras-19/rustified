@@ -187,6 +187,12 @@ impl SpinningSquare {
                 color: BLACK,
                 radius: 2.0,
             });
+        let ellipse2 = Ellipse::new(self.color.value().clone())
+            .border(PistonBorder {
+                color: BLUE,
+                radius: 1.0,
+            });
+        let sq2 = rectangle::square(100.0, 100.0, self.size);
 
         self.gl.draw(args.viewport(), |c, gl| {
             // clear with new bg color
@@ -206,17 +212,18 @@ impl SpinningSquare {
                 .transform
                 .trans(x + 10.0, y + 10.0)
                 .rot_rad(rotation)
-                .trans(-25.0, -25.0);
+                .trans(-250.0, -250.0);
 
             let draw_state = &DrawState::default();
             ellipse.draw(square, draw_state, transform, gl);
 
+            ellipse2.draw(sq2, draw_state, ellipse_transform, gl);
             //draw path
             println!("Path size: {}", self.path.len());
             for i in 1..self.path.len() {
                 let ([x1, y1], color1) = &self.path[i - 1];
                 let ([x2, y2], _) = &self.path[i];
-                line(color1.value(), 1.0, [*x1, *y1, *x2, *y2], c.transform, gl);
+                line(color1.value(), 10.0, [*x1, *y1, *x2, *y2], c.transform, gl);
             }
         });
     }
@@ -286,7 +293,7 @@ impl SpinningSquare {
 
         let path_color = self.randomize_path_color();
         self.path.push(([self.x_pos, self.y_pos], path_color));
-        const MAX_PATH_SIZE: usize = 1000;
+        const MAX_PATH_SIZE: usize = 250;
         if self.path.len() > MAX_PATH_SIZE {
             let drop_amt = self.path.len() - MAX_PATH_SIZE;
             self.path.drain(0..drop_amt);

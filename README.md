@@ -9,7 +9,7 @@
 # Bugs
 - separate the ellipse from the square
 # TODO
-
+- eliminate hardcoded boundaries in draw() with translations
 
 # Foundational Rust Principles
 ### Rust solves memory leak problems with ease
