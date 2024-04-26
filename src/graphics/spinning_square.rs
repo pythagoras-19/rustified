@@ -3,18 +3,19 @@ extern crate graphics;
 extern crate opengl_graphics;
 extern crate piston;
 
+use std::sync::{Arc, Mutex};
 use piston_window::types::Color;
 use piston_window::ellipse::Border as PistonBorder;
 use std::time::SystemTime;
-use glutin_window::GlutinWindow as Window;
+use glutin_window::{GlutinWindow as Window, GlutinWindow};
 use graphics::color::{NAVY, TRANSPARENT};
-use graphics::{DrawState, Graphics, rectangle, Rectangle};
+use graphics::{clear, DrawState, Graphics, rectangle, Rectangle};
 use graphics::math::Matrix2d;
 use graphics::types::{Radius, Resolution};
 use opengl_graphics::{GlGraphics, OpenGL};
 use piston::event_loop::{EventSettings, Events};
 use piston::input::{RenderArgs, RenderEvent, UpdateArgs, UpdateEvent};
-use piston_window::WindowSettings;
+use piston_window::{Context,WindowSettings};
 use rand::Rng;
 
 const WHITE: [f32; 4] = [1.0, 1.0, 1.0, 1.0];
@@ -30,8 +31,8 @@ const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 1.0];
 const SPINNING_SQUARE_SIZE: f64 = 50.0;
 
 // WINDOW CONSTANTS
-const WINDOW_WIDTH: u32 = 1000;
-const WINDOW_HEIGHT: u32 = 1000;
+const WINDOW_WIDTH: u32 = 1600;
+const WINDOW_HEIGHT: u32 = 900;
 
 // TRANSLATION CONSTANTS
 const SPINNING_SQUARE_MOVE_DISTANCE: f64 = 4.0;
@@ -155,8 +156,87 @@ impl Ellipse {
     }
 }
 
+pub struct Ellipse2 {
+    gl: Arc<Mutex<GlGraphics>>,
+    path: Vec<([f64; 2], SquareColor)>, // HACK, change this to ellipse data structure TODO: refactor
+    x_pos: f64,
+    y_pos: f64,
+    size: f64,
+    moving_x_or_y: bool,
+    x_direction: bool,
+    y_direction: bool,
+    color: SquareColor
+}
+
+impl Ellipse2 {
+    pub fn new(gl: Arc<Mutex<GlGraphics>>) -> Self {
+        Self {
+            gl,
+            color: SquareColor::BLUE,
+            x_pos: 100.0,  // initialize to the center of the screen
+            y_pos: 100.0,
+            moving_x_or_y: true, // true = x direction, false = y direction
+            x_direction: false,  // true = right, false = left
+            y_direction: false, // true = up, false = down
+            path: vec![],
+            size: SPINNING_SQUARE_SIZE,
+        }
+    }
+
+    pub fn update(&mut self, args: &UpdateArgs) {
+        let x2 = rand::random::<f64>() * WINDOW_WIDTH as f64;
+        let y2 = rand::random::<f64>() * WINDOW_HEIGHT as f64;
+
+        // push coords
+        let path_color = self.randomize_path_color();
+        self.path.push(([x2,y2], path_color));
+        const MAX_PATH_SIZE: usize = 250;
+        if self.path.len() > MAX_PATH_SIZE {
+            let drop_amt = self.path.len() - MAX_PATH_SIZE;
+            self.path.drain(0..drop_amt);
+        }
+    }
+
+    pub fn render(&mut self, args: &RenderArgs, c: Context, gl: &mut GlGraphics) {
+        use graphics::*;
+
+        // Create an ellipse with the current color of Ellipse2
+        let ellipse = ellipse::Ellipse::new(self.color.value());
+
+        // Draw the ellipse at the current position of Ellipse2
+        let transform = c.transform.trans(self.x_pos, self.y_pos);
+        ellipse.draw([0.0, 0.0, self.size, self.size], &DrawState::default(), transform, gl);
+
+        // Draw the path of Ellipse2
+        for i in 1..self.path.len() {
+            println!("PATH LENGTH OF ELLIPSE 2: {}", self.path.len());
+            let ([x1, y1], color1) = &self.path[i - 1];
+            let ([x2, y2], _) = &self.path[i];
+            line(color1.value(), 1.0, [*x1, *y1, *x2, *y2], c.transform, gl);
+        }
+    }
+
+    // TODO: REFACTOR ME BECUASE DUPLICATED CODE !!!
+    fn randomize_path_color(&mut self) -> SquareColor {
+        let mut rng = rand::thread_rng();
+        let num = rng.gen_range(0..8);
+
+        match num {
+            0 => SquareColor::RED,
+            1 => SquareColor::BLUE,
+            2 => SquareColor::GREEN,
+            3 => SquareColor::YELLOW,
+            4 => SquareColor::PURPLE,
+            5 => SquareColor::ORANGE,
+            6 => SquareColor::BLACK,
+            _ => SquareColor::YELLOW,
+        }
+    }
+
+}
+
 pub struct SpinningSquare {
-    gl: GlGraphics,
+    gl: Arc<Mutex<GlGraphics>>,
     color: SquareColor,
     rotation: f64,
     x_pos: f64,
@@ -171,7 +251,7 @@ pub struct SpinningSquare {
 }
 
 impl SpinningSquare {
-    pub fn new(gl: GlGraphics, window: Window) -> Self {
+    pub fn new(gl: Arc<Mutex<GlGraphics>>, window: Window) -> Self {
         Self {
             gl,
             color: SquareColor::BLUE,
@@ -188,7 +268,7 @@ impl SpinningSquare {
         }
     }
 
-    fn render(&mut self, args: &RenderArgs) {
+    fn render(&mut self, args: &RenderArgs, c: Context) {
         use graphics::*;
 
         let square = rectangle::square(0.0, 0.0, self.size);
@@ -196,20 +276,10 @@ impl SpinningSquare {
         let (x, y) = (self.x_pos, self.y_pos);
         let bg_color = self.change_bg_color(); // alternate bg color
 
-        let ellipse = Ellipse::new(self.color.clone().value())
-            .border(PistonBorder {
-                color: BLACK,
-                radius: 2.0,
-            });
-        let ellipse2 = Ellipse::new(self.color.value().clone())
-            .border(PistonBorder {
-                color: BLUE,
-                radius: 1.0,
-            });
-        let sq2 = rectangle::square(100.0, 100.0, self.size);
+        // Unlock the Mutex to get the GlGraphics instance
+        let mut gl = self.gl.lock().unwrap(); // Unlock the mutex
 
-        self.gl.draw(args.viewport(), |c, gl| {
-            // clear with new bg color
+        gl.draw(args.viewport(), |c, gl| {
             clear(bg_color, gl);
 
             let transform = c
@@ -229,10 +299,14 @@ impl SpinningSquare {
                 .trans(-250.0, -250.0);
 
             let draw_state = &DrawState::default();
+            let ellipse = Ellipse::new(BLUE)
+                .border(PistonBorder {
+                    color: BLACK,
+                    radius: 2.0,
+                });
+
             ellipse.draw(square, draw_state, transform, gl);
 
-            ellipse2.draw(sq2, draw_state, ellipse_transform, gl);
-            //draw path
             println!("Path size: {}", self.path.len());
             for i in 1..self.path.len() {
                 let ([x1, y1], color1) = &self.path[i - 1];
@@ -242,18 +316,18 @@ impl SpinningSquare {
         });
     }
 
+
     fn update(&mut self, args: &UpdateArgs) {
         self.rotation += 9.0 * args.dt;
 
         /**
-
         ████████╗██████╗  █████╗ ███╗   ██╗███████╗██╗      █████╗ ████████╗██╗ ██████╗ ███╗   ██╗███████╗
         ╚══██╔══╝██╔══██╗██╔══██╗████╗  ██║██╔════╝██║     ██╔══██╗╚══██╔══╝██║██╔═══██╗████╗  ██║██╔════╝
            ██║   ██████╔╝███████║██╔██╗ ██║███████╗██║     ███████║   ██║   ██║██║   ██║██╔██╗ ██║███████╗
            ██║   ██╔══██╗██╔══██║██║╚██╗██║╚════██║██║     ██╔══██║   ██║   ██║██║   ██║██║╚██╗██║╚════██║
            ██║   ██║  ██║██║  ██║██║ ╚████║███████║███████╗██║  ██║   ██║   ██║╚██████╔╝██║ ╚████║███████║
            ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
-            **/
+        **/
         if self.moving_x_or_y == true {
             // Update position based on direction
             if self.x_direction {
@@ -284,7 +358,6 @@ impl SpinningSquare {
         }
 
         /**
-
          ██████╗██╗  ██╗ █████╗ ███╗   ██╗ ██████╗ ███████╗
         ██╔════╝██║  ██║██╔══██╗████╗  ██║██╔════╝ ██╔════╝
         ██║     ███████║███████║██╔██╗ ██║██║  ███╗█████╗
@@ -307,6 +380,7 @@ impl SpinningSquare {
 
         let path_color = self.randomize_path_color();
         self.path.push(([self.x_pos, self.y_pos], path_color));
+
         const MAX_PATH_SIZE: usize = 250;
         if self.path.len() > MAX_PATH_SIZE {
             let drop_amt = self.path.len() - MAX_PATH_SIZE;
@@ -334,20 +408,37 @@ impl SpinningSquare {
         //self.adjust_size();
     }
 
-    fn setup(window: Window) {
+    pub fn setup(window: Window) {
         let opengl = OpenGL::V3_2;
+        let gl = Arc::new(Mutex::new(GlGraphics::new(opengl)));
 
-        // Create the application instance
-        let mut app = SpinningSquare::new(GlGraphics::new(opengl), window);
+        // Initialize objects with the shared GlGraphics instance
+        let mut ellipse2 = Ellipse2::new(gl.clone());
+        let mut app = SpinningSquare::new(gl.clone(), window);
 
         let mut events = Events::new(EventSettings::new());
+
         while let Some(ev) = events.next(&mut app.window) {
-            if let Some(args) = ev.render_args() {
-                app.render(&args);  // Render square
+            if let Some(args) = ev.update_args() {
+                app.update(&args);  // Update state for SpinningSquare
+                ellipse2.update(&args);  // Update state for Ellipse2
             }
 
-            if let Some(args) = ev.update_args() {
-                app.update(&args);  // Update the square state
+            if let Some(args) = ev.render_args() {
+                // Separate the immutable and mutable borrow scopes to avoid conflicts
+                {
+                    let mut gl = gl.lock().unwrap();  // Use the shared instance
+                    gl.draw(args.viewport(), |c, gl| {
+                        clear([0.5, 0.5, 0.5, 1.0], gl);  // Example of clearing the screen
+                        ellipse2.render(&args, c, gl);  // Render Ellipse2 within this scope
+                    });  // The immutable borrow ends here
+                }
+
+                // Create a new `Context`
+                let context = Context::new();  // Use an existing method to initialize the context
+
+                // After dropping the immutable borrow, you can now use `app` for mutable operations
+                app.render(&args, context);  // Pass the newly created context to render
             }
         }
     }
@@ -403,10 +494,11 @@ impl SpinningSquare {
     }
 
     fn adjust_size(&mut self) {
+        const SIZE: f64 = 0.05;
         if self.increasing_size {
-            self.size += 0.05;
+            self.size += SIZE;
         } else {
-            self.size -= 0.05;
+            self.size -= SIZE;
         }
         // Switch between increasing and decreasing every 10 seconds
         let now = SystemTime::now();
