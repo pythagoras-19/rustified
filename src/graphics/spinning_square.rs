@@ -76,6 +76,22 @@ impl SquareColor {
     }
 }
 
+fn random_square_color() -> SquareColor {
+    let mut rng = rand::thread_rng();
+    let num = rng.gen_range(0..8);
+
+    match num {
+        0 => SquareColor::RED,
+        1 => SquareColor::BLUE,
+        2 => SquareColor::GREEN,
+        3 => SquareColor::YELLOW,
+        4 => SquareColor::PURPLE,
+        5 => SquareColor::ORANGE,
+        6 => SquareColor::BLACK,
+        _ => SquareColor::YELLOW,
+    }
+}
+
 #[derive(Copy, Clone)]
 pub struct Border {
     pub color: Color,
@@ -172,7 +188,7 @@ impl Ellipse2 {
     pub fn new(gl: Arc<Mutex<GlGraphics>>) -> Self {
         Self {
             gl,
-            color: SquareColor::BLUE,
+            color: random_square_color(),
             x_pos: 100.0,  // initialize to the center of the screen
             y_pos: 100.0,
             moving_x_or_y: true, // true = x direction, false = y direction
@@ -216,23 +232,9 @@ impl Ellipse2 {
         }
     }
 
-    // TODO: REFACTOR ME BECUASE DUPLICATED CODE !!!
     fn randomize_path_color(&mut self) -> SquareColor {
-        let mut rng = rand::thread_rng();
-        let num = rng.gen_range(0..8);
-
-        match num {
-            0 => SquareColor::RED,
-            1 => SquareColor::BLUE,
-            2 => SquareColor::GREEN,
-            3 => SquareColor::YELLOW,
-            4 => SquareColor::PURPLE,
-            5 => SquareColor::ORANGE,
-            6 => SquareColor::BLACK,
-            _ => SquareColor::YELLOW,
-        }
+        random_square_color()
     }
-
 }
 
 pub struct SpinningSquare {
@@ -254,7 +256,7 @@ impl SpinningSquare {
     pub fn new(gl: Arc<Mutex<GlGraphics>>, window: Window) -> Self {
         Self {
             gl,
-            color: SquareColor::BLUE,
+            color: random_square_color(),
             rotation: 0.0,
             x_pos: 200.0,  // initialize to the center of the screen
             y_pos: 200.0,
@@ -376,7 +378,7 @@ impl SpinningSquare {
             self.switch_xy_direction();
         }
 
-        self.randomize_square_color();
+        // self.randomize_square_color();
 
         let path_color = self.randomize_path_color();
         self.path.push(([self.x_pos, self.y_pos], path_color));
@@ -448,35 +450,11 @@ impl SpinningSquare {
     }
 
     fn randomize_square_color(&mut self) {
-        let mut rng = rand::thread_rng();
-        let num = rng.gen_range(0..8);  // Generate a random number in the range 0-7
-
-        self.color = match num {
-            0 => SquareColor::RED,
-            1 => SquareColor::BLUE,
-            2 => SquareColor::GREEN,
-            3 => SquareColor::YELLOW,
-            4 => SquareColor::PURPLE,
-            5 => SquareColor::ORANGE,
-            6 => SquareColor::BLACK,
-            _ => SquareColor::YELLOW,
-        };
+        self.color = random_square_color();
     }
 
     fn randomize_path_color(&mut self) -> SquareColor {
-        let mut rng = rand::thread_rng();
-        let num = rng.gen_range(0..8);
-
-        match num {
-            0 => SquareColor::RED,
-            1 => SquareColor::BLUE,
-            2 => SquareColor::GREEN,
-            3 => SquareColor::YELLOW,
-            4 => SquareColor::PURPLE,
-            5 => SquareColor::ORANGE,
-            6 => SquareColor::BLACK,
-            _ => SquareColor::YELLOW,
-        }
+        random_square_color()
     }
 
     fn change_bg_color(&mut self) -> Color {
