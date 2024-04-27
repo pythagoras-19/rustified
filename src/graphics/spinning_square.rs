@@ -51,6 +51,19 @@ pub fn entry() {
     SpinningSquare::setup(window);
 }
 
+trait GameObject {
+    fn randomize_color();
+    fn new(gl: Arc<Mutex<GlGraphics>>, window: Window) -> Self;
+    fn render(&mut self, args: &RenderArgs, c: Context);
+    fn update(&mut self, args: &UpdateArgs);
+    fn setup(window: Window);
+    fn switch_xy_direction(&mut self);
+    fn randomize_square_color(&mut self);
+    fn randomize_path_color(&mut self) -> SquareColor;
+    fn change_bg_color(&mut self) -> Color;
+    fn adjust_size(&mut self);
+}
+
 #[derive(Clone)]
 pub enum SquareColor {
     RED,
@@ -253,8 +266,8 @@ pub struct SpinningSquare {
     window: Window,
 }
 
-impl SpinningSquare {
-    pub fn new(gl: Arc<Mutex<GlGraphics>>, window: Window) -> Self {
+impl GameObject for SpinningSquare {
+    fn new(gl: Arc<Mutex<GlGraphics>>, window: Window) -> Self {
         Self {
             gl,
             color: random_square_color(),
@@ -412,7 +425,7 @@ impl SpinningSquare {
         //self.adjust_size();
     }
 
-    pub fn setup(window: Window) {
+    fn setup(window: Window) {
         let opengl = OpenGL::V3_2;
         let gl = Arc::new(Mutex::new(GlGraphics::new(opengl)));
 
@@ -488,5 +501,9 @@ impl SpinningSquare {
         } else {
             self.increasing_size = false;
         }
+    }
+
+    fn randomize_color() {
+        random_square_color();
     }
 }

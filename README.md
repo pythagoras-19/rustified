@@ -9,7 +9,7 @@
 # Bugs
 - separate the ellipse from the square
 # TODO
-- create a GameObject that SpinningSquare and Ellipse2 "inherit" from
+- create a trait GameObject that SpinningSquare and Ellipse2 "inherit" from
   - for modularization
 
 # Foundational Rust Principles
