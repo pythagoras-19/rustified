@@ -200,6 +200,7 @@ impl Ellipse2 {
     }
 
     pub fn update(&mut self, args: &UpdateArgs) {
+        self.color = random_square_color();
         let x2 = rand::random::<f64>() * WINDOW_WIDTH as f64;
         let y2 = rand::random::<f64>() * WINDOW_HEIGHT as f64;
 
@@ -301,7 +302,7 @@ impl SpinningSquare {
                 .trans(-250.0, -250.0);
 
             let draw_state = &DrawState::default();
-            let ellipse = Ellipse::new(BLUE)
+            let ellipse = Ellipse::new(random_square_color().value())
                 .border(PistonBorder {
                     color: BLACK,
                     radius: 2.0,
@@ -321,6 +322,7 @@ impl SpinningSquare {
 
     fn update(&mut self, args: &UpdateArgs) {
         self.rotation += 9.0 * args.dt;
+        self.color = random_square_color();
 
         /**
         ████████╗██████╗  █████╗ ███╗   ██╗███████╗██╗      █████╗ ████████╗██╗ ██████╗ ███╗   ██╗███████╗
