@@ -29,10 +29,12 @@ const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 1.0];
 
 // GAME OBJECT SIZES
 const SPINNING_SQUARE_SIZE: f64 = 50.0;
+const MAX_TAIL_SIZE: usize = 20;
+const SIZE_INCREMENT: f64 = 0.05;
 
 // WINDOW CONSTANTS
-const WINDOW_WIDTH: u32 = 1600;
-const WINDOW_HEIGHT: u32 = 900;
+const WINDOW_WIDTH: u32 = 600;
+const WINDOW_HEIGHT: u32 = 300;
 
 // TRANSLATION CONSTANTS
 const SPINNING_SQUARE_MOVE_DISTANCE: f64 = 4.0;
@@ -40,6 +42,7 @@ const RIGHT_WINDOW_BORDER: u32 = WINDOW_WIDTH - (SPINNING_SQUARE_SIZE/2.0) as u3
 const LEFT_WINDOW_BORDER: u32 = 0 + (SPINNING_SQUARE_SIZE/2.0) as u32;
 const TOP_WINDOW_BORDER: u32 = 0 + (SPINNING_SQUARE_SIZE/2.0) as u32;
 const BOTTOM_WINDOW_BORDER: u32 = WINDOW_HEIGHT - (SPINNING_SQUARE_SIZE/2.0) as u32;
+
 
 pub fn entry() {
     let window: Window = WindowSettings::new("==SQUARE DANCING==", [WINDOW_WIDTH, WINDOW_HEIGHT])
@@ -239,7 +242,6 @@ impl Ellipse2 {
 
         // Draw the path of Ellipse2
         for i in 1..self.path.len() {
-            println!("PATH LENGTH OF ELLIPSE 2: {}", self.path.len());
             let ([x1, y1], color1) = &self.path[i - 1];
             let ([x2, y2], _) = &self.path[i];
             line(color1.value(), 1.0, [*x1, *y1, *x2, *y2], c.transform, gl);
@@ -318,12 +320,11 @@ impl GameObject for SpinningSquare {
             let ellipse = Ellipse::new(random_square_color().value())
                 .border(PistonBorder {
                     color: BLACK,
-                    radius: 2.0,
+                    radius: 4.0,
                 });
 
             ellipse.draw(square, draw_state, transform, gl);
 
-            println!("Path size: {}", self.path.len());
             for i in 1..self.path.len() {
                 let ([x1, y1], color1) = &self.path[i - 1];
                 let ([x2, y2], _) = &self.path[i];
@@ -398,9 +399,8 @@ impl GameObject for SpinningSquare {
         let path_color = self.randomize_path_color();
         self.path.push(([self.x_pos, self.y_pos], path_color));
 
-        const MAX_PATH_SIZE: usize = 250;
-        if self.path.len() > MAX_PATH_SIZE {
-            let drop_amt = self.path.len() - MAX_PATH_SIZE;
+        if self.path.len() > MAX_TAIL_SIZE {
+            let drop_amt = self.path.len() - MAX_TAIL_SIZE;
             self.path.drain(0..drop_amt);
         }
 
@@ -487,11 +487,10 @@ impl GameObject for SpinningSquare {
     }
 
     fn adjust_size(&mut self) {
-        const SIZE: f64 = 0.05;
         if self.increasing_size {
-            self.size += SIZE;
+            self.size += SIZE_INCREMENT;
         } else {
-            self.size -= SIZE;
+            self.size -= SIZE_INCREMENT;
         }
         // Switch between increasing and decreasing every 10 seconds
         let now = SystemTime::now();
