@@ -9,9 +9,7 @@
 # Bugs
 - separate the ellipse from the square
 # TODO
-- create a trait GameObject that SpinningSquare and Ellipse2 "inherit" from
-  - for modularization
-
+- fix the separation of ellipse and square
 # Foundational Rust Principles
 ### Rust solves memory leak problems with ease
 - **memory leak**: The situation where a computer program incorrectly manages memory allocations. 
