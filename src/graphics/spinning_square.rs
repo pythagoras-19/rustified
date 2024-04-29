@@ -130,7 +130,7 @@ TODO: FIX EVIL ELLIPSE (IT DOESNT RENDER)
 **/
 pub struct EvilEllipse {
     gl: Arc<Mutex<GlGraphics>>,
-    path: Vec<([f64; 2], SquareColor)>, // HACK, change this to ellipse data structure TODO: refactor
+    path: Vec<([f64; 2], SquareColor)>,
     x_pos: f64,
     y_pos: f64,
     size: f64,
@@ -219,7 +219,7 @@ impl EvilEllipse {
     }
 }
 
-pub struct SpinningSquare {
+struct SpinningSquare {
     gl: Arc<Mutex<GlGraphics>>,
     color: SquareColor,
     rotation: f64,
@@ -303,7 +303,6 @@ impl GameObject for SpinningSquare {
         });
     }
 
-
     fn update(&mut self, args: &UpdateArgs) {
         self.rotation += 9.0 * args.dt;
         self.color = random_square_color();
@@ -363,8 +362,6 @@ impl GameObject for SpinningSquare {
         if rand::random() {
             self.switch_xy_direction();
         }
-
-        // self.randomize_square_color();
 
         let path_color = self.randomize_path_color();
         self.path.push(([self.x_pos, self.y_pos], path_color));
