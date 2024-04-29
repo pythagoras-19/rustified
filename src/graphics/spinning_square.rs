@@ -25,23 +25,23 @@ const PURPLE: [f32; 4] = [0.5, 0.0, 0.5, 1.0];
 const ORANGE: [f32; 4] = [1.0, 0.5, 0.0, 1.0];
 const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 1.0];
 
-// GAME OBJECT SIZES
+/// GAME OBJECT SIZES
 const SPINNING_SQUARE_SIZE: f64 = 50.0;
 const MAX_TAIL_SIZE: usize = 100;
 const SIZE_INCREMENT: f64 = 0.05;
 
-// WINDOW CONSTANTS
+/// WINDOW CONSTANTS
 const WINDOW_WIDTH: u32 = 800;
 const WINDOW_HEIGHT: u32 = 800;
 
-// TRANSLATION CONSTANTS
-const SPINNING_SQUARE_MOVE_DISTANCE: f64 = 4.0;
+/// TRANSLATION CONSTANTS
+const SPINNING_SQUARE_MOVE_DISTANCE: f64 = 95.0;
 const RIGHT_WINDOW_BORDER: u32 = WINDOW_WIDTH - (SPINNING_SQUARE_SIZE/2.0) as u32;
 const LEFT_WINDOW_BORDER: u32 = 0 + (SPINNING_SQUARE_SIZE/2.0) as u32;
 const TOP_WINDOW_BORDER: u32 = 0 + (SPINNING_SQUARE_SIZE/2.0) as u32;
 const BOTTOM_WINDOW_BORDER: u32 = WINDOW_HEIGHT - (SPINNING_SQUARE_SIZE/2.0) as u32;
 
-// TRIANGLE OBSTACLE
+/// TRIANGLE OBSTACLE
 const TRIANGLE_VERTICES: [[f64; 2]; 3] = [
     [100.0, 100.0],
     [350.0, 150.0],
@@ -70,6 +70,11 @@ trait GameObject {
     fn change_bg_color(&mut self) -> Color;
     fn adjust_size(&mut self);
     fn randomize_color();
+
+    /// Collisions
+    fn check_collision(&self, square_center: (f64, f64), square_size: f64, triangle_vertices: [(f64, f64); 3]) -> bool;
+    fn point_in_triangle(p: (f64, f64), v1: (f64, f64), v2: (f64, f64), v3: (f64, f64)) -> bool;
+    fn get_square_vertices(center: (f64, f64), size: f64) -> [(f64, f64); 4];
 }
 
 #[derive(Clone, Debug)]
@@ -175,7 +180,7 @@ impl EvilEllipse {
             self.x_direction = false; // Switch to left
         }
 
-        // todo: IF it hits the triangle, collision logic here
+        // todo: IF EvilEllipse hits the triangle, collision logic here
 
         if self.y_pos <= 0.0 {
             self.y_direction = true; // Switch to down
@@ -190,14 +195,14 @@ impl EvilEllipse {
         let transform = c.transform.trans(self.x_pos, self.y_pos);
 
         // Create the ellipse with appropriate size and color
-        let ellipse = Ellipse::new(self.color.value())
-            .border(ellipse::Border {
-                color: BLACK,
-                radius: 2.0,
-            });
+        // let ellipse = Ellipse::new(self.color.value())
+        //     .border(ellipse::Border {
+        //         color: BLACK,
+        //         radius: 2.0,
+        //     });
 
         // Draw the ellipse with the calculated transform
-        ellipse.draw([0.0, 0.0, self.size, self.size], &DrawState::default(), transform, gl);
+        //ellipse.draw([0.0, 0.0, self.size, self.size], &DrawState::default(), transform, gl);
 
         // Draw the path of the ellipse
         for i in 1..self.path.len() {
@@ -344,6 +349,31 @@ impl GameObject for SpinningSquare {
             }
         }
 
+        /// convert triangle vertices
+        /// TODO: might be hack
+        let converted_triangle_vertices: [(f64, f64); 3] = [
+            (TRIANGLE_VERTICES[0][0], TRIANGLE_VERTICES[0][1]),
+            (TRIANGLE_VERTICES[1][0], TRIANGLE_VERTICES[1][1]),
+            (TRIANGLE_VERTICES[2][0], TRIANGLE_VERTICES[2][1]),
+        ];
+
+        // Check for collision with the triangle
+        let collision = self.check_collision(
+            (self.x_pos, self.y_pos),
+            self.size,
+            converted_triangle_vertices
+        );
+        if collision {
+            println!("Collision detected!");
+            println!("Position: {}, {}", self.x_pos, self.y_pos);
+            // Reverse direction as a simple response to collision
+            if self.moving_x_or_y {
+                self.x_direction = !self.x_direction; // Reverse horizontal direction
+            } else {
+                self.y_direction = !self.y_direction; // Reverse vertical direction
+            }
+        }
+
         /**
          ██████╗██╗  ██╗ █████╗ ███╗   ██╗ ██████╗ ███████╗
         ██╔════╝██║  ██║██╔══██╗████╗  ██║██╔════╝ ██╔════╝
@@ -471,5 +501,47 @@ impl GameObject for SpinningSquare {
 
     fn randomize_color() {
         random_square_color();
+    }
+
+
+    /**
+     ██████╗ ██████╗ ██╗     ██╗     ██╗███████╗██╗ ██████╗ ███╗   ██╗███████╗
+    ██╔════╝██╔═══██╗██║     ██║     ██║██╔════╝██║██╔═══██╗████╗  ██║██╔════╝
+    ██║     ██║   ██║██║     ██║     ██║███████╗██║██║   ██║██╔██╗ ██║███████╗
+    ██║     ██║   ██║██║     ██║     ██║╚════██║██║██║   ██║██║╚██╗██║╚════██║
+    ╚██████╗╚██████╔╝███████╗███████╗██║███████║██║╚██████╔╝██║ ╚████║███████║
+     ╚═════╝ ╚═════╝ ╚══════╝╚══════╝╚═╝╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
+    **/
+
+    /// Check if the square collides with the triangle
+    fn check_collision(&self, square_center: (f64, f64), square_size: f64, triangle_vertices: [(f64, f64); 3]) -> bool {
+        let square_vertices = SpinningSquare::get_square_vertices(square_center, square_size);
+        square_vertices.iter().any(|&vert| SpinningSquare::point_in_triangle(vert, triangle_vertices[0], triangle_vertices[1], triangle_vertices[2]))
+    }
+
+    /// Returns true if point p is inside the triangle defined by vertices v1, v2, v3
+    fn point_in_triangle(p: (f64, f64), v1: (f64, f64), v2: (f64, f64), v3: (f64, f64)) -> bool {
+        let sign = |p1: (f64, f64), p2: (f64, f64), p3: (f64, f64)| {
+            (p1.0 - p3.0) * (p2.1 - p3.1) - (p2.0 - p3.0) * (p1.1 - p3.1)
+        };
+
+        let d1 = sign(p, v1, v2);
+        let d2 = sign(p, v2, v3);
+        let d3 = sign(p, v3, v1);
+
+        let has_neg = (d1 < 0.0) || (d2 < 0.0) || (d3 < 0.0);
+        let has_pos = (d1 > 0.0) || (d2 > 0.0) || (d3 > 0.0);
+
+        !(has_neg && has_pos) // no sign difference means p is inside the triangle
+    }
+
+    /// Calculates the vertices of the square given its center position and size
+    fn get_square_vertices(center: (f64, f64), size: f64) -> [(f64, f64); 4] {
+        [
+            (center.0 - size / 2.0, center.1 - size / 2.0),
+            (center.0 + size / 2.0, center.1 - size / 2.0),
+            (center.0 + size / 2.0, center.1 + size / 2.0),
+            (center.0 - size / 2.0, center.1 + size / 2.0),
+        ]
     }
 }
