@@ -7,9 +7,9 @@ use std::sync::{Arc, Mutex};
 use piston_window::types::Color;
 use piston_window::ellipse::Border as PistonBorder;
 use std::time::SystemTime;
-use glutin_window::{GlutinWindow as Window, GlutinWindow};
-use graphics::color::{NAVY, TRANSPARENT};
-use graphics::{clear, DrawState, Graphics, rectangle, Rectangle};
+use glutin_window::{GlutinWindow as Window};
+use graphics::color::{NAVY};
+use graphics::{clear, DrawState, Graphics, rectangle};
 use graphics::math::Matrix2d;
 use graphics::types::{Radius, Resolution};
 use opengl_graphics::{GlGraphics, OpenGL};
@@ -33,8 +33,8 @@ const MAX_TAIL_SIZE: usize = 20;
 const SIZE_INCREMENT: f64 = 0.05;
 
 // WINDOW CONSTANTS
-const WINDOW_WIDTH: u32 = 600;
-const WINDOW_HEIGHT: u32 = 300;
+const WINDOW_WIDTH: u32 = 800;
+const WINDOW_HEIGHT: u32 = 800;
 
 // TRANSLATION CONSTANTS
 const SPINNING_SQUARE_MOVE_DISTANCE: f64 = 4.0;
@@ -42,6 +42,12 @@ const RIGHT_WINDOW_BORDER: u32 = WINDOW_WIDTH - (SPINNING_SQUARE_SIZE/2.0) as u3
 const LEFT_WINDOW_BORDER: u32 = 0 + (SPINNING_SQUARE_SIZE/2.0) as u32;
 const TOP_WINDOW_BORDER: u32 = 0 + (SPINNING_SQUARE_SIZE/2.0) as u32;
 const BOTTOM_WINDOW_BORDER: u32 = WINDOW_HEIGHT - (SPINNING_SQUARE_SIZE/2.0) as u32;
+
+const TRIANGLE_VERTICES: [[f64; 2]; 3] = [
+    [100.0, 100.0], // First vertex
+    [200.0, 100.0], // Second vertex
+    [150.0, 200.0], // Third vertex
+];
 
 
 pub fn entry() {
@@ -55,7 +61,6 @@ pub fn entry() {
 }
 
 trait GameObject {
-    fn randomize_color();
     fn new(gl: Arc<Mutex<GlGraphics>>, window: Window) -> Self;
     fn render(&mut self, args: &RenderArgs, c: Context);
     fn update(&mut self, args: &UpdateArgs);
@@ -65,9 +70,10 @@ trait GameObject {
     fn randomize_path_color(&mut self) -> SquareColor;
     fn change_bg_color(&mut self) -> Color;
     fn adjust_size(&mut self);
+    fn randomize_color();
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum SquareColor {
     RED,
     BLUE,
@@ -108,87 +114,10 @@ fn random_square_color() -> SquareColor {
     }
 }
 
-#[derive(Copy, Clone)]
-pub struct Border {
-    pub color: Color,
-    pub radius: Radius,
-}
-
-pub struct Line {
-    pub color: [f32; 4],
-    pub radius: Radius,
-}
-
-pub struct Ellipse {
-    pub color: SquareColor,
-    pub border: Option<Border>,
-    pub resolution: Resolution,
-}
-
-impl Ellipse {
-    pub fn new(color: SquareColor) -> Ellipse {
-        Ellipse {
-            color,
-            border: None,
-            resolution: 128,
-        }
-    }
-
-    pub fn new_border(color: SquareColor, radius: Radius) -> Ellipse {
-        let color_clone = color.clone();
-        Ellipse {
-            color,
-            border: Some(Border {
-                color: color_clone.value(),
-                radius,
-            }),
-            resolution: 128,
-        }
-    }
-
-    pub fn color(mut self, value: SquareColor) -> Self {
-        self.color = value;
-        self
-    }
-
-    pub fn border(mut self, value: Border) -> Self {
-        self.border = Some(value);
-        self
-    }
-
-    #[inline(always)]
-    pub fn draw<R: Into<[f64; 4]>, G>(&mut self, rectangle: R, draw_state: &DrawState, transform: Matrix2d, g: &mut G)
-        where G: Graphics
-    {
-        println!("drawing ellipse");
-        let ellipse = piston_window::Ellipse::new(self.color.value())
-            .resolution(self.resolution)
-            .border(PistonBorder {
-                color: self.border.as_ref().map(|b| b.color).unwrap_or([0.0; 4]),
-                radius: self.border.as_ref().map(|b| b.radius).unwrap_or(0.0),
-            });
-
-        g.ellipse(&ellipse, rectangle.into(), draw_state, transform);
-    }
-
-    fn randomize_ellipse_color(&mut self) -> Color {
-        let mut rng = rand::thread_rng();
-        let num = rng.gen_range(0..8);
-
-        match num {
-            0 => RED,
-            1 => BLUE,
-            2 => GREEN,
-            3 => YELLOW,
-            4 => PURPLE,
-            5 => ORANGE,
-            6 => BLACK,
-            _ => YELLOW,
-        }
-    }
-}
-
-pub struct Ellipse2 {
+/**
+TODO: FIX EVIL ELLIPSE (IT DOESNT SHOW)
+**/
+pub struct EvilEllipse {
     gl: Arc<Mutex<GlGraphics>>,
     path: Vec<([f64; 2], SquareColor)>, // HACK, change this to ellipse data structure TODO: refactor
     x_pos: f64,
@@ -197,56 +126,88 @@ pub struct Ellipse2 {
     moving_x_or_y: bool,
     x_direction: bool,
     y_direction: bool,
-    color: SquareColor
+    color: SquareColor,
+    x_speed: f64,
+    y_speed: f64,
 }
 
-impl Ellipse2 {
+impl EvilEllipse {
     pub fn new(gl: Arc<Mutex<GlGraphics>>) -> Self {
         Self {
             gl,
             color: random_square_color(),
-            x_pos: 100.0,  // initialize to the center of the screen
-            y_pos: 100.0,
+            x_pos: 200.0,
+            y_pos: 200.0,
             moving_x_or_y: true, // true = x direction, false = y direction
             x_direction: false,  // true = right, false = left
             y_direction: false, // true = up, false = down
+            x_speed: 2.0,
+            y_speed: 2.0,
             path: vec![],
-            size: SPINNING_SQUARE_SIZE,
+            size: 100.0,
         }
     }
 
     pub fn update(&mut self, args: &UpdateArgs) {
-        self.color = random_square_color();
-        let x2 = rand::random::<f64>() * WINDOW_WIDTH as f64;
-        let y2 = rand::random::<f64>() * WINDOW_HEIGHT as f64;
+        // Calculate the new position
+        self.x_pos += if self.x_direction { self.x_speed } else { -self.x_speed };
+        self.y_pos += if self.y_direction { self.y_speed } else { -self.y_speed };
 
-        // push coords
-        let path_color = self.randomize_path_color();
-        self.path.push(([x2,y2], path_color));
-        const MAX_PATH_SIZE: usize = 250;
-        if self.path.len() > MAX_PATH_SIZE {
-            let drop_amt = self.path.len() - MAX_PATH_SIZE;
-            self.path.drain(0..drop_amt);
+        // Clamp the position within the window boundaries
+        self.x_pos = self.x_pos.clamp(0.0, WINDOW_WIDTH as f64 - self.size);
+        self.y_pos = self.y_pos.clamp(0.0, WINDOW_HEIGHT as f64 - self.size);
+
+        // Update the direction if the ellipse hits a boundary
+        if self.x_pos <= 0.0 {
+            self.x_direction = true; // Switch to right
+        } else if self.x_pos >= WINDOW_WIDTH as f64 - self.size {
+            self.x_direction = false; // Switch to left
         }
+
+        if self.y_pos <= 0.0 {
+            self.y_direction = true; // Switch to down
+        } else if self.y_pos >= WINDOW_HEIGHT as f64 - self.size {
+            self.y_direction = false; // Switch to up
+        }
+
+        // Log updated position, size, and color
+        println!(
+            "Update - Position: ({:.2}, {:.2}), Size: {:.2}, Color: {:?}",
+            self.x_pos, self.y_pos, self.size, self.color
+        );
     }
 
     pub fn render(&mut self, args: &RenderArgs, c: Context, gl: &mut GlGraphics) {
         use graphics::*;
 
-        // Create an ellipse with the current color of Ellipse2
-        let ellipse = ellipse::Ellipse::new(self.color.value());
+        // clear([0.2, 0.2, 0.2, 1.0], gl); // A darker gray for contrast
 
-        // Draw the ellipse at the current position of Ellipse2
         let transform = c.transform.trans(self.x_pos, self.y_pos);
+
+        // Create the ellipse with appropriate size and color
+        let ellipse = graphics::ellipse::Ellipse::new(self.color.value())
+            .border(graphics::ellipse::Border {
+                color: BLACK,
+                radius: 2.0,
+            });
+
+        // Draw the ellipse with the calculated transform
         ellipse.draw([0.0, 0.0, self.size, self.size], &DrawState::default(), transform, gl);
 
-        // Draw the path of Ellipse2
+        // Draw the path of the ellipse
         for i in 1..self.path.len() {
             let ([x1, y1], color1) = &self.path[i - 1];
             let ([x2, y2], _) = &self.path[i];
             line(color1.value(), 1.0, [*x1, *y1, *x2, *y2], c.transform, gl);
         }
+
+        // Log render information
+        println!(
+            "Render - Position: ({:.2}, {:.2}), Size: {:.2}, Color: {:?}",
+            self.x_pos, self.y_pos, self.size, self.color
+        );
     }
+
 
     fn randomize_path_color(&mut self) -> SquareColor {
         random_square_color()
@@ -314,13 +275,13 @@ impl GameObject for SpinningSquare {
                 .transform
                 .trans(x + 10.0, y + 10.0)
                 .rot_rad(rotation)
-                .trans(-250.0, -250.0);
+                .trans(50.0, 50.0);
 
             let draw_state = &DrawState::default();
             let ellipse = Ellipse::new(random_square_color().value())
                 .border(PistonBorder {
                     color: BLACK,
-                    radius: 4.0,
+                    radius: 2.0,
                 });
 
             ellipse.draw(square, draw_state, transform, gl);
@@ -330,6 +291,16 @@ impl GameObject for SpinningSquare {
                 let ([x2, y2], _) = &self.path[i];
                 line(color1.value(), 10.0, [*x1, *y1, *x2, *y2], c.transform, gl);
             }
+
+            // Draw the triangle using predefined vertices and a distinct color
+            let triangle_color = [1.0, 0.0, 0.0, 1.0]; // Red
+            let triangle = graphics::polygon::Polygon::new(triangle_color);
+            triangle.draw(
+                &TRIANGLE_VERTICES, // Triangle vertices
+                &DrawState::default(),
+                c.transform, // Use the current transformation context
+                gl,
+            );
         });
     }
 
@@ -430,7 +401,7 @@ impl GameObject for SpinningSquare {
         let gl = Arc::new(Mutex::new(GlGraphics::new(opengl)));
 
         // Initialize objects with the shared GlGraphics instance
-        let mut ellipse2 = Ellipse2::new(gl.clone());
+        let mut evil_ellipse = EvilEllipse::new(gl.clone());
         let mut app = SpinningSquare::new(gl.clone(), window);
 
         let mut events = Events::new(EventSettings::new());
@@ -438,24 +409,24 @@ impl GameObject for SpinningSquare {
         while let Some(ev) = events.next(&mut app.window) {
             if let Some(args) = ev.update_args() {
                 app.update(&args);  // Update state for SpinningSquare
-                ellipse2.update(&args);  // Update state for Ellipse2
+                evil_ellipse.update(&args);  // Update state for evil_ellipse
             }
 
             if let Some(args) = ev.render_args() {
-                // Separate the immutable and mutable borrow scopes to avoid conflicts
-                {
-                    let mut gl = gl.lock().unwrap();  // Use the shared instance
-                    gl.draw(args.viewport(), |c, gl| {
-                        clear([0.5, 0.5, 0.5, 1.0], gl);  // Example of clearing the screen
-                        ellipse2.render(&args, c, gl);  // Render Ellipse2 within this scope
-                    });  // The immutable borrow ends here
-                }
-
                 // Create a new `Context`
                 let context = Context::new();  // Use an existing method to initialize the context
 
                 // After dropping the immutable borrow, you can now use `app` for mutable operations
                 app.render(&args, context);  // Pass the newly created context to render
+
+                // Separate the immutable and mutable borrow scopes to avoid conflicts
+
+                let mut gl = gl.lock().unwrap();  // Use the shared instance
+                evil_ellipse.render(&args, context, &mut gl);
+                // gl.draw(args.viewport(), |c, gl| {
+                //     clear([0.5, 0.5, 0.5, 1.0], gl);
+                //     evil_ellipse.render(&args, c, gl);  // Render evil_ellipse within this scope
+                // });
             }
         }
     }
@@ -482,7 +453,7 @@ impl GameObject for SpinningSquare {
         } else if seconds % 40 < 30 {
             RED
         } else {
-            TRANSPARENT
+            BLACK
         }
     }
 
