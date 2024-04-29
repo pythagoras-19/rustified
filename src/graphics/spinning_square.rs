@@ -27,7 +27,7 @@ const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 1.0];
 
 // GAME OBJECT SIZES
 const SPINNING_SQUARE_SIZE: f64 = 50.0;
-const MAX_TAIL_SIZE: usize = 20;
+const MAX_TAIL_SIZE: usize = 100;
 const SIZE_INCREMENT: f64 = 0.05;
 
 // WINDOW CONSTANTS
@@ -85,6 +85,18 @@ pub enum SquareColor {
 
 impl SquareColor {
     fn value(&self) -> [f32; 4] {
+        match *self {
+            SquareColor::RED => RED,
+            SquareColor::BLUE => BLUE,
+            SquareColor::GREEN => GREEN,
+            SquareColor::YELLOW => YELLOW,
+            SquareColor::PURPLE => PURPLE,
+            SquareColor::ORANGE => ORANGE,
+            SquareColor::BLACK => BLACK,
+        }
+    }
+
+    fn to_color(&self) -> Color {
         match *self {
             SquareColor::RED => RED,
             SquareColor::BLUE => BLUE,
@@ -170,12 +182,6 @@ impl EvilEllipse {
         } else if self.y_pos >= WINDOW_HEIGHT as f64 - self.size {
             self.y_direction = false; // Switch to up
         }
-
-        // Log updated position, size, and color
-        // println!(
-        //     "Update - Position: ({:.2}, {:.2}), Size: {:.2}, Color: {:?}",
-        //     self.x_pos, self.y_pos, self.size, self.color
-        // );
     }
 
     pub fn render(&mut self, args: &RenderArgs, c: Context, gl: &mut GlGraphics) {
@@ -286,7 +292,7 @@ impl GameObject for SpinningSquare {
                 line(color1.value(), 10.0, [*x1, *y1, *x2, *y2], c.transform, gl);
             }
 
-            let triangle_color = [1.0, 0.0, 0.0, 1.0]; // Red
+            let triangle_color = random_square_color().to_color();
             let triangle = Polygon::new(triangle_color);
             triangle.draw(
                 &TRIANGLE_VERTICES,
