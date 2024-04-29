@@ -8,10 +8,8 @@ use piston_window::types::Color;
 use piston_window::ellipse::Border as PistonBorder;
 use std::time::SystemTime;
 use glutin_window::{GlutinWindow as Window};
-use graphics::color::{NAVY};
+use graphics::color::*;
 use graphics::{clear, DrawState, Graphics, rectangle};
-use graphics::math::Matrix2d;
-use graphics::types::{Radius, Resolution};
 use opengl_graphics::{GlGraphics, OpenGL};
 use piston::event_loop::{EventSettings, Events};
 use piston::input::{RenderArgs, RenderEvent, UpdateArgs, UpdateEvent};
@@ -43,10 +41,11 @@ const LEFT_WINDOW_BORDER: u32 = 0 + (SPINNING_SQUARE_SIZE/2.0) as u32;
 const TOP_WINDOW_BORDER: u32 = 0 + (SPINNING_SQUARE_SIZE/2.0) as u32;
 const BOTTOM_WINDOW_BORDER: u32 = WINDOW_HEIGHT - (SPINNING_SQUARE_SIZE/2.0) as u32;
 
+// TRIANGLE OBSTACLE
 const TRIANGLE_VERTICES: [[f64; 2]; 3] = [
-    [100.0, 100.0], // First vertex
-    [200.0, 100.0], // Second vertex
-    [150.0, 200.0], // Third vertex
+    [100.0, 100.0],
+    [350.0, 150.0],
+    [150.0, 250.0],
 ];
 
 
@@ -115,7 +114,7 @@ fn random_square_color() -> SquareColor {
 }
 
 /**
-TODO: FIX EVIL ELLIPSE (IT DOESNT SHOW)
+TODO: FIX EVIL ELLIPSE (IT DOESNT RENDER)
 **/
 pub struct EvilEllipse {
     gl: Arc<Mutex<GlGraphics>>,
@@ -164,6 +163,8 @@ impl EvilEllipse {
             self.x_direction = false; // Switch to left
         }
 
+        // todo: IF it hits the triangle, collision logic here
+
         if self.y_pos <= 0.0 {
             self.y_direction = true; // Switch to down
         } else if self.y_pos >= WINDOW_HEIGHT as f64 - self.size {
@@ -171,22 +172,20 @@ impl EvilEllipse {
         }
 
         // Log updated position, size, and color
-        println!(
-            "Update - Position: ({:.2}, {:.2}), Size: {:.2}, Color: {:?}",
-            self.x_pos, self.y_pos, self.size, self.color
-        );
+        // println!(
+        //     "Update - Position: ({:.2}, {:.2}), Size: {:.2}, Color: {:?}",
+        //     self.x_pos, self.y_pos, self.size, self.color
+        // );
     }
 
     pub fn render(&mut self, args: &RenderArgs, c: Context, gl: &mut GlGraphics) {
         use graphics::*;
 
-        // clear([0.2, 0.2, 0.2, 1.0], gl); // A darker gray for contrast
-
         let transform = c.transform.trans(self.x_pos, self.y_pos);
 
         // Create the ellipse with appropriate size and color
-        let ellipse = graphics::ellipse::Ellipse::new(self.color.value())
-            .border(graphics::ellipse::Border {
+        let ellipse = Ellipse::new(self.color.value())
+            .border(ellipse::Border {
                 color: BLACK,
                 radius: 2.0,
             });
@@ -202,10 +201,10 @@ impl EvilEllipse {
         }
 
         // Log render information
-        println!(
-            "Render - Position: ({:.2}, {:.2}), Size: {:.2}, Color: {:?}",
-            self.x_pos, self.y_pos, self.size, self.color
-        );
+        // println!(
+        //     "Render - Position: ({:.2}, {:.2}), Size: {:.2}, Color: {:?}",
+        //     self.x_pos, self.y_pos, self.size, self.color
+        // );
     }
 
 
@@ -271,11 +270,6 @@ impl GameObject for SpinningSquare {
             let color = self.color.value();
             rectangle(color, square, transform, gl);
 
-            let ellipse_transform = c
-                .transform
-                .trans(x + 10.0, y + 10.0)
-                .rot_rad(rotation)
-                .trans(50.0, 50.0);
 
             let draw_state = &DrawState::default();
             let ellipse = Ellipse::new(random_square_color().value())
@@ -292,13 +286,12 @@ impl GameObject for SpinningSquare {
                 line(color1.value(), 10.0, [*x1, *y1, *x2, *y2], c.transform, gl);
             }
 
-            // Draw the triangle using predefined vertices and a distinct color
             let triangle_color = [1.0, 0.0, 0.0, 1.0]; // Red
-            let triangle = graphics::polygon::Polygon::new(triangle_color);
+            let triangle = Polygon::new(triangle_color);
             triangle.draw(
-                &TRIANGLE_VERTICES, // Triangle vertices
+                &TRIANGLE_VERTICES,
                 &DrawState::default(),
-                c.transform, // Use the current transformation context
+                c.transform,
                 gl,
             );
         });
@@ -451,7 +444,7 @@ impl GameObject for SpinningSquare {
         } else if seconds % 40 < 20 {
             NAVY
         } else if seconds % 40 < 30 {
-            RED
+            PURPLE
         } else {
             BLACK
         }

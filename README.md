@@ -9,6 +9,7 @@
 # Bugs
 - separate the ellipse from the square
 # TODO
+- get collision working with triangle
 - fix the separation of ellipse and square
 # Foundational Rust Principles
 ### Rust solves memory leak problems with ease
