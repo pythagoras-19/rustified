@@ -281,7 +281,7 @@ impl GameObject for SpinningSquare {
             let ellipse = Ellipse::new(random_square_color().value())
                 .border(PistonBorder {
                     color: BLACK,
-                    radius: 2.0,
+                    radius: 3.0,
                 });
 
             ellipse.draw(square, draw_state, transform, gl);
