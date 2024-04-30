@@ -471,7 +471,15 @@ impl GameObject for SpinningSquare {
 
     fn change_bg_color(&mut self) -> Color {
         let now = SystemTime::now();
-        let seconds = now.duration_since(SystemTime::UNIX_EPOCH).unwrap().as_secs();
+        let seconds = match now.duration_since(SystemTime::UNIX_EPOCH) {
+            Ok(duration) => duration.as_secs(),
+            Err(e) => {
+                eprintln!("An error occurred: {}", e);
+                return RED;
+            },
+        };
+
+
         if seconds % 40 < 10 {
             YELLOW
         } else if seconds % 40 < 20 {
