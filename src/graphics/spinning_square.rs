@@ -35,7 +35,7 @@ const WINDOW_WIDTH: u32 = 800;
 const WINDOW_HEIGHT: u32 = 800;
 
 /// TRANSLATION CONSTANTS
-const SPINNING_SQUARE_MOVE_DISTANCE: f64 = 95.0;
+const SPINNING_SQUARE_MOVE_DISTANCE: f64 = 15.0;
 const RIGHT_WINDOW_BORDER: u32 = WINDOW_WIDTH - (SPINNING_SQUARE_SIZE/2.0) as u32;
 const LEFT_WINDOW_BORDER: u32 = 0 + (SPINNING_SQUARE_SIZE/2.0) as u32;
 const TOP_WINDOW_BORDER: u32 = 0 + (SPINNING_SQUARE_SIZE/2.0) as u32;
@@ -245,7 +245,7 @@ impl GameObject for SpinningSquare {
             gl,
             color: random_square_color(),
             rotation: 0.0,
-            x_pos: 200.0,  // initialize to the center of the screen
+            x_pos: 600.0,  // initialize to the center of the screen
             y_pos: 200.0,
             moving_x_or_y: false, // true = x direction, false = y direction
             x_direction: true,  // true = right, false = left
@@ -472,13 +472,13 @@ impl GameObject for SpinningSquare {
     fn change_bg_color(&mut self) -> Color {
         let now = SystemTime::now();
         let seconds = match now.duration_since(SystemTime::UNIX_EPOCH) {
+            /// error handling
             Ok(duration) => duration.as_secs(),
             Err(e) => {
                 eprintln!("An error occurred: {}", e);
                 return RED;
             },
         };
-
 
         if seconds % 40 < 10 {
             YELLOW
