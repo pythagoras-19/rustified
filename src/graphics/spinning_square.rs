@@ -43,7 +43,7 @@ const BOTTOM_WINDOW_BORDER: u32 = WINDOW_HEIGHT - (SPINNING_SQUARE_SIZE/2.0) as 
 
 /// TRIANGLE OBSTACLE
 const TRIANGLE_VERTICES: [[f64; 2]; 3] = [
-    [100.0, 100.0],
+    [100.0, 80.0],
     [350.0, 150.0],
     [150.0, 250.0],
 ];

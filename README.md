@@ -9,7 +9,12 @@
 # Bugs
 - separate the ellipse from the square
 # TODO
+- add a pause/resume feature
+- add a slow and speed up feature for the spinning square
+  - need to take in user input
+- add another game object for user
 - fix the separation of ellipse and square
+- EvilEllipse -- where is it?
 # Foundational Rust Principles
 ### Rust solves memory leak problems with ease
 - **memory leak**: The situation where a computer program incorrectly manages memory allocations. 
