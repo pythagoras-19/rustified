@@ -36,11 +36,19 @@ const WINDOW_WIDTH: u32 = 800;
 const WINDOW_HEIGHT: u32 = 800;
 
 /// TRANSLATION CONSTANTS
-const SPINNING_SQUARE_MOVE_DISTANCE: f64 = 15.0;
+///
+/// Speed
+const SPINNING_SQUARE_INITIAL_MOVE_DISTANCE: f64 = 15.0;
+const SPINNING_SQUARE_SPEED_INCREMENT: f64 = 10.0;
 const RIGHT_WINDOW_BORDER: u32 = WINDOW_WIDTH - (SPINNING_SQUARE_SIZE/2.0) as u32;
 const LEFT_WINDOW_BORDER: u32 = 0 + (SPINNING_SQUARE_SIZE/2.0) as u32;
 const TOP_WINDOW_BORDER: u32 = 0 + (SPINNING_SQUARE_SIZE/2.0) as u32;
 const BOTTOM_WINDOW_BORDER: u32 = WINDOW_HEIGHT - (SPINNING_SQUARE_SIZE/2.0) as u32;
+
+/// Spinning Square Initial Position
+const SPINNING_SQUARE_INITIAL_X_POSITION: f64 = 600.0;
+const SPINNING_SQUARE_INITIAL_Y_POSITION: f64 = 200.0;
+const SPINNING_SQUARE_ROTATION: f64 = 0.0;
 
 /// TRIANGLE OBSTACLE
 const TRIANGLE_VERTICES: [[f64; 2]; 3] = [
@@ -235,9 +243,9 @@ impl GameObject for SpinningSquare {
         Self {
             gl,
             color: random_square_color(),
-            rotation: 0.0,
-            x_pos: 600.0,  // initialize to the center of the screen
-            y_pos: 200.0,
+            rotation: SPINNING_SQUARE_ROTATION,
+            x_pos: SPINNING_SQUARE_INITIAL_X_POSITION,
+            y_pos: SPINNING_SQUARE_INITIAL_Y_POSITION,
             moving_x_or_y: false, // true = x direction, false = y direction
             x_direction: true,  // true = right, false = left
             y_direction: true, // true = up, false = down
@@ -247,25 +255,25 @@ impl GameObject for SpinningSquare {
             increasing_size: true,
             last_size_change: SystemTime::now(),
             paused: false,
-            x_speed: SPINNING_SQUARE_MOVE_DISTANCE,
-            y_speed: SPINNING_SQUARE_MOVE_DISTANCE,
+            x_speed: SPINNING_SQUARE_INITIAL_MOVE_DISTANCE,
+            y_speed: SPINNING_SQUARE_INITIAL_MOVE_DISTANCE,
         }
     }
 
     fn increase_speed(&mut self) {
         println!("Called increase speed! {}", self.x_speed);
-        self.x_speed += 10.0;
-        self.y_speed += 10.0;
+        self.x_speed += SPINNING_SQUARE_SPEED_INCREMENT;
+        self.y_speed += SPINNING_SQUARE_SPEED_INCREMENT;
         println!("{}", self.x_speed);
     }
 
     fn decrease_speed(&mut self) {
         println!("Called decrease speed!");
-        if self.x_speed > 10.0 {
-            self.x_speed -= 10.0;
+        if self.x_speed > SPINNING_SQUARE_SPEED_INCREMENT {
+            self.x_speed -= SPINNING_SQUARE_SPEED_INCREMENT;
         }
-        if self.y_speed > 10.0 {
-            self.y_speed -= 10.0;
+        if self.y_speed > SPINNING_SQUARE_SPEED_INCREMENT {
+            self.y_speed -= SPINNING_SQUARE_SPEED_INCREMENT;
         }
     }
 
@@ -455,6 +463,7 @@ impl GameObject for SpinningSquare {
             if let Some(Button::Keyboard(key)) = ev.press_args() {
                 match key {
                     /// Usage: P for pause and R for resume
+                    /// I for increase speed, and J for decrease speed
                     Key::P => {
                         paused = true;
                     }
