@@ -6,7 +6,7 @@ extern crate piston;
 use std::sync::{Arc, Mutex};
 use piston_window::types::Color;
 use piston_window::ellipse::Border as PistonBorder;
-use std::time::SystemTime;
+use std::time::{Duration, SystemTime};
 use glutin_window::{GlutinWindow as Window};
 use graphics::color::*;
 use graphics::{clear, DrawState, Graphics, rectangle};
@@ -28,7 +28,7 @@ const BLACK: [f32; 4] = [0.0, 0.0, 0.0, 1.0];
 /// GAME OBJECT SIZES
 const SPINNING_SQUARE_SIZE: f64 = 50.0;
 const MAX_TAIL_SIZE: usize = 100;
-const SIZE_INCREMENT: f64 = 0.05;
+const SIZE_INCREMENT: f64 = 0.02;
 
 /// WINDOW CONSTANTS
 const WINDOW_WIDTH: u32 = 800;
@@ -180,8 +180,6 @@ impl EvilEllipse {
             self.x_direction = false; // Switch to left
         }
 
-        // todo: IF EvilEllipse hits the triangle, collision logic here
-
         if self.y_pos <= 0.0 {
             self.y_direction = true; // Switch to down
         } else if self.y_pos >= WINDOW_HEIGHT as f64 - self.size {
@@ -194,28 +192,12 @@ impl EvilEllipse {
 
         let transform = c.transform.trans(self.x_pos, self.y_pos);
 
-        // Create the ellipse with appropriate size and color
-        // let ellipse = Ellipse::new(self.color.value())
-        //     .border(ellipse::Border {
-        //         color: BLACK,
-        //         radius: 2.0,
-        //     });
-
-        // Draw the ellipse with the calculated transform
-        //ellipse.draw([0.0, 0.0, self.size, self.size], &DrawState::default(), transform, gl);
-
         // Draw the path of the ellipse
         for i in 1..self.path.len() {
             let ([x1, y1], color1) = &self.path[i - 1];
             let ([x2, y2], _) = &self.path[i];
             line(color1.value(), 1.0, [*x1, *y1, *x2, *y2], c.transform, gl);
         }
-
-        // Log render information
-        // println!(
-        //     "Render - Position: ({:.2}, {:.2}), Size: {:.2}, Color: {:?}",
-        //     self.x_pos, self.y_pos, self.size, self.color
-        // );
     }
 
 
@@ -237,6 +219,7 @@ struct SpinningSquare {
     size: f64,
     increasing_size: bool,
     window: Window,
+    last_size_change: SystemTime,
 }
 
 impl GameObject for SpinningSquare {
@@ -254,6 +237,7 @@ impl GameObject for SpinningSquare {
             path: vec![],
             size: SPINNING_SQUARE_SIZE,
             increasing_size: true,
+            last_size_change: SystemTime::now(),
         }
     }
 
@@ -350,7 +334,6 @@ impl GameObject for SpinningSquare {
         }
 
         /// convert triangle vertices
-        /// TODO: might be hack
         let converted_triangle_vertices: [(f64, f64); 3] = [
             (TRIANGLE_VERTICES[0][0], TRIANGLE_VERTICES[0][1]),
             (TRIANGLE_VERTICES[1][0], TRIANGLE_VERTICES[1][1]),
@@ -401,7 +384,7 @@ impl GameObject for SpinningSquare {
             self.path.drain(0..drop_amt);
         }
 
-        /*
+        /**
 
         ███████╗ ██████╗ ██╗   ██╗ █████╗ ██████╗ ███████╗
         ██╔════╝██╔═══██╗██║   ██║██╔══██╗██╔══██╗██╔════╝
@@ -419,7 +402,7 @@ impl GameObject for SpinningSquare {
 
         */
         // For Slingshot version uncomment next line!
-        //self.adjust_size();
+        self.adjust_size();
     }
 
     fn setup(window: Window) {
@@ -492,18 +475,23 @@ impl GameObject for SpinningSquare {
     }
 
     fn adjust_size(&mut self) {
+        // Get the current time
+        let now = SystemTime::now();
+
+        // Check if 5 seconds have passed since the last size change
+        if let Ok(elapsed) = now.duration_since(self.last_size_change) {
+            if elapsed > Duration::from_secs(5) {
+                // If 5 seconds have passed, switch the increasing_size flag and update the last_size_change time
+                self.increasing_size = !self.increasing_size;
+                self.last_size_change = now;
+            }
+        }
+
+        // Adjust the size based on the increasing_size flag
         if self.increasing_size {
             self.size += SIZE_INCREMENT;
         } else {
             self.size -= SIZE_INCREMENT;
-        }
-        // Switch between increasing and decreasing every 10 seconds
-        let now = SystemTime::now();
-        let secs = now.duration_since(SystemTime::UNIX_EPOCH).unwrap().as_secs();
-        if secs % 20 < 5 {
-            self.increasing_size = true;
-        } else {
-            self.increasing_size = false;
         }
     }
 
@@ -528,14 +516,14 @@ impl GameObject for SpinningSquare {
     }
 
     /// Returns true if point p is inside the triangle defined by vertices v1, v2, v3
-    fn point_in_triangle(p: (f64, f64), v1: (f64, f64), v2: (f64, f64), v3: (f64, f64)) -> bool {
+    fn point_in_triangle(point: (f64, f64), v1: (f64, f64), v2: (f64, f64), v3: (f64, f64)) -> bool {
         let sign = |p1: (f64, f64), p2: (f64, f64), p3: (f64, f64)| {
             (p1.0 - p3.0) * (p2.1 - p3.1) - (p2.0 - p3.0) * (p1.1 - p3.1)
         };
 
-        let d1 = sign(p, v1, v2);
-        let d2 = sign(p, v2, v3);
-        let d3 = sign(p, v3, v1);
+        let d1 = sign(point, v1, v2);
+        let d2 = sign(point, v2, v3);
+        let d3 = sign(point, v3, v1);
 
         let has_neg = (d1 < 0.0) || (d2 < 0.0) || (d3 < 0.0);
         let has_pos = (d1 > 0.0) || (d2 > 0.0) || (d3 > 0.0);
