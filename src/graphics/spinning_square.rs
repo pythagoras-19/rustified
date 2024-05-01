@@ -62,6 +62,10 @@ pub fn entry() {
 
 trait GameObject {
     fn new(gl: Arc<Mutex<GlGraphics>>, window: Window) -> Self;
+    fn increase_speed(&mut self);
+    fn decrease_speed(&mut self);
+    fn get_x_speed(&mut self) -> f64;
+    fn get_y_speed(&mut self) -> f64;
     fn render(&mut self, args: &RenderArgs, c: Context);
     fn update(&mut self, args: &UpdateArgs);
     fn setup(window: Window);
@@ -133,7 +137,7 @@ fn random_square_color() -> SquareColor {
 
 /**
 TODO: FIX EVIL ELLIPSE (IT DOESNT RENDER)
-**/
+ **/
 pub struct EvilEllipse {
     gl: Arc<Mutex<GlGraphics>>,
     path: Vec<([f64; 2], SquareColor)>,
@@ -222,6 +226,8 @@ struct SpinningSquare {
     window: Window,
     last_size_change: SystemTime,
     paused: bool,
+    x_speed: f64,
+    y_speed: f64,
 }
 
 impl GameObject for SpinningSquare {
@@ -241,7 +247,34 @@ impl GameObject for SpinningSquare {
             increasing_size: true,
             last_size_change: SystemTime::now(),
             paused: false,
+            x_speed: SPINNING_SQUARE_MOVE_DISTANCE,
+            y_speed: SPINNING_SQUARE_MOVE_DISTANCE,
         }
+    }
+
+    fn increase_speed(&mut self) {
+        println!("Called increase speed! {}", self.x_speed);
+        self.x_speed += 10.0;
+        self.y_speed += 10.0;
+        println!("{}", self.x_speed);
+    }
+
+    fn decrease_speed(&mut self) {
+        println!("Called decrease speed!");
+        if self.x_speed > 10.0 {
+            self.x_speed -= 10.0;
+        }
+        if self.y_speed > 10.0 {
+            self.y_speed -= 10.0;
+        }
+    }
+
+    fn get_x_speed(&mut self) -> f64 {
+        self.x_speed
+    }
+
+    fn get_y_speed(&mut self) -> f64 {
+        self.y_speed
     }
 
     fn render(&mut self, args: &RenderArgs, c: Context) {
@@ -310,9 +343,9 @@ impl GameObject for SpinningSquare {
         if self.moving_x_or_y == true {
             // Update position based on direction
             if self.x_direction {
-                self.x_pos += SPINNING_SQUARE_MOVE_DISTANCE;  // Move right
+                self.x_pos += self.get_x_speed();  // Move right
             } else {
-                self.x_pos -= SPINNING_SQUARE_MOVE_DISTANCE;  // Move left
+                self.x_pos -= self.get_x_speed();  // Move left
             }
 
             // change direction when hit boundaries
@@ -323,9 +356,9 @@ impl GameObject for SpinningSquare {
             }
         } else {
             if self.y_direction {
-                self.y_pos -= SPINNING_SQUARE_MOVE_DISTANCE;  // Move up
+                self.y_pos -= self.get_y_speed();  // Move up
             } else {
-                self.y_pos += SPINNING_SQUARE_MOVE_DISTANCE;  // Move down
+                self.y_pos += self.get_y_speed();  // Move down
             }
 
             // change direction when hit boundaries
@@ -403,7 +436,7 @@ impl GameObject for SpinningSquare {
         ███████║██║███████╗███████╗
         ╚══════╝╚═╝╚══════╝╚══════╝
 
-        */
+         */
         self.adjust_size();
     }
 
@@ -427,6 +460,12 @@ impl GameObject for SpinningSquare {
                     }
                     Key:: R => {
                         paused = false;
+                    }
+                    Key::I => {
+                        app.increase_speed();
+                    }
+                    Key::J => {
+                        app.decrease_speed();
                     }
                     _ => {}
                 }
