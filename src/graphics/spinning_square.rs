@@ -6,6 +6,7 @@ extern crate piston;
 use std::sync::{Arc, Mutex};
 use piston_window::types::Color;
 use piston_window::ellipse::Border as PistonBorder;
+use piston_window::{Button, Key, PressEvent};
 use std::time::{Duration, SystemTime};
 use glutin_window::{GlutinWindow as Window};
 use graphics::color::*;
@@ -220,6 +221,7 @@ struct SpinningSquare {
     increasing_size: bool,
     window: Window,
     last_size_change: SystemTime,
+    paused: bool,
 }
 
 impl GameObject for SpinningSquare {
@@ -238,6 +240,7 @@ impl GameObject for SpinningSquare {
             size: SPINNING_SQUARE_SIZE,
             increasing_size: true,
             last_size_change: SystemTime::now(),
+            paused: false,
         }
     }
 
@@ -401,7 +404,6 @@ impl GameObject for SpinningSquare {
         ╚══════╝╚═╝╚══════╝╚══════╝
 
         */
-        // For Slingshot version uncomment next line!
         self.adjust_size();
     }
 
@@ -414,11 +416,26 @@ impl GameObject for SpinningSquare {
         let mut app = SpinningSquare::new(gl.clone(), window);
 
         let mut events = Events::new(EventSettings::new());
+        let mut paused = false;
 
         while let Some(ev) = events.next(&mut app.window) {
+            if let Some(Button::Keyboard(key)) = ev.press_args() {
+                match key {
+                    /// Usage: P for pause and R for resume
+                    Key::P => {
+                        paused = true;
+                    }
+                    Key:: R => {
+                        paused = false;
+                    }
+                    _ => {}
+                }
+            }
             if let Some(args) = ev.update_args() {
-                app.update(&args);  // Update state for SpinningSquare
-                evil_ellipse.update(&args);  // Update state for evil_ellipse
+                if !paused {
+                    app.update(&args);  // Update state for SpinningSquare
+                    evil_ellipse.update(&args);  // Update state for evil_ellipse
+                }
             }
 
             if let Some(args) = ev.render_args() {
