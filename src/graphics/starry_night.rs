@@ -23,13 +23,12 @@ fn build() {
 }
 
 
-const X_EXTENT: f32 = 900.;
+const X_EXTENT: f32 = 900.0;
 
-fn setup(
-    mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
-) {
+fn setup( mut commands: Commands,
+          mut meshes: ResMut<Assets<Mesh>>,
+          mut materials: ResMut<Assets<ColorMaterial>>, ) {
+
     commands.spawn(Camera2dBundle::default());
 
     let shapes = [
@@ -43,6 +42,7 @@ fn setup(
             Vec2::new(-50.0, -50.0),
             Vec2::new(50.0, -50.0),
         ))),
+        Mesh2dHandle(meshes.add(Circle { radius: 50.0}))
     ];
     let num_shapes = shapes.len();
 
