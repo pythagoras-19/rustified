@@ -3,6 +3,11 @@ use bevy:: {
     sprite::{MaterialMesh2dBundle, Mesh2dHandle}
 };
 
+
+pub fn entry() {
+    build();
+}
+
 #[derive(Component)]
 struct Position(Vec2); // component
 
@@ -10,9 +15,6 @@ fn move_system(mut query: Query<&mut Position>) {
     for mut pos in query.iter_mut() {
         pos.0.x += 1.0;
     }
-}
-pub fn entry() {
-    build();
 }
 
 fn build() {
@@ -48,7 +50,7 @@ fn setup( mut commands: Commands,
 
     for (i, shape) in shapes.into_iter().enumerate() {
         // Distribute colors evenly across the rainbow.
-        let color = Color::hsl(360. * i as f32 / num_shapes as f32, 0.95, 0.7);
+        let color = Color::hsl(360. * i as f32 / num_shapes as f32, 100.0, 0.7);
 
         commands.spawn(MaterialMesh2dBundle {
             mesh: shape,
