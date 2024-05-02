@@ -17,6 +17,7 @@ mod graphics {
     pub mod ballin;
     pub mod spinning_square;
     pub mod ellipse;
+    pub mod starry_night;
 }
 
 use std::io;
@@ -56,6 +57,7 @@ fn main_menu() {
         println!("14. Ballin Ops (Graphics)");
         println!("15. Spinning Square (Graphics)");
         println!("16. Ellipse (Graphics)");
+        println!("17. Starry Night (Graphics)");
         println!("{}", "0. Exit".red());
         println!("===================================");
 
@@ -96,6 +98,7 @@ fn main_menu() {
             14 => graphics_ballin_ops(),
             15 => spinning_square(),
             16 => ellipse(),
+            17 => starry_night(),
             0 => {
                 println!("Exiting...");
                 print_title();
@@ -137,3 +140,5 @@ fn graphics_ballin_ops() { graphics::ballin::entry(); }
 fn spinning_square() { graphics::spinning_square::entry(); }
 
 fn ellipse() { graphics::ellipse::entry(); }
+
+fn starry_night() { graphics::starry_night::entry(); }
