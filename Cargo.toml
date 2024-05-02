@@ -20,3 +20,8 @@ piston2d-graphics = "0.44.0"
 pistoncore-glutin_window = "0.72.0"
 piston2d-opengl_graphics = "0.84.0"
 bevy = "0.13.2"
+
+# Enable max optimizations for dependencies, but not for our code:
+# To make Bevy not run slow as hell
+[profile.dev.package."*"]
+opt-level = 3
