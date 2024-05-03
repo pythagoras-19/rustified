@@ -9,6 +9,7 @@
 # Bugs
 - separate the ellipse from the square
 # TODO
+- add movement to starry_night objects
 - add another game object for user
 - fix the separation of ellipse and square
 - EvilEllipse -- where is it?
