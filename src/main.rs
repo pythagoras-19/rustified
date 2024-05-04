@@ -21,7 +21,6 @@ mod graphics {
     pub mod snake;
 }
 
-use std::io;
 use std::io::*;
 use colored::*;
 
@@ -50,8 +49,7 @@ fn main_menu() {
     ];
     let number_of_options = menu_items.len();
     loop {
-        // Adjust the column widths as necessary
-        let col_width = 30;
+        let col_width = 60;
         println!("============Main Menu=============");
         for i in (0..menu_items.len()).step_by(3) {
             let first = menu_items.get(i).unwrap_or(&"");
@@ -64,11 +62,11 @@ fn main_menu() {
 
         // Prompt the user for input
         print!("{}", "Enter your choice: ".green());
-        io::stdout().flush().unwrap(); // Flush stdout to ensure prompt is displayed
+        stdout().flush().unwrap(); // Flush stdout to ensure prompt is displayed
 
         // Read user input
         let mut input = String::new();
-        io::stdin().read_line(&mut input).expect("Failed to read line");
+        stdin().read_line(&mut input).expect("Failed to read line");
 
         // Trim whitespace and parse input as integer
         let choice = input.trim().parse::<u32>();
