@@ -52,6 +52,18 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>, mut materials
         ),
         ..default()
     });
+
+    let circle = Mesh2dHandle(meshes.add(Circle::new(400.0)));
+    commands.spawn(MaterialMesh2dBundle {
+        mesh: circle,
+        material: materials.add(Color::ORANGE_RED),
+        transform: Transform::from_xyz(
+            -500.0,
+            -300.0,
+            -600.0,
+        ),
+        ..default()
+    });
 }
 
 fn draw_cursor(
