@@ -28,6 +28,18 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>, mut materials
         ),
         ..default()
     });
+
+    let square = Mesh2dHandle(meshes.add(Rectangle::new(100.0, 100.0)));
+    commands.spawn(MaterialMesh2dBundle {
+        mesh: square,
+        material: materials.add(Color::NAVY),
+        transform: Transform::from_xyz(
+            200.0,
+            100.0,
+            100.0,
+        ),
+        ..default()
+    });
 }
 
 fn draw_cursor(

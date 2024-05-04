@@ -143,4 +143,7 @@ fn ellipse() { graphics::ellipse::entry(); }
 
 fn starry_night() { graphics::starry_night::entry(); }
 
-fn snake_game() { graphics::snake::entry(); }
+fn snake_game() {
+    println!("{}", "DEPRECATED FOR NOW.".red())
+    //graphics::snake::entry();
+}
