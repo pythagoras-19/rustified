@@ -18,6 +18,7 @@ mod graphics {
     pub mod spinning_square;
     pub mod ellipse;
     pub mod starry_night;
+    pub mod snake;
 }
 
 use std::io;
@@ -39,25 +40,25 @@ fn print_title() {
 }
 
 fn main_menu() {
+    let menu_items = vec![
+        "1. Array Operations", "2. Linked List Operations", "3. Enum Operations",
+        "4. Networking Operations", "5. Thread Operations", "6. Channel Operations",
+        "7. Path Operations", "8. File Operations", "9. Signal Operations",
+        "10. Option Operations", "11. Pipe Operations", "12. OS (1) Operations",
+        "13. Init Chat Server", "14. Ballin Ops (Graphics)", "15. Spinning Square (Graphics)",
+        "16. Ellipse (Graphics)", "17. Starry Night (Graphics)", "18. Snake Game (Graphics)"
+    ];
+    let number_of_options = menu_items.len();
     loop {
+        // Adjust the column widths as necessary
+        let col_width = 30;
         println!("============Main Menu=============");
-        println!("1. Array Operations");
-        println!("2. Linked List Operations");
-        println!("3. Enum Operations");
-        println!("4. Networking Operations");
-        println!("5. Thread Operations");
-        println!("6. Channel Operations");
-        println!("7. Path Operations");
-        println!("8. File Operations");
-        println!("9. Signal Operations");
-        println!("10. Option Operations");
-        println!("11. Pipe Operations");
-        println!("12. OS (1) Operations");
-        println!("13, Init Chat Server");
-        println!("14. Ballin Ops (Graphics)");
-        println!("15. Spinning Square (Graphics)");
-        println!("16. Ellipse (Graphics)");
-        println!("17. Starry Night (Graphics)");
+        for i in (0..menu_items.len()).step_by(3) {
+            let first = menu_items.get(i).unwrap_or(&"");
+            let second = menu_items.get(i + 1).unwrap_or(&"");
+            let third = menu_items.get(i + 2).unwrap_or(&"");
+            println!("{:width$}{:width$}{:width$}", first, second, third, width = col_width);
+        }
         println!("{}", "0. Exit".red());
         println!("===================================");
 
@@ -99,12 +100,13 @@ fn main_menu() {
             15 => spinning_square(),
             16 => ellipse(),
             17 => starry_night(),
+            18 => snake_game(),
             0 => {
                 println!("Exiting...");
                 print_title();
                 break;
             }
-            _ => println!("{}", "Invalid choice! Please enter a number between 0 and 10.".red()),
+            _ => println!("{}", format!("Invalid choice! Please enter a number between 0 and {}.", number_of_options).red()),
         }
     }
 }
@@ -142,3 +144,5 @@ fn spinning_square() { graphics::spinning_square::entry(); }
 fn ellipse() { graphics::ellipse::entry(); }
 
 fn starry_night() { graphics::starry_night::entry(); }
+
+fn snake_game() { graphics::snake::entry(); }
