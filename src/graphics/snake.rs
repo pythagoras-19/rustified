@@ -1,5 +1,34 @@
+/// usage:: cargo run --bin snake
+
 use bevy::prelude::*;
 use bevy::render::color::Color;
+use bevy::sprite::{MaterialMesh2dBundle, Mesh2dHandle};
+
+
+fn main() {
+    App::new()
+        .add_plugins(DefaultPlugins)
+        .add_systems(Startup, setup)
+        .add_systems(Update, draw_cursor)
+        .run();
+}
+
+fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>, mut materials: ResMut<Assets<ColorMaterial>>) {
+    commands.spawn(Camera2dBundle::default());
+
+    let square = Mesh2dHandle(meshes.add(Rectangle::new(50.0, 50.0)));
+
+    commands.spawn(MaterialMesh2dBundle {
+        mesh: square,
+        material: materials.add(Color::ORANGE),
+        transform: Transform::from_xyz(
+            50.0,
+            20.0,
+            20.0,
+        ),
+        ..default()
+    });
+}
 
 fn draw_cursor(
     camera_query: Query<(&Camera, &GlobalTransform)>,
@@ -14,16 +43,4 @@ fn draw_cursor(
             gizmos.circle_2d(point, 10., Color::BLUE);
         }
     }
-}
-
-fn main() {
-    App::new()
-        .add_plugins(DefaultPlugins)
-        .add_systems(Startup, setup)
-        .add_systems(Update, draw_cursor)
-        .run();
-}
-
-fn setup(mut commands: Commands) {
-    commands.spawn(Camera2dBundle::default());
 }
