@@ -64,6 +64,18 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>, mut materials
         ),
         ..default()
     });
+
+    let square = Mesh2dHandle(meshes.add(Rectangle::new(60.0, 60.0)));
+    commands.spawn(MaterialMesh2dBundle {
+        mesh: square,
+        material: materials.add(Color::GREEN),
+        transform: Transform::from_xyz(
+            -320.0,
+            -320.0,
+            -100.9,
+        ),
+        ..default()
+    });
 }
 
 fn draw_cursor(
