@@ -28,6 +28,7 @@ piston2d-graphics = "0.44.0"
 pistoncore-glutin_window = "0.72.0"
 piston2d-opengl_graphics = "0.84.0"
 bevy = { version = "0.13.2", features = ["default"] }
+device_query = "2.0.0"
 
 
 # Enable max optimizations for dependencies, but not for our code:

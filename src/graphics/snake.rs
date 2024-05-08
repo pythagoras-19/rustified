@@ -76,6 +76,18 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>, mut materials
         ),
         ..default()
     });
+
+    let rectangle = Mesh2dHandle(meshes.add(Rectangle::new(160.0, 60.0)));
+    commands.spawn(MaterialMesh2dBundle {
+        mesh: rectangle,
+        material: materials.add(Color::PINK),
+        transform: Transform::from_xyz(
+            420.0,
+            -200.0,
+            -100.5,
+        ),
+        ..default()
+    });
 }
 
 fn draw_cursor(
