@@ -14,9 +14,8 @@ struct Name(String);
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
-        .add_systems(Startup, setup)
-        .add_systems(Update, draw_cursor)
-        .add_systems(Update, add_people)
+        .add_systems(Startup, (setup, add_people))
+        .add_systems(Update, (draw_cursor, (update_people, greet_people).chain()))
         .run();
 }
 
@@ -117,6 +116,17 @@ fn add_people(mut commands: Commands) {
     commands.spawn((Person, Name("Jane Doe".to_string())));
 }
 
-fn greet_people() {
+fn greet_people(query: Query<&Name, With<Person>>) {
+    for name in &query {
+        println!("Hello {} !", name.0);
+    }
+}
 
+fn update_people(mut query: Query<&mut Name, With<Person>>) {
+    for mut name in &mut query {
+        if name.0 == "John Doe" {
+            name.0 = "MARK TWAIN".to_string();
+            break;
+        }
+    }
 }
