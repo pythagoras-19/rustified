@@ -5,11 +5,18 @@ use bevy::render::color::Color;
 use bevy::sprite::{MaterialMesh2dBundle, Mesh2dHandle};
 
 
+#[derive(Component)]
+struct Person;
+
+#[derive(Component)]
+struct Name(String);
+
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         .add_systems(Startup, setup)
         .add_systems(Update, draw_cursor)
+        .add_systems(Update, add_people)
         .run();
 }
 
@@ -88,6 +95,9 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>, mut materials
         ),
         ..default()
     });
+
+    // todo: Polygon
+    // todo: cursor tracking
 }
 
 fn draw_cursor( camera_query: Query<(&Camera, &GlobalTransform)>,
@@ -100,4 +110,13 @@ fn draw_cursor( camera_query: Query<(&Camera, &GlobalTransform)>,
             gizmos.circle_2d(point, 20., Color::RED);
         }
     }
+}
+
+fn add_people(mut commands: Commands) {
+    commands.spawn((Person, Name("John Doe".to_string())));
+    commands.spawn((Person, Name("Jane Doe".to_string())));
+}
+
+fn greet_people() {
+
 }
