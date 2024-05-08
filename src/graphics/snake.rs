@@ -90,17 +90,14 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>, mut materials
     });
 }
 
-fn draw_cursor(
-    camera_query: Query<(&Camera, &GlobalTransform)>,
-    windows: Query<&Window>,
-    mut gizmos: Gizmos,
-) {
+fn draw_cursor( camera_query: Query<(&Camera, &GlobalTransform)>,
+                 windows: Query<&Window>, mut gizmos: Gizmos, ) {
     let (camera, camera_transform) = camera_query.single();
 
     if let Some(cursor_position) = windows.single().cursor_position() {
         // Calculate a world position based on the cursor's position.
         if let Some(point) = camera.viewport_to_world_2d(camera_transform, cursor_position) {
-            gizmos.circle_2d(point, 10., Color::BLUE);
+            gizmos.circle_2d(point, 20., Color::RED);
         }
     }
 }
