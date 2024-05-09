@@ -11,11 +11,20 @@ struct Person;
 #[derive(Component)]
 struct Name(String);
 
+#[derive(Component)]
+struct Monster;
+
+#[derive(Component)]
+struct Stats {
+    name: String,
+    health: i64
+}
+
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
-        .add_systems(Startup, (setup, add_people))
-        .add_systems(Update, (draw_cursor, (update_people, greet_people).chain()))
+        .add_systems(Startup, (setup, add_people, add_monster))
+        .add_systems(Update, (draw_cursor, (update_people, greet_people, show_monster).chain()))
         .run();
 }
 
@@ -128,5 +137,15 @@ fn update_people(mut query: Query<&mut Name, With<Person>>) {
             name.0 = "MARK TWAIN".to_string();
             break;
         }
+    }
+}
+
+fn add_monster(mut commands: Commands) {
+    commands.spawn((Monster, Stats{name: "Monster1".to_string(), health: 100}));
+}
+
+fn show_monster(query: Query<&Stats, With<Monster>>) {
+    for monster in &query {
+        println!("RAWR!!!!!!! {}, with health: {}  !", monster.name, monster.health);
     }
 }
