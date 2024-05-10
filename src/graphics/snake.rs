@@ -132,6 +132,7 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
         ),
         ..default()
     }).id();
+    commands.entity(orange_red_circle_entity).insert(OrangeCircle);
     game.add(orange_red_circle_entity);
 
     let square = Mesh2dHandle(meshes.add(Rectangle::new(60.0, 60.0)));
@@ -169,7 +170,7 @@ fn move_object() {
 
 fn move_entities(
     mut commands: Commands,
-    mut query: Query<(Entity, &mut Transform, Option<&AquaSquare>, Option<&NavySquare>)>,
+    mut query: Query<(Entity, &mut Transform, Option<&AquaSquare>, Option<&NavySquare>, Option<&OrangeCircle>)>,
     game: Res<Game>,
     windows:Query<&Window, With<PrimaryWindow>>
 ) {
@@ -182,14 +183,17 @@ fn move_entities(
     let x_boundary = window_width / 2.0;
     let y_boundary = window_height / 2.0;
 
-    for (entity, mut transform, aqua, navy) in query.iter_mut() {
+    for (entity, mut transform, aqua, navy, orange) in query.iter_mut() {
         if game.game_objects.contains(&entity) {
             if aqua.is_some() {
                 println!("Aqua moving!");
                 transform.translation.x += 12.0;
             }
             if navy.is_some() {
-                transform.translation.x += 5.0;
+                transform.translation.x += 15.0;
+            }
+            if orange.is_some() {
+                transform.translation.y += 2.0;
             }
             else {
                 let new_x = transform.translation.x - 5.0;
