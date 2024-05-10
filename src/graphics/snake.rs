@@ -79,9 +79,9 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
     game.add(square_entity);
     game.display_objects();
 
-    let square = Mesh2dHandle(meshes.add(Rectangle::new(100.0, 100.0)));
-    commands.spawn(MaterialMesh2dBundle {
-        mesh: square,
+    let larger_square = Mesh2dHandle(meshes.add(Rectangle::new(100.0, 100.0)));
+    let larger_square_entity = commands.spawn(MaterialMesh2dBundle {
+        mesh: larger_square.into(),
         material: materials.add(Color::NAVY),
         transform: Transform::from_xyz(
             200.0,
@@ -89,11 +89,12 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
             100.0,
         ),
         ..default()
-    });
+    }).id();
+    game.add(larger_square_entity);
 
     let circle = Mesh2dHandle(meshes.add(Circle::new(400.0)));
-    commands.spawn(MaterialMesh2dBundle {
-       mesh: circle,
+    let circle_entity = commands.spawn(MaterialMesh2dBundle {
+        mesh: circle.into(),
         material: materials.add(Color::WHITE),
         transform: Transform::from_xyz(
             600.0,
@@ -101,11 +102,12 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
             200.0,
         ),
         ..default()
-    });
+    }).id();
+    game.add(circle_entity);
 
     let circle = Mesh2dHandle(meshes.add(Circle::new(400.0)));
-    commands.spawn(MaterialMesh2dBundle {
-        mesh: circle,
+    let orange_red_circle_entity = commands.spawn(MaterialMesh2dBundle {
+        mesh: circle.into(),
         material: materials.add(Color::ORANGE_RED),
         transform: Transform::from_xyz(
             -500.0,
@@ -113,11 +115,12 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
             -600.0,
         ),
         ..default()
-    });
+    }).id();
+    game.add(orange_red_circle_entity);
 
     let square = Mesh2dHandle(meshes.add(Rectangle::new(60.0, 60.0)));
-    commands.spawn(MaterialMesh2dBundle {
-        mesh: square,
+    let green_square_entity = commands.spawn(MaterialMesh2dBundle {
+        mesh: square.into(),
         material: materials.add(Color::GREEN),
         transform: Transform::from_xyz(
             -320.0,
@@ -125,11 +128,12 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
             -100.9,
         ),
         ..default()
-    });
+    }).id();
+    game.add(green_square_entity);
 
     let rectangle = Mesh2dHandle(meshes.add(Rectangle::new(160.0, 60.0)));
-    commands.spawn(MaterialMesh2dBundle {
-        mesh: rectangle,
+    let pink_rectangle_entity = commands.spawn(MaterialMesh2dBundle {
+        mesh: rectangle.into(),
         material: materials.add(Color::PINK),
         transform: Transform::from_xyz(
             420.0,
@@ -137,8 +141,8 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
             -100.5,
         ),
         ..default()
-    });
-
+    }).id();
+    game.add(pink_rectangle_entity);
     // todo: Polygon
     // todo: cursor tracking
 }
