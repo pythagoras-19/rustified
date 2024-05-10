@@ -1,9 +1,12 @@
+use bevy::asset::AssetContainer;
 /// usage:: cargo run --bin snake
+/// Actually, NOT A SNAKE GAME ;)
 
 use bevy::prelude::*;
 use bevy::render::color::Color;
 use bevy::sprite::{MaterialMesh2dBundle, Mesh2dHandle};
 use bevy::window::PrimaryWindow;
+use nix::libc::option;
 
 
 #[derive(Component)]
@@ -20,6 +23,15 @@ struct Stats {
     name: String,
     health: i64
 }
+
+#[derive(Component)]
+struct AquaSquare;
+
+#[derive(Component)]
+struct NavySquare;
+
+#[derive(Component)]
+struct OrangeCircle;
 
 #[derive(Resource)]
 struct Game {
@@ -55,7 +67,7 @@ fn main() {
         .insert_resource(Game::new())
         .add_systems(Startup, (setup, add_people, add_monster))
         .add_systems(Update, (draw_cursor, (update_people, greet_people, show_monster).chain()))
-        .add_systems(Update, move_square_entity)
+        .add_systems(Update, move_entities)
         .run();
 }
 
@@ -63,7 +75,7 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
          mut materials: ResMut<Assets<ColorMaterial>>, mut game: ResMut<Game>) {
     commands.spawn(Camera2dBundle::default());
 
-    let square = Mesh2dHandle(meshes.add(Rectangle::new(50.0, 50.0)));
+    let square = Mesh2dHandle(meshes.add(Rectangle::new(100.0, 100.0)));
 
 
     let square_entity = commands.spawn(MaterialMesh2dBundle {
@@ -76,6 +88,8 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
         ),
         ..default()
     }).id();
+
+    commands.entity(square_entity).insert(AquaSquare); // tag it
     game.add(square_entity);
     game.display_objects();
 
@@ -90,6 +104,8 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
         ),
         ..default()
     }).id();
+
+    commands.entity(larger_square_entity).insert(NavySquare);
     game.add(larger_square_entity);
 
     let circle = Mesh2dHandle(meshes.add(Circle::new(400.0)));
@@ -151,9 +167,9 @@ fn move_object() {
     //TODO: FINISH ME
 }
 
-fn move_square_entity(
+fn move_entities(
     mut commands: Commands,
-    mut query: Query<(Entity, &mut Transform)>,
+    mut query: Query<(Entity, &mut Transform, Option<&AquaSquare>, Option<&NavySquare>)>,
     game: Res<Game>,
     windows:Query<&Window, With<PrimaryWindow>>
 ) {
@@ -166,12 +182,24 @@ fn move_square_entity(
     let x_boundary = window_width / 2.0;
     let y_boundary = window_height / 2.0;
 
-    for (entity, mut transform) in query.iter_mut() {
+    for (entity, mut transform, aqua, navy) in query.iter_mut() {
         if game.game_objects.contains(&entity) {
-            let new_x  = transform.translation.x - 5.0;
-            if new_x > -x_boundary && new_x < x_boundary {
-                transform.translation.x = new_x;
+            if aqua.is_some() {
+                println!("Aqua moving!");
+                transform.translation.x += 12.0;
             }
+            if navy.is_some() {
+                transform.translation.x += 5.0;
+            }
+            else {
+                let new_x = transform.translation.x - 5.0;
+                if new_x > -x_boundary && new_x < x_boundary {
+                    transform.translation.x = new_x;
+                }
+            }
+            // out of bounds checker
+            transform.translation.x = transform.translation.x.min(x_boundary).max(-x_boundary);
+            transform.translation.y = transform.translation.y.min(y_boundary).max(-y_boundary);
         }
     }
 }
