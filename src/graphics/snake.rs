@@ -72,7 +72,7 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .insert_resource(Game::new())
         .add_systems(Startup, (setup, add_people, add_monster))
-        .add_systems(Update, (draw_cursor, (update_people, greet_people, show_monster).chain()))
+        .add_systems(Update, (draw_cursor, (update_people, greet_people, show_monster, print_interactions).chain()))
         .add_systems(Update, move_entities)
         .run();
 }
@@ -186,6 +186,14 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
         .insert(RelativeCursorPosition::default());
 }
 
+fn print_interactions(nodes: Query<(&RelativeCursorPosition, &ViewVisibility), With<Node>>) {
+    for (cursor_position, visibility) in &nodes {
+        if visibility.get() && cursor_position.mouse_over() {
+            println!("over");
+        }
+    }
+}
+
 fn move_entities(
     mut commands: Commands,
     mut query: Query<(Entity, &mut Transform, Option<&AquaSquare>, Option<&NavySquare>, Option<&OrangeCircle>)>,
@@ -204,7 +212,6 @@ fn move_entities(
     for (entity, mut transform, aqua, navy, orange) in query.iter_mut() {
         if game.game_objects.contains(&entity) {
             if aqua.is_some() {
-                println!("Aqua moving!");
                 transform.translation.x += 12.0;
             }
             if navy.is_some() {
