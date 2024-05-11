@@ -6,6 +6,14 @@ use bevy::asset::AssetContainer;
 use bevy::render::color::Color;
 use bevy::sprite::{MaterialMesh2dBundle, Mesh2dHandle};
 use bevy::window::PrimaryWindow;
+use bevy::ui::RelativeCursorPosition;
+
+
+#[derive(Component)]
+struct Orange;
+
+#[derive(Component)]
+struct MainCamera;
 
 #[derive(Component)]
 struct Person;
@@ -158,8 +166,24 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
         ..default()
     }).id();
     game.add(pink_rectangle_entity);
-    // todo: Polygon
-    // todo: cursor tracking
+
+    let button_1 = commands
+        .spawn(ButtonBundle {
+            style: Style {
+                width: Val::Px(50.),
+                height: Val::Px(50.),
+                margin: UiRect::all(Val::Auto),
+                justify_content: JustifyContent::End,
+                ..Default::default()
+            },
+            background_color: BackgroundColor::from(Color::RED),
+            ..Default::default()
+        })
+        .id();
+
+    commands
+        .entity(button_1)
+        .insert(RelativeCursorPosition::default());
 }
 
 fn move_entities(
@@ -246,5 +270,20 @@ fn show_monster(query: Query<&Stats, With<Monster>>) {
 
 // transforms
 fn transform() {
+}
 
+/// Mouse events
+fn my_cursor_system(
+    windows: Query<&Window>,
+    camera_q: Query<(&Camera, &GlobalTransform), With<MainCamera>>,
+) {
+    let window = windows.single();
+    let (camera, camera_transform) = camera_q.single();
+
+    if let Some(world_position) = window
+        .cursor_position()
+        .and_then(|cursor| camera.viewport_to_world_2d(camera_transform, cursor))
+    {
+        eprintln!("World coords: {}/{}", world_position.x, world_position.y);
+    }
 }
