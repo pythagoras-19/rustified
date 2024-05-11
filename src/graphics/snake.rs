@@ -1,13 +1,11 @@
-use bevy::asset::AssetContainer;
 /// usage:: cargo run --bin snake
 /// Actually, NOT A SNAKE GAME ;)
 
 use bevy::prelude::*;
+use bevy::asset::AssetContainer;
 use bevy::render::color::Color;
 use bevy::sprite::{MaterialMesh2dBundle, Mesh2dHandle};
 use bevy::window::PrimaryWindow;
-use nix::libc::option;
-
 
 #[derive(Component)]
 struct Person;
@@ -162,10 +160,6 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
     game.add(pink_rectangle_entity);
     // todo: Polygon
     // todo: cursor tracking
-}
-
-fn move_object() {
-    //TODO: FINISH ME
 }
 
 fn move_entities(
