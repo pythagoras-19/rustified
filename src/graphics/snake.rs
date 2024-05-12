@@ -190,13 +190,13 @@ fn print_interactions(nodes: Query<(&RelativeCursorPosition, &ViewVisibility), W
     for (cursor_position, visibility) in &nodes {
         if visibility.get() && cursor_position.mouse_over() {
             println!("over");
-            if Some(cursor_position.normalized).is_some() {
-                println!("{:?}", cursor_position.normalized);
+            if let Some(normalized) = &cursor_position.normalized {
+                println!("{:?}", normalized);
             }
         } else {
             println!("not over");
-            if Some(cursor_position.normalized).is_some() {
-                println!("{:?}", cursor_position.normalized);
+            if let Some(normalized) = &cursor_position.normalized {
+                println!("{:?}", normalized);
             }
         }
     }
