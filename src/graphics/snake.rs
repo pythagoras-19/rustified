@@ -191,7 +191,7 @@ fn print_interactions(nodes: Query<(&RelativeCursorPosition, &ViewVisibility), W
         if visibility.get() && cursor_position.mouse_over() {
             println!("over");
             if let Some(normalized) = &cursor_position.normalized {
-                println!("{:?}", normalized);
+                println!("Coordinates: {:?}", normalized);
             }
         } else {
             println!("not over");
