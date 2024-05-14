@@ -224,6 +224,7 @@ fn move_entities(
             }
             if navy.is_some() {
                 transform.translation.x += 15.0;
+                transform.translation.y += 15.0;
             }
             if orange.is_some() {
                 transform.translation.y += 2.0;
