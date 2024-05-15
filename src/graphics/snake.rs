@@ -228,6 +228,7 @@ fn move_entities(
             }
             if orange.is_some() {
                 transform.translation.y += 2.0;
+                transform.translation.x -= 4.0;
             }
             else {
                 let new_x = transform.translation.x - 5.0;
