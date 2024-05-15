@@ -221,6 +221,7 @@ fn move_entities(
         if game.game_objects.contains(&entity) {
             if aqua.is_some() {
                 transform.translation.x += 12.0;
+                transform.translation.y += 1.0;
             }
             if navy.is_some() {
                 transform.translation.x += 15.0;
