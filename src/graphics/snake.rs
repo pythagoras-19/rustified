@@ -8,6 +8,11 @@ use bevy::sprite::{MaterialMesh2dBundle, Mesh2dHandle};
 use bevy::window::PrimaryWindow;
 use bevy::ui::RelativeCursorPosition;
 
+static EXTRA_SMALL_INCREMENT: f32 = 1.0;
+static SMALL_INCREMENT: f32 = 5.0;
+static INCREMENT: f32 = 12.0;
+static LARGE_INCREMENT: f32 = 20.0;
+static EXTRA_LARGE_INCREMENT: f32 = 30.0;
 
 #[derive(Component)]
 struct Orange;
@@ -220,19 +225,19 @@ fn move_entities(
     for (entity, mut transform, aqua, navy, orange) in query.iter_mut() {
         if game.game_objects.contains(&entity) {
             if aqua.is_some() {
-                transform.translation.x += 12.0;
-                transform.translation.y += 1.0;
+                transform.translation.x += SMALL_INCREMENT;
+                transform.translation.y += EXTRA_SMALL_INCREMENT;
             }
             if navy.is_some() {
-                transform.translation.x += 15.0;
-                transform.translation.y += 15.0;
+                transform.translation.x += LARGE_INCREMENT;
+                transform.translation.y += INCREMENT;
             }
             if orange.is_some() {
-                transform.translation.y += 2.0;
-                transform.translation.x -= 4.0;
+                transform.translation.y += EXTRA_SMALL_INCREMENT;
+                transform.translation.x -= EXTRA_LARGE_INCREMENT;
             }
             else {
-                let new_x = transform.translation.x - 5.0;
+                let new_x = transform.translation.x -SMALL_INCREMENT;
                 if new_x > -x_boundary && new_x < x_boundary {
                     transform.translation.x = new_x;
                 }
