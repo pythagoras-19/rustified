@@ -7,12 +7,13 @@
 <h4 align="center">A console app showcasing major features of the Rust programming language.</h4>
 
 # Bugs
-- separate the ellipse from the square
+- None (for now!)
 # TODO
 - add movement to starry_night objects
-- add another game object for user
-- fix the separation of ellipse and square
-- EvilEllipse -- where is it?
+- add more shapes to snake.rs to get rainbow effects
+- add user character to snake.rs
+#
+#
 # Foundational Rust Principles
 ### Rust solves memory leak problems with ease
 - **memory leak**: The situation where a computer program incorrectly manages memory allocations. 
