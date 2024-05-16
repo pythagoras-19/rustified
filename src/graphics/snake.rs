@@ -8,11 +8,12 @@ use bevy::sprite::{MaterialMesh2dBundle, Mesh2dHandle};
 use bevy::window::PrimaryWindow;
 use bevy::ui::RelativeCursorPosition;
 
-static EXTRA_SMALL_INCREMENT: f32 = 1.0;
-static SMALL_INCREMENT: f32 = 5.0;
-static INCREMENT: f32 = 12.0;
-static LARGE_INCREMENT: f32 = 20.0;
-static EXTRA_LARGE_INCREMENT: f32 = 30.0;
+/// TODO: Fix these names, they're dumb
+static EXTRA_SMALL_VALUE: f32 = 1.0;
+static SMALL_VALUE: f32 = 5.0;
+static VALUE: f32 = 12.0;
+static LARGE_VALUE: f32 = 20.0;
+static EXTRA_LARGE_VALUE: f32 = 30.0;
 
 #[derive(Component)]
 struct Orange;
@@ -225,19 +226,19 @@ fn move_entities(
     for (entity, mut transform, aqua, navy, orange) in query.iter_mut() {
         if game.game_objects.contains(&entity) {
             if aqua.is_some() {
-                transform.translation.x += SMALL_INCREMENT;
-                transform.translation.y += EXTRA_SMALL_INCREMENT;
+                transform.translation.x += SMALL_VALUE;
+                transform.translation.y += EXTRA_SMALL_VALUE;
             }
             if navy.is_some() {
-                transform.translation.x += LARGE_INCREMENT;
-                transform.translation.y += INCREMENT;
+                transform.translation.x += LARGE_VALUE;
+                transform.translation.y += VALUE;
             }
             if orange.is_some() {
-                transform.translation.y += EXTRA_SMALL_INCREMENT;
-                transform.translation.x -= EXTRA_LARGE_INCREMENT;
+                transform.translation.y += EXTRA_SMALL_VALUE;
+                transform.translation.x -= EXTRA_LARGE_VALUE;
             }
             else {
-                let new_x = transform.translation.x -SMALL_INCREMENT;
+                let new_x = transform.translation.x - SMALL_VALUE;
                 if new_x > -x_boundary && new_x < x_boundary {
                     transform.translation.x = new_x;
                 }
