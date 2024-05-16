@@ -45,6 +45,9 @@ struct NavySquare;
 #[derive(Component)]
 struct OrangeCircle;
 
+#[derive(Component)]
+struct BlueSquare;
+
 #[derive(Resource)]
 struct Game {
     game_objects: Vec<Entity>,
@@ -173,6 +176,19 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
     }).id();
     game.add(pink_rectangle_entity);
 
+    let square = Mesh2dHandle(meshes.add(Rectangle::new(500.0, 500.0)));
+    let blue_square_entity = commands.spawn(MaterialMesh2dBundle {
+        mesh: square.into(),
+        material: materials.add(Color::BLUE),
+        transform: Transform::from_xyz(
+            0.0,
+            0.0,
+            0.0,
+        ),
+        ..default()
+    }).id();
+    game.add(blue_square_entity);
+
     let button_1 = commands
         .spawn(ButtonBundle {
             style: Style {
@@ -210,7 +226,7 @@ fn print_interactions(nodes: Query<(&RelativeCursorPosition, &ViewVisibility), W
 
 fn move_entities(
     mut commands: Commands,
-    mut query: Query<(Entity, &mut Transform, Option<&AquaSquare>, Option<&NavySquare>, Option<&OrangeCircle>)>,
+    mut query: Query<(Entity, &mut Transform, Option<&AquaSquare>, Option<&NavySquare>, Option<&OrangeCircle>, Option<&BlueSquare>)>,
     game: Res<Game>,
     windows:Query<&Window, With<PrimaryWindow>>
 ) {
@@ -223,7 +239,7 @@ fn move_entities(
     let x_boundary = window_width / 2.0;
     let y_boundary = window_height / 2.0;
 
-    for (entity, mut transform, aqua, navy, orange) in query.iter_mut() {
+    for (entity, mut transform, aqua, navy, orange, blue_sq) in query.iter_mut() {
         if game.game_objects.contains(&entity) {
             if aqua.is_some() {
                 transform.translation.x += SMALL_VALUE;
@@ -234,11 +250,15 @@ fn move_entities(
                 transform.translation.y += VALUE;
             }
             if orange.is_some() {
-                transform.translation.y += EXTRA_SMALL_VALUE;
-                transform.translation.x -= EXTRA_LARGE_VALUE;
+                transform.translation.x += EXTRA_SMALL_VALUE;
+                transform.translation.y -= EXTRA_LARGE_VALUE;
+            }
+            if blue_sq.is_some() {
+                transform.translation.x += EXTRA_SMALL_VALUE;
+                transform.translation.y -= EXTRA_SMALL_VALUE;
             }
             else {
-                let new_x = transform.translation.x - SMALL_VALUE;
+                let new_x = transform.translation.x + SMALL_VALUE;
                 if new_x > -x_boundary && new_x < x_boundary {
                     transform.translation.x = new_x;
                 }
@@ -257,7 +277,7 @@ fn draw_cursor( camera_query: Query<(&Camera, &GlobalTransform)>,
     if let Some(cursor_position) = windows.single().cursor_position() {
         // Calculate a world position based on the cursor's position.
         if let Some(point) = camera.viewport_to_world_2d(camera_transform, cursor_position) {
-            gizmos.circle_2d(point, 20., Color::RED);
+            gizmos.circle_2d(point, VALUE, Color::RED);
         }
     }
 }
