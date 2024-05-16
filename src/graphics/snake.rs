@@ -255,12 +255,12 @@ fn move_entities(
                 transform.translation.y -= EXTRA_LARGE_VALUE;
             }
             if blue_sq.is_some() {
-                println!("Blue square!@");
+                //println!("Blue square!@");
                 transform.translation.x += EXTRA_SMALL_VALUE;
                 transform.translation.y -= EXTRA_SMALL_VALUE;
             }
             else {
-                println!("Blue Sqare!!!%");
+                //println!("Blue Sqare!!!%");
                 let new_x = transform.translation.x + SMALL_VALUE;
                 if new_x > -x_boundary && new_x < x_boundary {
                     transform.translation.x = new_x;
