@@ -187,6 +187,7 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
         ),
         ..default()
     }).id();
+    commands.entity(blue_square_entity).insert(BlueSquare);
     game.add(blue_square_entity);
 
     let button_1 = commands
@@ -254,10 +255,12 @@ fn move_entities(
                 transform.translation.y -= EXTRA_LARGE_VALUE;
             }
             if blue_sq.is_some() {
+                println!("Blue square!@");
                 transform.translation.x += EXTRA_SMALL_VALUE;
                 transform.translation.y -= EXTRA_SMALL_VALUE;
             }
             else {
+                println!("Blue Sqare!!!%");
                 let new_x = transform.translation.x + SMALL_VALUE;
                 if new_x > -x_boundary && new_x < x_boundary {
                     transform.translation.x = new_x;
