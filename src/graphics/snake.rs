@@ -48,6 +48,9 @@ struct OrangeCircle;
 #[derive(Component)]
 struct BlueSquare;
 
+#[derive(Component)]
+struct BlueCircle;
+
 #[derive(Resource)]
 struct Game {
     game_objects: Vec<Entity>,
@@ -135,6 +138,20 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
         ..default()
     }).id();
     game.add(circle_entity);
+
+    let blue_circle = Mesh2dHandle(meshes.add(Circle::new(200.)));
+    let blue_circle_entity = commands.spawn(MaterialMesh2dBundle{
+        mesh: blue_circle.into(),
+        material: materials.add(Color::BLUE),
+        transform: Transform::from_xyz(
+            -200.,
+            -150.0,
+            150.,
+        ),
+        ..default()
+    }).id();
+    commands.entity(blue_circle_entity).insert(BlueCircle);
+    game.add(blue_circle_entity);
 
     let circle = Mesh2dHandle(meshes.add(Circle::new(400.0)));
     let orange_red_circle_entity = commands.spawn(MaterialMesh2dBundle {
@@ -227,7 +244,7 @@ fn print_interactions(nodes: Query<(&RelativeCursorPosition, &ViewVisibility), W
 
 fn move_entities(
     mut commands: Commands,
-    mut query: Query<(Entity, &mut Transform, Option<&AquaSquare>, Option<&NavySquare>, Option<&OrangeCircle>, Option<&BlueSquare>)>,
+    mut query: Query<(Entity, &mut Transform, Option<&AquaSquare>, Option<&NavySquare>, Option<&OrangeCircle>, Option<&BlueSquare>, Option<&BlueCircle>)>,
     game: Res<Game>,
     windows:Query<&Window, With<PrimaryWindow>>
 ) {
@@ -240,7 +257,7 @@ fn move_entities(
     let x_boundary = window_width / 2.0;
     let y_boundary = window_height / 2.0;
 
-    for (entity, mut transform, aqua, navy, orange, blue_sq) in query.iter_mut() {
+    for (entity, mut transform, aqua, navy, orange, blue_sq, blue_cir) in query.iter_mut() {
         if game.game_objects.contains(&entity) {
             if aqua.is_some() {
                 transform.translation.x += SMALL_VALUE;
@@ -258,6 +275,10 @@ fn move_entities(
                 //println!("Blue square!@");
                 transform.translation.x += EXTRA_SMALL_VALUE;
                 transform.translation.y -= EXTRA_SMALL_VALUE;
+            }
+            if blue_cir.is_some() {
+                transform.translation.x -= EXTRA_SMALL_VALUE;
+                transform.translation.y += EXTRA_SMALL_VALUE;
             }
             else {
                 //println!("Blue Sqare!!!%");
