@@ -43,6 +43,9 @@ struct AquaSquare;
 struct NavySquare;
 
 #[derive(Component)]
+struct NavySquare2;
+
+#[derive(Component)]
 struct OrangeCircle;
 
 #[derive(Component)]
@@ -207,6 +210,20 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
     commands.entity(blue_square_entity).insert(BlueSquare);
     game.add(blue_square_entity);
 
+    let square = Mesh2dHandle(meshes.add(Rectangle::new(350., 350.)));
+    let navy_square_entity = commands.spawn(MaterialMesh2dBundle {
+        mesh: square.into(),
+        material: materials.add(Color::NAVY),
+        transform: Transform::from_xyz(
+            10.0,
+            10.0,
+            10.0,
+        ),
+        ..default()
+    }).id();
+    commands.entity(navy_square_entity).insert(NavySquare2);
+    game.add(navy_square_entity);
+
     let button_1 = commands
         .spawn(ButtonBundle {
             style: Style {
@@ -244,7 +261,7 @@ fn print_interactions(nodes: Query<(&RelativeCursorPosition, &ViewVisibility), W
 
 fn move_entities(
     mut commands: Commands,
-    mut query: Query<(Entity, &mut Transform, Option<&AquaSquare>, Option<&NavySquare>, Option<&OrangeCircle>, Option<&BlueSquare>, Option<&BlueCircle>)>,
+    mut query: Query<(Entity, &mut Transform, Option<&AquaSquare>, Option<&NavySquare>, Option<&OrangeCircle>, Option<&BlueSquare>, Option<&BlueCircle>, Option<&NavySquare2>)>,
     game: Res<Game>,
     windows:Query<&Window, With<PrimaryWindow>>
 ) {
@@ -257,7 +274,7 @@ fn move_entities(
     let x_boundary = window_width / 2.0;
     let y_boundary = window_height / 2.0;
 
-    for (entity, mut transform, aqua, navy, orange, blue_sq, blue_cir) in query.iter_mut() {
+    for (entity, mut transform, aqua, navy, orange, blue_sq, blue_cir, navy2) in query.iter_mut() {
         if game.game_objects.contains(&entity) {
             if aqua.is_some() {
                 transform.translation.x += SMALL_VALUE;
@@ -277,6 +294,10 @@ fn move_entities(
                 transform.translation.y -= EXTRA_SMALL_VALUE;
             }
             if blue_cir.is_some() {
+                transform.translation.x -= EXTRA_SMALL_VALUE;
+                transform.translation.y += EXTRA_SMALL_VALUE;
+            }
+            if navy2.is_some() {
                 transform.translation.x -= EXTRA_SMALL_VALUE;
                 transform.translation.y += EXTRA_SMALL_VALUE;
             }
