@@ -237,5 +237,16 @@ impl Array {
         }
         true
     }
+
+    fn is_not_sorted(&self) -> bool {
+        for i in 0..(self.get_size()-1) {
+            if self.get_element(i) < self.get_element(i+1) {
+                return true
+            }
+        }
+        false
+    }
  }
+
+
 

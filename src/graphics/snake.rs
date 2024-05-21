@@ -1,6 +1,6 @@
 /// usage:: cargo run --bin snake
 /// Actually, NOT A SNAKE GAME ;)\
-/// TODO: hardcoded Z values
+/// TODO: fix hardcoded Z values
 
 use bevy::prelude::*;
 use bevy::asset::AssetContainer;
@@ -8,6 +8,7 @@ use bevy::render::color::Color;
 use bevy::sprite::{MaterialMesh2dBundle, Mesh2dHandle};
 use bevy::window::PrimaryWindow;
 use bevy::ui::RelativeCursorPosition;
+use bevy_rapier2d::prelude::*;
 
 use colored::Colorize;
 
