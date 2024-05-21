@@ -111,6 +111,7 @@ fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         .insert_resource(Game::new())
+        .insert_resource(ClearColor(Color::BLACK))
         .add_systems(Startup, (setup, add_people, add_monster))
         .add_systems(Update, (draw_cursor, (update_people, greet_people, show_monster, print_interactions).chain()))
         .add_systems(Update, move_entities)
@@ -459,7 +460,7 @@ fn move_entities(
 }
 
 fn draw_cursor( camera_query: Query<(&Camera, &GlobalTransform)>,
-                 windows: Query<&Window>, mut gizmos: Gizmos, ) {
+                windows: Query<&Window>, mut gizmos: Gizmos, ) {
     let (camera, camera_transform) = camera_query.single();
 
     if let Some(cursor_position) = windows.single().cursor_position() {
@@ -477,7 +478,7 @@ fn add_people(mut commands: Commands) {
 
 fn greet_people(query: Query<&Name, With<Person>>) {
     for name in &query {
-       //println!("Hello {} !", name.0);
+        //println!("Hello {} !", name.0);
     }
 }
 
