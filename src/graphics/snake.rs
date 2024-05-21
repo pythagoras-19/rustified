@@ -70,6 +70,9 @@ struct B; // circle
 #[derive(Component)]
 struct C; // circle
 
+#[derive(Component)]
+struct D; // circle
+
 #[derive(Resource)]
 struct Game {
     game_objects: Vec<Entity>,
@@ -296,6 +299,20 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
     commands.entity(l_entity).insert(B);
     game.add(l_entity);
 
+    let d_circle = Mesh2dHandle(meshes.add(Circle::new(140.)));
+    let d_circle_entity = commands.spawn(MaterialMesh2dBundle {
+        mesh: d_circle.into(),
+        material: materials.add(Color::SEA_GREEN),
+        transform: Transform::from_xyz(
+            -25.,
+            25.,
+            14.
+        ),
+        ..default()
+    }).id();
+    commands.entity(d_circle_entity).insert(D);
+    game.add(d_circle_entity);
+
     let button_1 = commands
         .spawn(ButtonBundle {
             style: Style {
@@ -340,7 +357,7 @@ fn print_interactions(nodes: Query<(&RelativeCursorPosition, &ViewVisibility), W
 
 fn move_entities(
     mut commands: Commands,
-    mut query: Query<(Entity, &mut Transform, Option<&AquaSquare>, Option<&NavySquare>, Option<&OrangeCircle>, Option<&BlueSquare>, Option<&BlueCircle>, Option<&NavySquare2>, Option<&RedCircle>, Option<&A>, Option<&B>)>,
+    mut query: Query<(Entity, &mut Transform, Option<&AquaSquare>, Option<&NavySquare>, Option<&OrangeCircle>, Option<&BlueSquare>, Option<&BlueCircle>, Option<&NavySquare2>, Option<&RedCircle>, Option<&A>, Option<&B>, Option<&C>, Option<&D>)>,
     game: Res<Game>,
     windows:Query<&Window, With<PrimaryWindow>>
 ) {
@@ -353,7 +370,7 @@ fn move_entities(
     let x_boundary = window_width / 2.0;
     let y_boundary = window_height / 2.0;
 
-    for (entity, mut transform, aqua, navy, orange, blue_sq, blue_cir, navy2, red_cir, t, l) in query.iter_mut() {
+    for (entity, mut transform, aqua, navy, orange, blue_sq, blue_cir, navy2, red_cir, a, b, c, d) in query.iter_mut() {
         if game.game_objects.contains(&entity) {
             if let Some(_) = aqua {
                 transform.translation.x -= SMALL_VALUE;
@@ -376,12 +393,18 @@ fn move_entities(
             } else if let Some(_) = red_cir {
                 transform.translation.x -= EXTRA_SMALL_VALUE;
                 transform.translation.y += EXTRA_SMALL_VALUE;
-            } else if let Some(_) = t {
+            } else if let Some(_) = a {
                 transform.translation.x -= EXTRA_SMALL_VALUE;
                 transform.translation.y += EXTRA_SMALL_VALUE;
-            } else if let Some(_) = l {
+            } else if let Some(_) = b {
                 transform.translation.x += EXTRA_SMALL_VALUE;
                 transform.translation.y -= EXTRA_SMALL_VALUE;
+            } else if let Some(_) = c {
+                transform.translation.x -= EXTRA_SMALL_VALUE;
+                transform.translation.y -= EXTRA_SMALL_VALUE;
+            } else if let Some(_) = d {
+                transform.translation.x -= EXTRA_SMALL_VALUE;
+                transform.translation.y += EXTRA_SMALL_VALUE;
             }
 
             // Out of bounds checker
