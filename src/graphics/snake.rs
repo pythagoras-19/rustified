@@ -79,6 +79,14 @@ struct E; // circle
 #[derive(Component)]
 struct F; // circle
 
+#[derive(Component)]
+struct Player {
+    movement_speed: f32,
+    jump_force: f32,
+    player_colliding: bool,
+    facing_right: bool,
+}
+
 #[derive(Resource)]
 struct Game {
     game_objects: Vec<Entity>,

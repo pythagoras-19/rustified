@@ -16,6 +16,10 @@ path = "src/graphics/starry_night.rs"
 name = "snake"
 path = "src/graphics/snake.rs"
 
+[[bin]]
+name = "physicstest"
+path = "src/graphics/physics_test.rs"
+
 [dependencies]
 rand = "0.8.4"
 colored = "2.1.0"
@@ -32,6 +36,7 @@ pistoncore-glutin_window = "0.72.0"
 piston2d-opengl_graphics = "0.84.0"
 bevy = { version = "0.13.2", features = ["default"] }
 device_query = "2.0.0"
+bevy_rapier2d = "*"
 
 
 # Enable max optimizations for dependencies, but not for our code:
