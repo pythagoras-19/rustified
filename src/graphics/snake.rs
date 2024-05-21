@@ -1,5 +1,6 @@
 /// usage:: cargo run --bin snake
-/// Actually, NOT A SNAKE GAME ;)
+/// Actually, NOT A SNAKE GAME ;)\
+/// TODO: hardcoded Z values
 
 use bevy::prelude::*;
 use bevy::asset::AssetContainer;
@@ -61,10 +62,13 @@ struct BlueCircle;
 struct RedCircle;
 
 #[derive(Component)]
-struct T;
+struct A; // circle
 
 #[derive(Component)]
-struct L;
+struct B; // circle
+
+#[derive(Component)]
+struct C; // circle
 
 #[derive(Resource)]
 struct Game {
@@ -117,7 +121,7 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
         transform: Transform::from_xyz(
             50.0,
             20.0,
-            20.0,
+            1.0,
         ),
         ..default()
     }).id();
@@ -133,7 +137,7 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
         transform: Transform::from_xyz(
             200.0,
             100.0,
-            100.0,
+            2.0,
         ),
         ..default()
     }).id();
@@ -148,7 +152,7 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
         transform: Transform::from_xyz(
             600.0,
             600.0,
-            200.0,
+            3.0,
         ),
         ..default()
     }).id();
@@ -161,7 +165,7 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
         transform: Transform::from_xyz(
             -200.,
             -150.0,
-            150.,
+            4.,
         ),
         ..default()
     }).id();
@@ -175,7 +179,7 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
         transform: Transform::from_xyz(
             -500.0,
             -300.0,
-            -600.0,
+            5.,
         ),
         ..default()
     }).id();
@@ -189,7 +193,7 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
         transform: Transform::from_xyz(
             -320.0,
             -320.0,
-            -100.9,
+            6.,
         ),
         ..default()
     }).id();
@@ -202,7 +206,7 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
         transform: Transform::from_xyz(
             420.0,
             -200.0,
-            -100.5,
+            7.,
         ),
         ..default()
     }).id();
@@ -215,7 +219,7 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
         transform: Transform::from_xyz(
             0.0,
             0.0,
-            0.0,
+            8.0,
         ),
         ..default()
     }).id();
@@ -229,7 +233,7 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
         transform: Transform::from_xyz(
             10.0,
             10.0,
-            10.0,
+            9.0,
         ),
         ..default()
     }).id();
@@ -243,7 +247,7 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
         transform:Transform::from_xyz(
             -20.0,
             -20.0,
-            -20.0,
+            10.,
         ),
         ..default()
     }).id();
@@ -257,12 +261,26 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
         transform: Transform::from_xyz(
             -30.,
             -30.,
-            -30.,
+            11.,
         ),
         ..default()
     }).id();
-    commands.entity(t_entity).insert(T);
+    commands.entity(t_entity).insert(A);
     game.add(t_entity);
+
+    let c = Mesh2dHandle(meshes.add(Circle::new(200.0)));
+    let c_entity = commands.spawn(MaterialMesh2dBundle {
+        mesh: c.into(),
+        material: materials.add(Color::DARK_GRAY),
+        transform: Transform::from_xyz(
+            -3.,
+            20.,
+            12.,
+        ),
+        ..default()
+    }).id();
+    commands.entity(c_entity).insert(C);
+    game.add(c_entity);
 
     let l = Mesh2dHandle(meshes.add(Circle::new(100.)));
     let l_entity = commands.spawn(MaterialMesh2dBundle {
@@ -271,11 +289,11 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
         transform: Transform::from_xyz(
             -100.,
             -75.,
-            100.,
+            13.,
         ),
         ..default()
     }).id();
-    commands.entity(l_entity).insert(L);
+    commands.entity(l_entity).insert(B);
     game.add(l_entity);
 
     let button_1 = commands
@@ -300,7 +318,7 @@ fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
 fn print_interactions(nodes: Query<(&RelativeCursorPosition, &ViewVisibility), With<Node>>) {
     for (cursor_position, visibility) in &nodes {
         if visibility.get() && cursor_position.mouse_over() {
-            println!("over");
+            println!("{}", "over".green());
             println!("cursor position not normalized: {:?}", &cursor_position);
             if let Some(normalized) = &cursor_position.normalized {
                 println!("Coordinates: {:?}", normalized);
@@ -322,7 +340,7 @@ fn print_interactions(nodes: Query<(&RelativeCursorPosition, &ViewVisibility), W
 
 fn move_entities(
     mut commands: Commands,
-    mut query: Query<(Entity, &mut Transform, Option<&AquaSquare>, Option<&NavySquare>, Option<&OrangeCircle>, Option<&BlueSquare>, Option<&BlueCircle>, Option<&NavySquare2>, Option<&RedCircle>, Option<&T>, Option<&L>)>,
+    mut query: Query<(Entity, &mut Transform, Option<&AquaSquare>, Option<&NavySquare>, Option<&OrangeCircle>, Option<&BlueSquare>, Option<&BlueCircle>, Option<&NavySquare2>, Option<&RedCircle>, Option<&A>, Option<&B>)>,
     game: Res<Game>,
     windows:Query<&Window, With<PrimaryWindow>>
 ) {
