@@ -353,62 +353,38 @@ fn move_entities(
     let x_boundary = window_width / 2.0;
     let y_boundary = window_height / 2.0;
 
-    for (entity, mut transform,
-                            aqua,
-                            navy,
-                            orange,
-                            blue_sq,
-                            blue_cir,
-                            navy2,
-                            red_cir,
-                            t,
-                            l) in query.iter_mut() {
+    for (entity, mut transform, aqua, navy, orange, blue_sq, blue_cir, navy2, red_cir, t, l) in query.iter_mut() {
         if game.game_objects.contains(&entity) {
-            if aqua.is_some() {
-                transform.translation.x += SMALL_VALUE;
-                transform.translation.y += EXTRA_SMALL_VALUE;
-            }
-            if navy.is_some() {
+            if let Some(_) = aqua {
+                transform.translation.x -= SMALL_VALUE;
+                transform.translation.y -= EXTRA_SMALL_VALUE;
+            } else if let Some(_) = navy {
                 transform.translation.x += LARGE_VALUE;
                 transform.translation.y += VALUE;
-            }
-            if orange.is_some() {
+            } else if let Some(_) = orange {
                 transform.translation.x += EXTRA_SMALL_VALUE;
                 transform.translation.y -= EXTRA_LARGE_VALUE;
-            }
-            if blue_sq.is_some() {
-                //println!("Blue square!@");
+            } else if let Some(_) = blue_sq {
+                transform.translation.x += EXTRA_SMALL_VALUE;
+                transform.translation.y -= EXTRA_SMALL_VALUE;
+            } else if let Some(_) = blue_cir {
+                transform.translation.x -= EXTRA_SMALL_VALUE;
+                transform.translation.y -= EXTRA_SMALL_VALUE;
+            } else if let Some(_) = navy2 {
+                transform.translation.x -= EXTRA_SMALL_VALUE;
+                transform.translation.y += EXTRA_SMALL_VALUE;
+            } else if let Some(_) = red_cir {
+                transform.translation.x -= EXTRA_SMALL_VALUE;
+                transform.translation.y += EXTRA_SMALL_VALUE;
+            } else if let Some(_) = t {
+                transform.translation.x -= EXTRA_SMALL_VALUE;
+                transform.translation.y += EXTRA_SMALL_VALUE;
+            } else if let Some(_) = l {
                 transform.translation.x += EXTRA_SMALL_VALUE;
                 transform.translation.y -= EXTRA_SMALL_VALUE;
             }
-            if blue_cir.is_some() {
-                transform.translation.x -= EXTRA_SMALL_VALUE;
-                transform.translation.y += EXTRA_SMALL_VALUE;
-            }
-            if navy2.is_some() {
-                transform.translation.x -= EXTRA_SMALL_VALUE;
-                transform.translation.y += EXTRA_SMALL_VALUE;
-            }
-            if red_cir.is_some() {
-                transform.translation.x -= EXTRA_SMALL_VALUE;
-                transform.translation.y += EXTRA_SMALL_VALUE;
-            }
-            if t.is_some() {
-                transform.translation.x -= EXTRA_SMALL_VALUE;
-                transform.translation.y += EXTRA_SMALL_VALUE;
-            }
-            if l.is_some() {
-                transform.translation.x += EXTRA_SMALL_VALUE;
-                transform.translation.y -= EXTRA_SMALL_VALUE;
-            }
-            else {
-                //println!("Blue Sqare!!!%");
-                let new_x = transform.translation.x + SMALL_VALUE;
-                if new_x > -x_boundary && new_x < x_boundary {
-                    transform.translation.x = new_x;
-                }
-            }
-            // out of bounds checker
+
+            // Out of bounds checker
             transform.translation.x = transform.translation.x.min(x_boundary).max(-x_boundary);
             transform.translation.y = transform.translation.y.min(y_boundary).max(-y_boundary);
         }
