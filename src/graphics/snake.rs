@@ -116,15 +116,38 @@ impl Game {
     }
 }
 
+#[derive(Resource)]
+struct GameState {
+    paused: bool
+}
+
+impl GameState {
+    fn new() -> Self {
+        Self { paused: false }
+    }
+
+    fn toggle_pause(&mut self) {
+        self.paused = !self.paused;
+    }
+}
+
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         .insert_resource(Game::new())
+        .insert_resource(GameState::new())
         .insert_resource(ClearColor(Color::BLACK))
         .add_systems(Startup, (setup, add_people, add_monster))
         .add_systems(Update, (draw_cursor, (update_people, greet_people, show_monster, print_interactions).chain()))
         .add_systems(Update, move_entities)
         .run();
+}
+
+fn toggle_pause_system(mut game_state: ResMut<GameState>, keys: Res<ButtonInput<KeyCode>>) {
+    if keys.just_pressed(KeyCode::KeyP) {
+        println!("Pressed {:?}", KeyCode::KeyP );
+        game_state.toggle_pause();
+    }
 }
 
 fn setup(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>,
@@ -391,9 +414,9 @@ fn print_interactions(nodes: Query<(&RelativeCursorPosition, &ViewVisibility), W
                 }
             }
         } else {
-            println!("{}", "Not over".red());
+            // println!("{}", "Not over".red());
             if let Some(normalized) = &cursor_position.normalized {
-                println!("{:?}", normalized);
+                // println!("{:?}", normalized);
             }
         }
     }
@@ -406,8 +429,12 @@ fn move_entities(
                       Option<&NavySquare2>, Option<&RedCircle>, Option<&A>, Option<&B>,
                       Option<&C>, Option<&D>, Option<&E>, Option<&F>)>,
     game: Res<Game>,
+    game_state: Res<GameState>,
     windows:Query<&Window, With<PrimaryWindow>>
 ) {
+    if game_state.paused {
+        return;
+    }
 
     // TODO: make these constants
     let window = windows.single();
