@@ -444,7 +444,10 @@ fn move_entities(
     let x_boundary = window_width / 2.0;
     let y_boundary = window_height / 2.0;
 
-    for (entity, mut transform, aqua, navy, orange, blue_sq, blue_cir, navy2, red_cir, a, b, c, d, e, f) in query.iter_mut() {
+    for (entity, mut transform, aqua, navy,
+        orange, blue_sq, blue_cir,
+        navy2, red_cir, a, b,
+        c, d, e, f) in query.iter_mut() {
         if game.game_objects.contains(&entity) {
             if let Some(_) = aqua {
                 transform.translation.x -= SMALL_VALUE;
@@ -533,7 +536,7 @@ fn add_monster(mut commands: Commands) {
 
 fn show_monster(query: Query<&Stats, With<Monster>>) {
     for monster in &query {
-        //println!("RAWR!!!!!!! {}, with health: {}  !", monster.name, monster.health);
+        //println!("{}, with health: {}  !", monster.name, monster.health);
     }
 }
 
