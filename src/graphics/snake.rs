@@ -13,12 +13,12 @@ use bevy_rapier2d::prelude::*;
 use colored::Colorize;
 
 /// TODO: Fix these names, they're dumb, lets change to fibonacci
-static EXTRA_SMALL_VALUE: f32 = 1.0;
-static SMALL_VALUE: f32 = 5.0;
-static VALUE: f32 = 12.0;
-static LARGE_VALUE: f32 = 20.0;
-static EXTRA_LARGE_VALUE: f32 = 30.0;
-static XXL_VALUE: f32 = 144.0;
+static FIB_1: f32 = 1.0;
+static FIB_5: f32 = 5.0;
+static FIB_12: f32 = 12.0;
+static FIB_20: f32 = 20.0;
+static FIB_30: f32 = 30.0;
+static FIB_144: f32 = 144.0;
 
 #[derive(Component)]
 struct Orange;
@@ -450,41 +450,41 @@ fn move_entities(
         c, d, e, f) in query.iter_mut() {
         if game.game_objects.contains(&entity) {
             if let Some(_) = aqua {
-                transform.translation.x -= SMALL_VALUE;
-                transform.translation.y -= EXTRA_SMALL_VALUE;
+                transform.translation.x -= FIB_5;
+                transform.translation.y -= FIB_1;
             } else if let Some(_) = navy {
-                transform.translation.x += LARGE_VALUE;
-                transform.translation.y += VALUE;
+                transform.translation.x += FIB_20;
+                transform.translation.y += FIB_12;
             } else if let Some(_) = orange {
-                transform.translation.x += EXTRA_SMALL_VALUE;
-                transform.translation.y -= EXTRA_LARGE_VALUE;
+                transform.translation.x += FIB_1;
+                transform.translation.y -= FIB_30;
             } else if let Some(_) = blue_sq {
-                transform.translation.x += EXTRA_SMALL_VALUE;
-                transform.translation.y -= EXTRA_SMALL_VALUE;
+                transform.translation.x += FIB_1;
+                transform.translation.y -= FIB_1;
             } else if let Some(_) = blue_cir {
-                transform.translation.x -= EXTRA_SMALL_VALUE;
-                transform.translation.y -= EXTRA_SMALL_VALUE;
+                transform.translation.x -= FIB_1;
+                transform.translation.y -= FIB_1;
             } else if let Some(_) = navy2 {
-                transform.translation.x -= EXTRA_SMALL_VALUE;
-                transform.translation.y += EXTRA_SMALL_VALUE;
+                transform.translation.x -= FIB_1;
+                transform.translation.y += FIB_1;
             } else if let Some(_) = red_cir {
-                transform.translation.x -= EXTRA_SMALL_VALUE;
-                transform.translation.y += EXTRA_SMALL_VALUE;
+                transform.translation.x -= FIB_1;
+                transform.translation.y += FIB_1;
             } else if let Some(_) = a {
-                transform.translation.x -= EXTRA_SMALL_VALUE;
-                transform.translation.y += EXTRA_SMALL_VALUE;
+                transform.translation.x -= FIB_1;
+                transform.translation.y += FIB_1;
             } else if let Some(_) = b {
-                transform.translation.x += EXTRA_SMALL_VALUE;
-                transform.translation.y -= EXTRA_SMALL_VALUE;
+                transform.translation.x += FIB_1;
+                transform.translation.y -= FIB_1;
             } else if let Some(_) = c {
-                transform.translation.x -= EXTRA_SMALL_VALUE;
-                transform.translation.y -= EXTRA_SMALL_VALUE;
+                transform.translation.x -= FIB_1;
+                transform.translation.y -= FIB_1;
             } else if let Some(_) = d {
-                transform.translation.x -= EXTRA_SMALL_VALUE;
-                transform.translation.y += EXTRA_SMALL_VALUE;
+                transform.translation.x -= FIB_1;
+                transform.translation.y += FIB_1;
             } else if let Some(_) = e {
-                transform.translation.x -= EXTRA_SMALL_VALUE;
-                transform.translation.y += EXTRA_SMALL_VALUE;
+                transform.translation.x -= FIB_1;
+                transform.translation.y += FIB_1;
             }
             else if let Some(_) = e {
                 //transform.translation.x -= EXTRA_SMALL_VALUE;
@@ -505,7 +505,7 @@ fn draw_cursor( camera_query: Query<(&Camera, &GlobalTransform)>,
     if let Some(cursor_position) = windows.single().cursor_position() {
         // Calculate a world position based on the cursor's position.
         if let Some(point) = camera.viewport_to_world_2d(camera_transform, cursor_position) {
-            gizmos.circle_2d(point, XXL_VALUE, Color::RED);
+            gizmos.circle_2d(point, FIB_144, Color::RED);
         }
     }
 }
