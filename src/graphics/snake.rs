@@ -415,9 +415,9 @@ fn print_interactions(nodes: Query<(&RelativeCursorPosition, &ViewVisibility), W
             }
         } else {
             // println!("{}", "Not over".red());
-            if let Some(normalized) = &cursor_position.normalized {
-                // println!("{:?}", normalized);
-            }
+            // if let Some(normalized) = &cursor_position.normalized {
+            //      println!("{:?}", normalized);
+            // }
         }
     }
 }
@@ -436,7 +436,6 @@ fn move_entities(
         return;
     }
 
-    // TODO: make these constants
     let window = windows.single();
     let window_width = window.width();
     let window_height = window.height();
@@ -487,8 +486,8 @@ fn move_entities(
                 transform.translation.y += FIB_1;
             }
             else if let Some(_) = e {
-                //transform.translation.x -= EXTRA_SMALL_VALUE;
-                // transform.translation.y += EXTRA_SMALL_VALUE;
+                //transform.translation.x -= FIB_1;
+                // transform.translation.y += FIB_1;
             }
 
             // Out of bounds checker
