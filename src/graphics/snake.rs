@@ -12,7 +12,6 @@ use bevy_rapier2d::prelude::*;
 
 use colored::Colorize;
 
-/// TODO: Fix these names, they're dumb, lets change to fibonacci
 static FIB_1: f32 = 1.0;
 static FIB_5: f32 = 5.0;
 static FIB_12: f32 = 12.0;
